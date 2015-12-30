@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="NavigationDrawerList">
+        <item>Cash Flow</item>
+        <item>Eco Feed</item>
+        <item>Goals and Targets</item>
+        <item>Trends</item>
+        <item>Reminders</item>
+    </string-array>
+</resources>
