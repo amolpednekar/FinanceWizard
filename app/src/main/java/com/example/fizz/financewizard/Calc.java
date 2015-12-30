@@ -207,7 +207,8 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.add:
                 optr = "+";
-                if(op1 == 0){
+                if(disp.getText().toString().trim().length() <= 0) return;
+                else if(op1 == 0){
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
@@ -224,7 +225,8 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.sub:
                 optr = "-";
-                if(op1 == 0){
+                if(disp.getText().toString().trim().length() <= 0) return;
+                else if(op1 == 0){
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
@@ -241,7 +243,8 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.mul:
                 optr = "*";
-                if(op1 == 0){
+                if(disp.getText().toString().trim().length() <= 0) return;
+            else if(op1 == 0){
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
@@ -258,7 +261,8 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.div:
                 optr = "/";
-                if(op1 == 0){
+                if(disp.getText().toString().trim().length() <= 0) return;
+                else if(op1 == 0){
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
@@ -273,8 +277,9 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     disp.setText("Result : " + Float.toString(op1));
                 }
                 break;
-            case R.id.equal:
-                if(!optr.equals(null)){
+            case R.id.equal:if(disp.getText().toString().trim().length() <= 0) return;
+            else
+            if(!optr.equals(null)){
                     if(op2 != 0){
                         if(optr.equals("+")){
                             disp.setText("");
