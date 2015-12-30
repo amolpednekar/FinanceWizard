@@ -1,9 +1,5 @@
 package com.example.fizz.financewizard;
 
-/**
- * Created by Simeon on 23/09/2015.
- */
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +14,6 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 
-//ll
-//Amol Sim
 public class rss_service extends IntentService {
 
     public static final String ITEMS = "items";

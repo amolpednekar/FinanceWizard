@@ -1,6 +1,5 @@
 package com.example.fizz.financewizard;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

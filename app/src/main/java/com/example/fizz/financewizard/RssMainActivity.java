@@ -29,9 +29,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * //Splash
- */
 public class RssMainActivity extends AppCompatActivity {
     static final int DIALOG_ERROR_CONNECTION = 1;
     private SwipeRefreshLayout swipeContainer;
@@ -50,6 +47,17 @@ public class RssMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isOnline(this)) {
+            setContentView(R.layout.rss_main);
+            frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
+            mDrawerList = (ListView)findViewById(R.id.navList);
+            mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
+            mActivityTitle = "RSS Feed";//string
+
+            addDrawerItems();
+            setupDrawer();
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
             showDialog(DIALOG_ERROR_CONNECTION); //display no connection dialog
         } else {
             if (savedInstanceState == null) {
@@ -201,7 +209,10 @@ public class RssMainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.rss_sub_main, menu);
+        if (!isOnline(this)) {
+            getMenuInflater().inflate(R.menu.rss_sub_main_nc,menu);
+        }
+        else getMenuInflater().inflate(R.menu.rss_sub_main, menu);
         return true;
     }
 

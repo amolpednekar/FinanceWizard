@@ -1,8 +1,5 @@
 package com.example.fizz.financewizard;
 
-/**
- * Created by Simeon on 23/09/2015.
- */
 public class rss_item {
     private final String title;
     private final String link;

@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Simeon on 23/09/2015.
- */
 public class rss_adapter extends BaseAdapter {
     private final List<rss_item> items;
     private final Context context;
