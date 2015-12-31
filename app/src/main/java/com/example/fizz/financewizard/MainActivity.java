@@ -60,6 +60,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // .... other stuff in my onResume ....
+        this.doubleBackToExitPressedOnce = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show();
+    }
 
     private void addDrawerItems() {
         String[] osArray = {"Cash Flow", "Eco Feed","Goals and Targets","Trends","Reminders"};
@@ -119,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        Toast.makeText(this, "Selected Item Position::"+position, Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -140,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
     class myAdapter extends BaseAdapter {
         private Context context;

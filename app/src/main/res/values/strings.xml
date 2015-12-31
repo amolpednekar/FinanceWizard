@@ -36,5 +36,7 @@
     <string name="Reset">C</string>
     <string name="decimal">.</string>
 
+    <string name="exit_press_back_twice_message">Press again to exit</string>
+
 
 </resources>

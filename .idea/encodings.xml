@@ -32,5 +32,6 @@
     <file url="file://$PROJECT_DIR$/app/src/main/res/menu/main.xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/menu/rss_sub_main.xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/values-w820dp/dimens.xml" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

@@ -30,11 +30,9 @@
 
     <ListView
         android:id="@+id/navList"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
-        android:background="#ffeeeeee"
-        android:divider="@color/divider"
-        android:dividerHeight="1dp"/>
+        android:background="#ffeeeeee"/>
 
 </android.support.v4.widget.DrawerLayout>
