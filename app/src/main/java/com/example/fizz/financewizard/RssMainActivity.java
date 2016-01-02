@@ -204,6 +204,53 @@ public class RssMainActivity extends AppCompatActivity {
         addRssFragment();
     }
 
+
+    // Navigation Drawer Icons
+    class myAdapter extends BaseAdapter {
+        private Context context;
+        String NavListCategories[];
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
+
+
+        public myAdapter(Context context){
+            this.context = context;
+            NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
+
+        }
+        @Override
+        public int getCount() {
+            return NavListCategories.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return NavListCategories[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View row = null;
+            if(convertView == null){
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                row = inflater.inflate(R.layout.custom_row, parent, false);
+            }
+            else{
+                row =convertView;
+            }
+
+            TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
+            ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
+            titleTextView.setText(NavListCategories[position]);
+            titleImageView.setImageResource(images[position]);
+            return row;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -300,52 +347,5 @@ public class RssMainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }}
-
-
-// Navigation Drawer Icons
-class myAdapter extends BaseAdapter {
-    private Context context;
-    String NavListCategories[];
-    int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
-
-
-    public myAdapter(Context context){
-        this.context = context;
-        NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
-
-    }
-    @Override
-    public int getCount() {
-        return NavListCategories.length;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return NavListCategories[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row = null;
-        if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.custom_row, parent, false);
-        }
-        else{
-            row =convertView;
-        }
-
-        TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
-        ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
-        titleTextView.setText(NavListCategories[position]);
-        titleImageView.setImageResource(images[position]);
-        return row;
-    }
-}
 
 //NavigationDrawer Code End
