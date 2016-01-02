@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         public myAdapter(Context context){
             this.context = context;
             NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
-//            context.getResources().getDimensionPixelSize(R.dimen.navigation_icon_size);
         }
         @Override
         public int getCount() {
