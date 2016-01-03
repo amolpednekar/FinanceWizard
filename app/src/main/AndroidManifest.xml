@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <!--Manifest for RSS-->
         <activity
             android:name=".RssMainActivity"
             android:label="RSS feed"
@@ -33,12 +33,41 @@
             android:clearTaskOnLaunch="true">
         </activity>
 
+        <!--Manifest for Floating calculator-->
         <activity android:name=".Calc"
             android:label="Calculator"
             android:theme="@style/Theme.Floating">
         </activity>
 
         <service android:name=".rss_service" />
+
+
+        <!--Manifest for goals and Targets-->
+        <activity android:name=".Goals_MainActivity"
+            android:label="Goals">
+        </activity>
+
+        <activity
+            android:name=".GoalDisActivity"
+            android:label="@string/title_activity_goal_dis" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fizz.financewizard.Goals_MainActivity" />
+        </activity>
+        <activity
+            android:name=".GoalActivity"
+            android:label="@string/title_activity_goal" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fizz.financewizard.GoalDisActivity" />
+        </activity>
+        <activity
+            android:name=".GoalInfoActivity"
+            android:label="@string/title_activity_goal_info" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fizz.financewizard.GoalDisActivity" />
+        </activity>
 
     </application>
 

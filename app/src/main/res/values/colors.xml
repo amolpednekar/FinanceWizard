@@ -5,7 +5,8 @@
     <color name="primaryColorDark">#33691f</color>
     <color name="accentColor">#50514f</color>
     <color name="divider">#6002</color>
-
     <!--calculator colors -->
     <color name="num">#eeeeee</color>
+
+    <color name="ColorPrimary">#A0A0A0</color>
 </resources>

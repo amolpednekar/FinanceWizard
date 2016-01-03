@@ -1,16 +1,23 @@
 package com.example.fizz.financewizard;
 
+/**
+ * Created by Simeon on 03/01/2016.
+ */
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Bundle;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,14 +26,28 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class Goals_MainActivity extends AppCompatActivity {
+
+    private DbHelperGoal tHelper;
+    private SQLiteDatabase tDataBase;
+    private AlertDialog.Builder build ;
+    TextView tGoals, tSavings;
+
     AlertDialog alert1;
     private AlertDialog.Builder build1;
     private static boolean isLaunch = true;
@@ -40,12 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        TextView txt = (TextView) findViewById(R.id.custom_font);
-        //Typeface font = Typeface.createFromAsset(getAssets(), "BrockScript.ttf"); Add custom font
-        //txt.setTypeface(font);
+        setContentView(R.layout.goals_activitymain);
 
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
         mDrawerList = (ListView)findViewById(R.id.navList);
@@ -58,25 +75,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-    }
 
-    private boolean doubleBackToExitPressedOnce = false;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // .... other stuff in my onResume ....
-        this.doubleBackToExitPressedOnce = false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show();
+         tGoals = (TextView)findViewById(R.id.goalNo2);
+         tSavings = (TextView)findViewById(R.id.totalSavings2);
     }
 
     private void addDrawerItems() {
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             case 1:
                 startActivity(new Intent(this, RssMainActivity.class));
                 break;
-           case 2:
+            case 2:
                 startActivity(new Intent(this, Goals_MainActivity.class));
                 break;
            /* case 3:
@@ -152,12 +153,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    protected void onResume() {
+        displayData();
+        super.onResume();
     }
 
+   public void displayData() {
+        tHelper = new DbHelperGoal(this.getBaseContext());
+        tDataBase = tHelper.getWritableDatabase();
+        Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
+        float savings = 0;
+        int goalCnt = 0;
+        String currencyType = "";
+        if (mCursor.moveToFirst()) {
+            do {
+                goalCnt += 1;
+                currencyType = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY));
+                savings += (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        tGoals.setText(String.valueOf(goalCnt));
+        tSavings.setText(currencyType + " " + String.format("%.0f", savings));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
     class myAdapter extends BaseAdapter {
         private Context context;
@@ -209,29 +235,22 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if(id==R.id.calculator){
-            /*build1=new AlertDialog.Builder(MainActivity.this);
-            build1.setTitle("Calculator");
-            LayoutInflater lc= LayoutInflater.from(MainActivity.this);
-            View calcview=lc.inflate(R.layout.calc,null);
-            build1.setView(calcview);
-            alert1=build1.create();
-            alert1.show();*/
-
-            startActivity(new Intent(this,Calc.class));
+        switch(id){
+            case R.id.goal:
+                Intent i = new Intent(getApplicationContext(), GoalDisActivity.class);
+                i.putExtra("update", false);
+                startActivity(i);
+                return true;
         }
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Toast.makeText(this, " Configured " + item.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
         }
 
-        // Activate the navigation drawer toggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }

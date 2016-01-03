@@ -107,7 +107,7 @@ public class RssMainActivity extends AppCompatActivity {
             return false;
     }
 
-    //No internet connnection dialog
+    //No internet connection dialog
 
     @Override
     protected Dialog onCreateDialog(int id) {
