@@ -211,13 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if(id==R.id.calculator){
-            /*build1=new AlertDialog.Builder(MainActivity.this);
-            build1.setTitle("Calculator");
-            LayoutInflater lc= LayoutInflater.from(MainActivity.this);
-            View calcview=lc.inflate(R.layout.calc,null);
-            build1.setView(calcview);
-            alert1=build1.create();
-            alert1.show();*/
 
             startActivity(new Intent(this,Calc.class));
         }

@@ -246,6 +246,11 @@ public class Goals_MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if(id==R.id.calculator){
+
+            startActivity(new Intent(this,Calc.class));
+        }
+
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
