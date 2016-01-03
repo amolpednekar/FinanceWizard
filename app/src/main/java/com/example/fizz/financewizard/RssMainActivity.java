@@ -320,10 +320,10 @@ public class RssMainActivity extends AppCompatActivity {
             case 1:
                 startActivity(new Intent(this, RssMainActivity.class));
                 break;
-           /* case 2:
-                startActivity(new Intent(this, Item3Activity.class));
+            case 2:
+                startActivity(new Intent(this, Goals_MainActivity.class));
                 break;
-            case 3:
+            /*case 3:
                 startActivity(new Intent(this, Item4Activity.class));
                 break;
             case 4:

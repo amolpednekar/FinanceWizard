@@ -67,7 +67,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
-        mActivityTitle = "Finance Wizard";//string
+        mActivityTitle = "Goals and Targets";//string
 
         addDrawerItems();
         setupDrawer();
@@ -81,7 +81,6 @@ public class Goals_MainActivity extends AppCompatActivity {
     }
 
     private void addDrawerItems() {
-        String[] osArray = {"Cash Flow", "Eco Feed","Goals and Targets","Trends","Reminders"};
 
         myAdapter MyAdapter = new myAdapter(this);
         mDrawerList.setAdapter(MyAdapter);
