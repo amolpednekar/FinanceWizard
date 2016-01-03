@@ -200,8 +200,10 @@ public class RssMainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-        addRssFragment();
+        if (isOnline(this))
+            addRssFragment();
+        else
+        showDialog(DIALOG_ERROR_CONNECTION);
     }
 
 
