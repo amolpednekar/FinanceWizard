@@ -566,6 +566,10 @@ public class GoalDisActivity extends AppCompatActivity {
             return true;
         }
 
+        if(id == R.id.calculator){
+            startActivity(new Intent(this,Calc.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }
