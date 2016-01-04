@@ -115,7 +115,7 @@ public class GoalDisActivity extends AppCompatActivity {
         //On List data long Click
         goalList2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                final CharSequence[] listClick = {"Goal-Date", "Payment", "Expense", "Delete"};
+                final CharSequence[] listClick = { "Contribute to Goal", "Expenditure", "Change Deadline","Delete"};
 
                 build = new AlertDialog.Builder(GoalDisActivity.this);
                 build.setTitle("Make your selection");
@@ -123,12 +123,12 @@ public class GoalDisActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         switch (item) {
-                            case 0://Date Modifier
+                            case 2://Date Modifier
                                 LayoutInflater ld = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsDateView = ld.inflate(R.layout.date_button, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                                build.setTitle("Goal-Date");
-                                build.setMessage("Please Enter new Goal Date");
+                                build.setTitle("Change Deadline");
+                                //build.setMessage("Please Enter new Goal Date");
                                 build.setView(promptsDateView);
                                 newDate = (Button) promptsDateView.findViewById(R.id.newGoalDate);
                                 newDate.setOnClickListener(new View.OnClickListener() {
@@ -179,12 +179,12 @@ public class GoalDisActivity extends AppCompatActivity {
                                 alert.show();
                                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
-                            case 1://Payment
+                            case 0://Payment
                                 LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                                build.setTitle("Payment");
-                                build.setMessage("Please Enter payment amount");
+                                build.setTitle("Contribute to Goal");
+                                build.setMessage("Enter Amount");
                                 build.setView(promptsPaymentView);
                                 PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
                                 //PayValue.isFocused();
@@ -275,13 +275,13 @@ public class GoalDisActivity extends AppCompatActivity {
                                 alert.show();
                                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                                 break;
-                            case 2://Expense
+                            case 1://Expense
                                 //Toast.makeText(getApplication(), "Expense", Toast.LENGTH_SHORT).show();
                                 LayoutInflater le = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                                build.setTitle("Expense");
-                                build.setMessage("Please Enter withdrawl amount");
+                                build.setTitle("Expenditure");
+                                build.setMessage("Enter amount:");
                                 build.setView(promptsExpenseView);
                                 ExpValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
                                 //PayValue.isFocused();

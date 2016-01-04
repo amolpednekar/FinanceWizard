@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/goalEntry1"
                 android:hint="@string/tite_goal"
-                android:textSize="40sp"
+                android:textSize="25dp"
                 android:gravity="left"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -112,12 +112,17 @@
             <Button
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Set Goal Date"
-                android:textSize="20sp"
+                android:text="@string/set_goal_date"
+                android:textAllCaps="false"
+                android:textColor="@color/primaryColor"
                 android:id="@+id/calendarButton"
+                android:textSize="23dp"
+                android:backgroundTint="@color/accentColor"
                 android:layout_below="@+id/deadlineTitle"
                 android:layout_centerHorizontal="true"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:layout_marginBottom="10dp" />
+
 
             <Spinner
                 android:layout_width="wrap_content"

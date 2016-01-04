@@ -5,6 +5,8 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
 
+    <string name="set_goal_date">Set Goal Date</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -55,10 +57,10 @@
     <string name="title_activity_goal_dis">My Goals</string>
     <string name="title_activity_goal_alt">Achievements</string>
     <string-array name="currency">
+        <item>₹ (Rupee)</item>
         <item>$ (Dollar)</item>
         <item>\u20ac (Euro)</item>
         <item>\u00a3 (Pound)</item>
-        <item>₹ (Rupee)</item>
         <item>¥ (Yen)</item>
     </string-array>
     <string name="title_activity_goal_info">Goal Information</string>

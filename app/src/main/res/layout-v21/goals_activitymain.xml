@@ -21,8 +21,8 @@
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cardViewDisplay"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:minHeight="150dp"
+            android:layout_height="120dp"
+            android:minHeight="130dp"
             card_view:cardCornerRadius="4dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -31,7 +31,7 @@
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="150dp"
+                android:layout_height="120dp"
                 android:id="@+id/viewCashFlowSlot"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:textSize="22dp"

@@ -87,25 +87,25 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
             op1 = op1 + op2;
-            disp.setText("Result : " + Float.toString(op1));
+            disp.setText(Float.toString(op1));
         }
         else if(optr.equals("-")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
             op1 = op1 - op2;
-            disp.setText("Result : " + Float.toString(op1));
+            disp.setText(Float.toString(op1));
         }
         else if(optr.equals("*")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
             op1 = op1 * op2;
-            disp.setText("Result : " + Float.toString(op1));
+            disp.setText( Float.toString(op1));
         }
         else if(optr.equals("/")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
             op1 = op1 / op2;
-            disp.setText("Result : " + Float.toString(op1));
+            disp.setText(Float.toString(op1));
         }
     }
     @Override

@@ -55,17 +55,20 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        currencyG = "$";
+                        currencyG = "₹";
+
                         break;
                     case 1:
-                        currencyG = "\u20ac";
+                        currencyG = "$";
                         break;
                     case 2:
+                        currencyG = "\u20ac";
+                        break;
+
+                    case 3:
                         currencyG = "\u00a3";
                         break;
-                    case 3:
-                        currencyG = "₹";
-                        break;
+
                     case 4:
                         currencyG = "¥";
                         break;

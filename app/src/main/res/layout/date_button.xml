@@ -6,8 +6,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SET GOAL DATE"
+        android:textColor="@color/primaryColor"
         android:id="@+id/newGoalDate"
         android:textSize="23dp"
+        android:backgroundTint="@color/accentColor"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
