@@ -1,5 +1,6 @@
 package com.example.fizz.financewizard;
 
+import android.content.Context;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -10,13 +11,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Simeon on 23/09/2015.
- */
+import android.widget.Toast;
 public class eco_feed
 {
 
-// We don't use namespaces
+    Context mContext;
+    public eco_feed(Context context)
+    {
+        mContext =context;
+    }
 private final String ns = null;
 
         public List<rss_item> parse(InputStream inputStream) throws XmlPullParserException, IOException {
@@ -39,18 +42,21 @@ private final String ns = null;
             //      List<List<RssItem>> items = new ArrayList<List<RssItem>>();
             List<rss_item> items = new ArrayList<>();
             //List<List<String>> stuff = new ArrayList<List<String>>();
+            //parser.next();
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
                 if (parser.getEventType() != XmlPullParser.START_TAG) {
+                   // Toast.makeText(mContext, "Count=" + count,  Toast.LENGTH_SHORT).show();
                     continue;
                 }
-                String name = parser.getName();
-                if (name.equals("title")) {
-                    title = readTitle(parser);
-                } else if (name.equals("link")) {
-                    link = readLink(parser);
-                } /*else if (name.equals("image")){
-                image = readLink(parser);
+                    String name = parser.getName();
+                    if (name.equals("title")) {
+                        title = readTitle(parser);
+                    } else if (name.equals("link")) {
+                        link = readLink(parser);
+                    }
 
+                 /*else if (name.equals("image")){
+                image = readLink(parser);
             `}*/
                 if (title != null && link != null) {
                     rss_item item = new rss_item(title, link);
@@ -79,10 +85,10 @@ private final String ns = null;
         // For the tags title and link, extract their text values.
         private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
             String result = "";
-            if (parser.next() == XmlPullParser.TEXT) {
-                result = parser.getText();
-                parser.nextTag();
-            }
+                if (parser.next() == XmlPullParser.TEXT) {
+                    result = parser.getText();
+                    parser.nextTag();
+                }
             return result;
         }
 }

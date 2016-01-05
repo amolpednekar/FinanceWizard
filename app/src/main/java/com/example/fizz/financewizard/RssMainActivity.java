@@ -61,7 +61,7 @@ public class RssMainActivity extends AppCompatActivity {
                 frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
                 mDrawerList = (ListView)findViewById(R.id.navList);
                 mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-                mActivityTitle = "RSS Feed";//string
+                mActivityTitle = "Eco Feed";//string
 
                 addDrawerItems();
                 setupDrawer();
@@ -165,7 +165,7 @@ public class RssMainActivity extends AppCompatActivity {
 
     void SetRSS()
     {
-        final CharSequence sources[] = new CharSequence[] {"Personal Finance - Top Stories", "Times Of India - Finance"};
+        final CharSequence sources[] = new CharSequence[] {"Times Of India - Finance (Default)","Personal Finance - Top Stories", "Forbes Business","Financial Services","FT - Finance","CNBC Business"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select a feed");
@@ -173,14 +173,33 @@ public class RssMainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (sources[which] == "Personal Finance - Top Stories") {
-                    Toast.makeText(getApplicationContext(), "Showing Top Stories", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
                     rss_service.RSS_LINK = "http://feeds.marketwatch.com/marketwatch/pf/";
                     refresh_feed();
-                } else if (sources[which] == "Times Of India - Finance") {
-                    Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
+                } else if (sources[which] == "Times Of India - Finance (Default)") {
+                    //Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
                     rss_service.RSS_LINK = "http://timesofindia.feedsportal.com/c/33039/f/533919/index.rss";
                     refresh_feed();
+                } else if (sources[which] == "Forbes Business") {
+                   // Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
+                    rss_service.RSS_LINK = "http://www.forbes.com/business/feed/";
+                    refresh_feed();
+                } else if (sources[which] == "Financial Services") {
+                    // Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
+                    rss_service.RSS_LINK = "http://www.ft.com/rss/companies/financial-services";
+                    refresh_feed();
+                } else if (sources[which] == "FT - Finance") {
+                    // Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
+                    rss_service.RSS_LINK = "http://www.ft.com/rss/companies/financials";
+                    refresh_feed();
+                }else if (sources[which] == "CNBC Business") {
+                    // Toast.makeText(getApplicationContext(), "Showing Finance News", Toast.LENGTH_LONG).show();
+                    rss_service.RSS_LINK = "http://www.cnbc.com/id/10001147/device/rss/rss.html";
+                    refresh_feed();
                 }
+                //http://www.cnbc.com/id/10001147/device/rss/rss.html
+                //http://www.ft.com/rss/companies/financial-services
+                //http://www.ft.com/rss/companies/financials
             }
         });
         builder.show();
@@ -193,7 +212,7 @@ public class RssMainActivity extends AppCompatActivity {
         frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
-        mActivityTitle = "FiZZ";//string
+        mActivityTitle = "Eco Feed";//string
 
         addDrawerItems();
         setupDrawer();

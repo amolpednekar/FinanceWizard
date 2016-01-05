@@ -28,7 +28,7 @@ public class rss_service extends IntentService {
         Log.d(Constants.TAG, "Service started");
         List<rss_item> rssItems = null;
         try {
-            eco_feed parser = new eco_feed();
+            eco_feed parser = new eco_feed(rss_service.this);
             rssItems = parser.parse(getInputStream(RSS_LINK));
         } catch (XmlPullParserException e) {
             Log.w(e.getMessage(), e);
