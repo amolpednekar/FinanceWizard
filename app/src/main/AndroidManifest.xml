@@ -17,7 +17,7 @@
 
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask">3
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
