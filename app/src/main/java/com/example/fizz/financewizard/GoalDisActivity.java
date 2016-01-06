@@ -360,10 +360,19 @@ public class GoalDisActivity extends AppCompatActivity {
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 int zero = 0;
                 int btn_initPosY = tri.getScrollY();
-                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    tri.setVisibility(View.INVISIBLE);
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL || scrollState == SCROLL_STATE_FLING) {
+                    //tri.setVisibility(View.INVISIBLE);
+                    //tri.animate().translationX(200);
+                    //tri.animate().translationY(200);
+                    tri.animate().scaleX(0);
+                    tri.animate().scaleY(0);
                 } else {
-                    tri.setVisibility(View.VISIBLE);
+                    //tri.setVisibility(View.VISIBLE);
+                    //tri.animate().translationX(0);
+                    //tri.animate().translationY(0);
+                    tri.animate().scaleX(1);
+                    tri.animate().scaleY(1);
+
                 }
             }
 
