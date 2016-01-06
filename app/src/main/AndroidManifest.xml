@@ -11,6 +11,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
+            
             android:label="Finance Wizard"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.BrandedLaunch"
