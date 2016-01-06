@@ -75,25 +75,6 @@ public class RssMainActivity extends AppCompatActivity {
         }
     }
 
-    //Double tap to exit
-    /*private boolean doubleBackToExitPressedOnce = false;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // .... other stuff in my onResume ....
-        this.doubleBackToExitPressedOnce = false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show();
-    }*/
 
     //To check internet connectivity
     public boolean isOnline(Context c) {
@@ -298,7 +279,6 @@ public class RssMainActivity extends AppCompatActivity {
 
     //NavigationDrawer Code Start
     private void addDrawerItems() {
-        String[] osArray = {"Cash Flow", "Eco Feed","Goals and Targets","Trends","Reminders"};
 
         myAdapter MyAdapter = new myAdapter(this);
         mDrawerList.setAdapter(MyAdapter);

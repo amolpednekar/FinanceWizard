@@ -4,7 +4,7 @@
     <!-- Your product logo - 144dp color version of your app icon -->
     <item>
         <bitmap
-            android:src="@drawable/launch_logo_image"
+            android:src="@drawable/fizz"
             android:tileMode="disabled"
             android:gravity="center"/>
     </item>

@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class Calc extends AppCompatActivity implements View.OnClickListener{
 
@@ -16,7 +17,8 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
     EditText disp;
     float op1;
     float op2;
-    String optr;
+    String optr="+";
+    int flag=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,12 +107,18 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
             op1 = op1 / op2;
+            if(op2==0){
+                disp.setText("Infinity");
+            }else
             disp.setText(Float.toString(op1));
         }
+        optr="+";
+
     }
     @Override
     public void onClick(View arg0) {
         Editable str =  disp.getText();
+
         switch(arg0.getId()){
 
             case R.id.decimal:
@@ -118,86 +126,116 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 disp.setText(str);
                 break;
             case R.id.zero:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("0");
+                    flag=0;
                 }
+                else {
                 str = str.append(zero.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.one:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("1");
+                    flag=0;
                 }
-                str = str.append(one.getText());
-                disp.setText(str);
+                else {
+                    str = str.append(one.getText());
+                    disp.setText(str);
+                }
                 break;
             case R.id.two:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("2");
+                    flag=0;
                 }
+                else{
                 str = str.append(two.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.three:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("3");
+                    flag=0;
                 }
+                else {
                 str = str.append(three.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.four:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("4");
+                    flag=0;
                 }
+                else {
                 str = str.append(four.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.five:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("5");
+                    flag=0;
                 }
+                else {
                 str = str.append(five.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.six:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("6");
+                    flag=0;
                 }
+                else {
                 str = str.append(six.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.seven:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("7");
+                    flag=0;
                 }
+                else {
                 str = str.append(seven.getText());
-                disp.setText(str);
+                disp.setText(str);}
                 break;
             case R.id.eight:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("8");
+                    flag=0;
                 }
+                else {
                 str = str.append(eight.getText());
-                disp.setText(str);
+                disp.setText(str);}
 
                 break;
             case R.id.nine:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("9");
+                    flag=0;
                 }
+                else {
                 str = str.append(nine.getText());
-                disp.setText(str);
-
+                disp.setText(str);}
                 break;
             case R.id.Reset:
                 op1 = 0;
@@ -212,15 +250,10 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
-                else if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
-                }
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 + op2;
-                    disp.setText("Result : " + Float.toString(op1));
                 }
                 break;
             case R.id.sub:
@@ -230,15 +263,10 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
-                else if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
-                }
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 - op2;
-                    disp.setText("Result : " + Float.toString(op1));
                 }
                 break;
             case R.id.mul:
@@ -248,15 +276,10 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
-                else if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
-                }
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 * op2;
-                    disp.setText("Result : " + Float.toString(op1));
                 }
                 break;
             case R.id.div:
@@ -266,45 +289,19 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op1 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                 }
-                else if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
-                }
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 / op2;
-                    disp.setText("Result : " + Float.toString(op1));
                 }
                 break;
-            case R.id.equal:if(disp.getText().toString().trim().length() <= 0) return;
-            else
-            if(!optr.equals(null)){
-                    if(op2 != 0){
-                        if(optr.equals("+")){
-                            disp.setText("");
-							/*op1 = op1 + op2;*/
-                            disp.setText("Result : " + Float.toString(op1));
-                        }
-                        else if(optr.equals("-")){
-                            disp.setText("");/*
-							op1 = op1 - op2;*/
-                            disp.setText("Result : " + Float.toString(op1));
-                        }
-                        else if(optr.equals("*")){
-                            disp.setText("");/*
-							op1 = op1 * op2;*/
-                            disp.setText("Result : " + Float.toString(op1));
-                        }
-                        else if(optr.equals("/")){
-                            disp.setText("");/*
-							op1 = op1 / op2;*/
-                            disp.setText("Result : " + Float.toString(op1));
-                        }
-                    }
-                    else{
+            case R.id.equal:
+                flag=1;
+                if(disp.getText().toString().trim().length() <= 0)
+                    return;
+                 else
+                if(!optr.equals(null)){
                         operation();
-                    }
                 }
                 break;
         }

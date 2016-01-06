@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView txt = (TextView) findViewById(R.id.custom_font);
+        //TextView txt = (TextView) findViewById(R.id.custom_font);
         //Typeface font = Typeface.createFromAsset(getAssets(), "BrockScript.ttf"); Add custom font
         //txt.setTypeface(font);
 
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // .... other stuff in my onResume ....
         this.doubleBackToExitPressedOnce = false;
     }
 
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addDrawerItems() {
-        String[] osArray = {"Cash Flow", "Eco Feed","Goals and Targets","Trends","Reminders"};
 
         myAdapter MyAdapter = new myAdapter(this);
         mDrawerList.setAdapter(MyAdapter);

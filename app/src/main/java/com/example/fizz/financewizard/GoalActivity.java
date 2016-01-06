@@ -165,7 +165,7 @@ public class GoalActivity extends AppCompatActivity {
         }
         //close database
         dataBase.close();
-        Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Saved successfully", Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -220,7 +220,7 @@ public class GoalActivity extends AppCompatActivity {
                 }else{// if slots found blank, pop an alert
                     AlertDialog.Builder alertBuilder=new AlertDialog.Builder(GoalActivity.this);
                     alertBuilder.setTitle("Incomplete Data");
-                    alertBuilder.setMessage("Please complete the form.");
+                    alertBuilder.setMessage("Please complete the form");
                     alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {

@@ -205,7 +205,6 @@ public class GoalInfoActivity extends AppCompatActivity {
             case R.id.save_goal_Pay:
                 break;
             case R.id.action_settings:
-                Toast.makeText(getApplication(), "You clicked Settings", Toast.LENGTH_SHORT);
                 break;
         }
 
