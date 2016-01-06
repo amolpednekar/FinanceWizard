@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class Goals_MainActivity extends AppCompatActivity {
     protected ArrayAdapter<String> mAdapter;
     protected ActionBarDrawerToggle mDrawerToggle;
     protected String mActivityTitle;
+    RelativeLayout totalG;
     protected static int position;
 
     @Override
@@ -72,6 +74,16 @@ public class Goals_MainActivity extends AppCompatActivity {
         addDrawerItems();
         setupDrawer();
 
+        totalG = (RelativeLayout)findViewById(R.id.viewCashFlowSlot);
+        totalG.setOnClickListener(new AdapterView.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                Intent i = new Intent(getApplicationContext(), GoalDisActivity.class);
+                i.putExtra("update", false);
+                startActivity(i);
+            }
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 

@@ -35,6 +35,7 @@ private final String ns = null;
         }
 
         private List<rss_item> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+
             parser.require(XmlPullParser.START_TAG, null, "rss");
             String title = null;
             String link = null;
@@ -44,7 +45,9 @@ private final String ns = null;
             //List<List<String>> stuff = new ArrayList<List<String>>();
             //parser.next();
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                //if (flag==1){break;}
+                  //  Toast.makeText(mContext,"count"+count,Toast.LENGTH_SHORT).show();continue;}
+                if (parser.getEventType() != XmlPullParser.START_TAG ) {
                    // Toast.makeText(mContext, "Count=" + count,  Toast.LENGTH_SHORT).show();
                     continue;
                 }

@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
-
+//IntentService is a base class for Services that handle asynchronous requests
 public class rss_service extends IntentService {
 
     public static final String ITEMS = "items";
@@ -37,7 +37,7 @@ public class rss_service extends IntentService {
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable(ITEMS, (Serializable) rssItems);
-        ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
+        ResultReceiver receiver = intent.getParcelableExtra(RECEIVER); //Receive data from intent
         receiver.send(0, bundle);
     }
 

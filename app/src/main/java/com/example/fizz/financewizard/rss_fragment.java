@@ -26,14 +26,14 @@ public class rss_fragment extends Fragment implements OnItemClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        setRetainInstance(true); //automatically save the fragments state across screen configuration changes.
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
-            view = inflater.inflate(R.layout.rss_fragment_layout, container, false);
-           progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+            view = inflater.inflate(R.layout.rss_fragment_layout, container, false); //Load listView
+           progressBar = (ProgressBar) view.findViewById(R.id.progressBar); //Load Progressbar
             listView = (ListView) view.findViewById(R.id.listView);
             listView.setOnItemClickListener(this);
             startService();

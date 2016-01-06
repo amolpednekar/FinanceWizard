@@ -18,7 +18,7 @@
 
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
-            android:launchMode="singleTask">3
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -64,6 +64,7 @@
         </activity>
         <activity
             android:name=".GoalInfoActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_goal_info" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

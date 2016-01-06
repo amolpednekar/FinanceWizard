@@ -47,7 +47,7 @@ public class RssMainActivity extends AppCompatActivity {
             frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
             mDrawerList = (ListView)findViewById(R.id.navList);
             mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-            mActivityTitle = "RSS Feed";//string
+            mActivityTitle = "Eco Feed";//string
 
             addDrawerItems();
             setupDrawer();
@@ -119,11 +119,11 @@ public class RssMainActivity extends AppCompatActivity {
     // Initialize RSS Feed
 
     public void addRssFragment() {
-        rss_fragment fragment = new rss_fragment();
+        rss_fragment fragment = new rss_fragment(); //rss_fragment.java
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        transaction.add(R.id.fragment_container, fragment);
+        transaction.add(R.id.fragment_container, fragment); //Loads frameLayout, rss_main will serve as the host for the fragment.
         transaction.commit();
     }
 
