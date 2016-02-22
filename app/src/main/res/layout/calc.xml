@@ -14,7 +14,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/num"
-        android:id = "@+id/display"/>
+        android:id = "@+id/display"
+        android:textIsSelectable="true"/>
     <LinearLayout android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

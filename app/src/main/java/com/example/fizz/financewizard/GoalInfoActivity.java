@@ -2,20 +2,22 @@ package com.example.fizz.financewizard;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class GoalInfoActivity extends AppCompatActivity {
-    TextView GoalInfoTitle, Payment, Expense, Savings, DailyAmount, WeeklyAmount, MonthlyAmount, DaysToGoal;
-    public static String GoalId, amount;
+    TextView GoalInfoTitle, Payment, Expense, Savings, DailyAmount, WeeklyAmount, MonthlyAmount, DaysToGoal, CategoryInfo;
+    public static String GoalId, amount, CategoryId;
     private DbHelperGoal iHelper;
     private SQLiteDatabase iDataBase;
     @Override
@@ -24,6 +26,10 @@ public class GoalInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_goal_info);
 
         GoalId = getIntent().getExtras().getString("ID");
+        if(GoalId == null){
+            GoalId = String.valueOf(getIntent().getExtras().getInt("ID"));
+        }
+
         //Toast.makeText(getBaseContext(), GoalId, Toast.LENGTH_SHORT).show();//Working, parser working successfully
         GoalInfoTitle = (TextView)findViewById(R.id.GoalInfoTitle1);
         Payment = (TextView)findViewById(R.id.PaymentsInfo2);
@@ -33,6 +39,7 @@ public class GoalInfoActivity extends AppCompatActivity {
         WeeklyAmount = (TextView)findViewById(R.id.weeklyInfoView1);
         MonthlyAmount = (TextView)findViewById(R.id.monthlyInfoView1);
         DaysToGoal = (TextView)findViewById(R.id.deadlineInfo1);
+        CategoryInfo = (TextView)findViewById(R.id.categoryView2);
         displayData();
     }
 
@@ -44,7 +51,7 @@ public class GoalInfoActivity extends AppCompatActivity {
 
     //days_of_months(Jan,Feb,Mar,April,May,June,July,Aug,Sept,Oct,Nov,Dec)
     ArrayList<Integer> mon = new ArrayList<Integer>(Arrays.asList(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
-    ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"));
+    ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan","Feb","Mar","Apr","May","June","July","Aug","Sept","Oct","Nov","Dec"));
 
     // calculates days from months
     int calMonthDay(int m,int y){//calMonthDay(month,year)
@@ -103,6 +110,7 @@ public class GoalInfoActivity extends AppCompatActivity {
                 Payment.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)));
                 Expense.setText("-" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
                 Savings.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE))));
+                CategoryInfo.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CATEGORY)));
                 //wordList.put(DbHelperGoal.ALT_EXPENSE,mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)));
                 //Toast.makeText(getBaseContext(),monStr.get(mCursor.getColumnIndex(DbHelperGoal.MONTH)),Toast.LENGTH_SHORT).show();
                 //Displays goal amount && currency
@@ -116,12 +124,12 @@ public class GoalInfoActivity extends AppCompatActivity {
                 float dailyAmount=0;
 
                 //Get current date
-                String curDate = String.valueOf(curDay)+"/"+ String.valueOf(curMonth)+"/"+ String.valueOf(curYear);
+                String curDate = String.valueOf(curDay)+"/"+String.valueOf(curMonth)+"/"+String.valueOf(curYear);
                 //String goalDate=String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DATE)));
 
                 //Get goal date
                 //String goalDate = String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH)))+"/"+String.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
-                String goalDate = String.valueOf(goalDay)+"-"+monStr.get(goalMonth-1)+"-"+ String.valueOf(goalYear);
+                String goalDate = String.valueOf(goalDay)+"-"+monStr.get(goalMonth-1)+"-"+String.valueOf(goalYear);
                 int count = 0;
                 //Fetches the date and Time from system, hence not used
                 if(curYear <= goalYear) {
@@ -157,8 +165,9 @@ public class GoalInfoActivity extends AppCompatActivity {
                 }
 
                 if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_DAY)))==true && count>0){
-                    DailyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+ String.valueOf(Math.ceil(dailyAmount))+"/Day");
+                    DailyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount))+"/Day");
                 }else {
+                    //DailyAmount.setVisibility(View.INVISIBLE);
                     DailyAmount.setText("-/Day");
                 }
 
@@ -166,13 +175,15 @@ public class GoalInfoActivity extends AppCompatActivity {
                     int countW = calDateWeek(curMonth,curYear,goalMonth,goalYear);
                     WeeklyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY)) + " " + String.valueOf(Math.ceil(dailyAmount * count / countW)) + "/Week");
                 }else{
+                    //WeeklyAmount.setVisibility(View.INVISIBLE);
                     WeeklyAmount.setText("-/Week");
                 }
 
                 if(Boolean.valueOf(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.BREAKDOWN_MONTH)))==true && count >= 28){
                     int countM = calDateMonth(curMonth,curYear,goalMonth,goalYear);
-                    MonthlyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+ String.valueOf(Math.ceil(dailyAmount * count / countM))+"/Month");
+                    MonthlyAmount.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY))+" "+String.valueOf(Math.ceil(dailyAmount * count / countM))+"/Month");
                 }else {
+                    //MonthlyAmount.setVisibility(View.INVISIBLE);
                     MonthlyAmount.setText(String.valueOf("-/Month"));
                 }
                 //DaysToGoal.setText(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY)) + "/" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.MONTH)) + "/" + mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.YEAR)));
@@ -202,9 +213,13 @@ public class GoalInfoActivity extends AppCompatActivity {
             return true;
         }*/
         switch(id){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.save_goal_Pay:
                 break;
             case R.id.action_settings:
+                Toast.makeText(getApplication(),"You clicked Settings",Toast.LENGTH_SHORT);
                 break;
         }
 

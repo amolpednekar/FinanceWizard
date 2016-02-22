@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
            case 2:
                 startActivity(new Intent(this, Goals_MainActivity.class));
                 break;
-           /* case 3:
-                startActivity(new Intent(this, Item4Activity.class));
+            case 3:
+                startActivity(new Intent(this, Trends_MainActivity.class));
                 break;
-            case 4:
+            /*case 4:
                 startActivity(new Intent(this, Item5Activity.class));
                 break;*/
 

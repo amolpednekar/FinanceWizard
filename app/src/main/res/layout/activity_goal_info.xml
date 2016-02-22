@@ -210,5 +210,31 @@
                 android:id="@+id/deadlineInfo1"
                 android:layout_below="@+id/SubTitleInfoDeadline1"
                 android:layout_centerHorizontal="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Category : "
+                android:textStyle="bold"
+                android:id="@+id/categoryView1"
+                android:paddingTop="20dp"
+                android:textSize="20dp"
+                android:layout_below="@+id/deadlineInfo1"
+                android:layout_alignLeft="@+id/SubTitleInfoDeadline1"
+                android:layout_alignStart="@+id/SubTitleInfoDeadline1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="-"
+                android:id="@+id/categoryView2"
+                android:textSize="20dp"
+                android:layout_alignBottom="@+id/categoryView1"
+                android:layout_alignRight="@+id/deadlineInfo1"
+                android:layout_alignEnd="@+id/deadlineInfo1"
+                android:layout_toRightOf="@+id/categoryView1"
+                android:layout_toEndOf="@+id/categoryView1" />
+
         </RelativeLayout>
     </RelativeLayout>
