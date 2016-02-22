@@ -164,3 +164,4 @@ public class GoalAdapter  extends BaseAdapter {
         ProgressBar progressGoal;
     }
 }
+//end

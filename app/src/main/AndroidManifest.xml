@@ -71,7 +71,7 @@
                 android:value="com.example.fizz.financewizard.GoalDisActivity" />
         </activity>
         <activity android:name=".Trends_MainActivity"
-            android:label="Trends" >
+            android:label="User Trends" >
 
         </activity>
 

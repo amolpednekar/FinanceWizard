@@ -230,3 +230,4 @@ public class Trends_MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+//end

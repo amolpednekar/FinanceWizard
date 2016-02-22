@@ -40,3 +40,4 @@ public class DbHelperGoal extends SQLiteOpenHelper {
         onCreate(db);
     }
 }
+//end

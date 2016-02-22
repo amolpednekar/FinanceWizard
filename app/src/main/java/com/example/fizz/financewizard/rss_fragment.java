@@ -82,3 +82,4 @@ public class rss_fragment extends Fragment implements OnItemClickListener {
         startActivity(intent);
     }
 }
+//end

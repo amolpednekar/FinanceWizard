@@ -349,4 +349,4 @@ public class RssMainActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }}
 
-//NavigationDrawer Code End
+//NavigationDrawer Code Ends

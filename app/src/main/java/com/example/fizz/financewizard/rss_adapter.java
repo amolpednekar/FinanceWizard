@@ -52,3 +52,4 @@ public class rss_adapter extends BaseAdapter {
         TextView itemTitle;
     }
 }
+//end
