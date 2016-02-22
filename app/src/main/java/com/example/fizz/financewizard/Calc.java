@@ -17,6 +17,7 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
     EditText disp;
     float op1;
     float op2;
+    float op3;
     String optr="+";
     int flag=0;
 
@@ -88,7 +89,9 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
         if(optr.equals("+")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
+            Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
             op1 = op1 + op2;
+            Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
             disp.setText(Float.toString(op1));
         }
         else if(optr.equals("-")){
@@ -100,8 +103,10 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
         else if(optr.equals("*")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
+            Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
             op1 = op1 * op2;
-            disp.setText(Float.toString(op1));
+            Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
+            disp.setText( Float.toString(op1));
         }
         else if(optr.equals("/")){
             op2 = Float.parseFloat(disp.getText().toString());
@@ -109,11 +114,14 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
             op1 = op1 / op2;
             disp.setText(Float.toString(op1));
         }
+
         optr="+";
+
     }
     @Override
     public void onClick(View arg0) {
         Editable str =  disp.getText();
+
         switch(arg0.getId()){
 
             case R.id.decimal:
@@ -121,86 +129,116 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 disp.setText(str);
                 break;
             case R.id.zero:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("0");
+                    flag=0;
                 }
-                str = str.append(zero.getText());
-                disp.setText(str);
+                else {
+                    str = str.append(zero.getText());
+                    disp.setText(str);}
                 break;
             case R.id.one:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("1");
+                    flag=0;
                 }
-                str = str.append(one.getText());
-                disp.setText(str);
+                else {
+                    str = str.append(one.getText());
+                    disp.setText(str);
+                }
                 break;
             case R.id.two:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("2");
+                    flag=0;
                 }
-                str = str.append(two.getText());
-                disp.setText(str);
+                else{
+                    str = str.append(two.getText());
+                    disp.setText(str);}
                 break;
             case R.id.three:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("3");
+                    flag=0;
                 }
-                str = str.append(three.getText());
-                disp.setText(str);
+                else {
+                    str = str.append(three.getText());
+                    disp.setText(str);}
                 break;
             case R.id.four:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("4");
+                    flag=0;
                 }
-                str = str.append(four.getText());
-                disp.setText(str);
+                else {
+                    str = str.append(four.getText());
+                    disp.setText(str);}
                 break;
             case R.id.five:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("5");
+                    flag=0;
                 }
-                str = str.append(five.getText());
-                disp.setText(str);
+                else
+                {str = str.append(five.getText());
+                disp.setText(str);}
                 break;
             case R.id.six:
-                if(op2 != 0){
+                if(flag==1) {
+                    op1 = 0;
                     op2 = 0;
-                    disp.setText("");
+                    disp.setText("6");
+                    flag = 0;
                 }
-                str = str.append(six.getText());
-                disp.setText(str);
+                else{
+                    str = str.append(six.getText());
+                disp.setText(str);}
                 break;
             case R.id.seven:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("7");
+                    flag=0;
                 }
-                str = str.append(seven.getText());
-                disp.setText(str);
+                else{
+                    str = str.append(seven.getText());
+                disp.setText(str);}
                 break;
             case R.id.eight:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("8");
+                    flag=0;
                 }
-                str = str.append(eight.getText());
-                disp.setText(str);
+                else{
+                    str = str.append(eight.getText());
+                disp.setText(str);}
 
                 break;
             case R.id.nine:
-                if(op2 != 0){
-                    op2 = 0;
-                    disp.setText("");
+                if(flag==1){
+                    op1=0;
+                    op2=0;
+                    disp.setText("9");
+                    flag=0;
                 }
-                str = str.append(nine.getText());
-                disp.setText(str);
-
+                else{
+                    str = str.append(nine.getText());
+                disp.setText(str);}
                 break;
             case R.id.Reset:
                 op1 = 0;
@@ -222,9 +260,14 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
-                    op1 = op1 + op2;
-                    disp.setText(Float.toString(op1));
+                    Toast.makeText(this, "op1 ,op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    op3 = op1 + op2;
+                    Toast.makeText(this, "op1, op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    op1=op3;
+                    Toast.makeText(this, "op1, op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    //disp.setText("Result1:"+Float.toString(op1));
                 }
+
                 break;
             case R.id.sub:
                 optr = "-";
@@ -241,7 +284,7 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 - op2;
-                    disp.setText(Float.toString(op1));
+                    // disp.setText("Result1:"+Float.toString(op1));
                 }
                 break;
             case R.id.mul:
@@ -258,8 +301,12 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
-                    op1 = op1 * op2;
-                    disp.setText(Float.toString(op1));
+                    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    op3 = op1 * op2;
+                    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    op1=op3;
+                    Toast.makeText(this, "op1 ,op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                    // disp.setText("Result1:"+Float.toString(op1));
                 }
                 break;
             case R.id.div:
@@ -277,19 +324,19 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
                     op1 = op1 / op2;
-                    disp.setText(Float.toString(op1));
                 }
                 break;
             case R.id.equal:
                 flag=1;
+                Toast.makeText(this, " hello ", Toast.LENGTH_SHORT).show();
                 if(disp.getText().toString().trim().length() <= 0)
                     return;
                 else
                 if(!optr.equals(null)){
-                   /* if(op2 != 0){
+                    /*if(op2 != 0){
                         if(optr.equals("+")){
                             disp.setText("");
-							op1 = op1 + op2;
+							/*op1 = op1 + op2;
                             disp.setText("Result1:"+Float.toString(op1));
                         }
                         else if(optr.equals("-")){
@@ -310,7 +357,7 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                     }
                     else{*/
                     operation();
-                    //}
+                    // }
                 }
                 break;
         }
