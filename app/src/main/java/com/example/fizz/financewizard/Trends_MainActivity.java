@@ -1,3 +1,4 @@
+
 package com.example.fizz.financewizard;
 
 import android.content.ContentValues;
@@ -27,9 +28,15 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+
 /**
  * Created by Simeon on 17/02/2016.
  */
+
+
+
+
 public class Trends_MainActivity extends AppCompatActivity {
 
     private FrameLayout mainLayout;
@@ -53,7 +60,7 @@ public class Trends_MainActivity extends AppCompatActivity {
         //abc=(Button)findViewById(R.id.testdata);
         dbhelp=new DbHelperCategory(this);
 
-        /*abc.setOnClickListener(new View.OnClickListener() {
+/*        abc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ContentValues cont = new ContentValues();
@@ -63,6 +70,9 @@ public class Trends_MainActivity extends AppCompatActivity {
                 obj_db.close();
             }
         });*/
+
+
+
         obj_db=dbhelp.getReadableDatabase();
         chart_cursor=  obj_db.rawQuery("SELECT * FROM "+dbhelp.TABLE_NAME,null);
 
@@ -107,9 +117,11 @@ public class Trends_MainActivity extends AppCompatActivity {
         }
         mCursor.close();
 
-        /*for (i=0;i<cat.size();i++){
+
+for (i=0;i<cat.size();i++){
             Toast.makeText(getApplicationContext(),cat.get(i), Toast.LENGTH_SHORT).show();
-        }*/
+        }
+
 
         mainLayout=(FrameLayout)findViewById(R.id.mainLayout);
 
@@ -118,7 +130,7 @@ public class Trends_MainActivity extends AppCompatActivity {
         mainLayout.setBackgroundColor(Color.WHITE);
 
         mChart.setUsePercentValues(true);
-        mChart.setDescription("Smartphone Market shares");
+        mChart.setDescription("Categories");
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
@@ -169,7 +181,7 @@ public class Trends_MainActivity extends AppCompatActivity {
                 xVals.add(cat.get(i));
 
         //create pie data set
-        PieDataSet dataSet=new PieDataSet(yValsl,"Market Shares");
+        PieDataSet dataSet=new PieDataSet(yValsl," ");
         dataSet.setSliceSpace(2);
         dataSet.setSelectionShift(10);
 

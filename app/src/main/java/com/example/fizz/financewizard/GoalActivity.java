@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -119,6 +120,7 @@ public class GoalActivity extends AppCompatActivity {
         currentYear = c.get(Calendar.YEAR);
         currentMonth = c.get(Calendar.MONTH);
         currentDay = c.get(Calendar.DAY_OF_MONTH);
+
 
     }
 
@@ -268,6 +270,9 @@ public class GoalActivity extends AppCompatActivity {
             case android.R.id.home://for back button " < " @ action Menu bar
                 onBackPressed();
                 return true;
+            case R.id.calculator:
+                startActivity(new Intent(this, Calc.class));
+                return true;
             case R.id.save_goal://save data
                 goalG=(EditText)findViewById(R.id.goalEntry1);
                 amountG=(EditText)findViewById(R.id.amountEntry2);
@@ -312,7 +317,6 @@ public class GoalActivity extends AppCompatActivity {
                     });
                     alertBuilder.create().show();
                 }
-
                 return true;
                 case R.id.categoriesNewG://Category
                     LayoutInflater li = LayoutInflater.from(GoalActivity.this);
@@ -390,4 +394,3 @@ public class GoalActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-//end

@@ -201,7 +201,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                             } while (mCursor.moveToNext());
                                         }
                                         int dayVal = Integer.valueOf(dayG), monthVal = Integer.valueOf(monthG), yearVal = Integer.valueOf(yearG);
-                                        String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", " + DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
+                                        String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", "+ DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                         dataBase.execSQL(strSQL);
                                         Toast.makeText(getApplication(), dayValue.toString(), Toast.LENGTH_SHORT).show();
                                         //PayValue.setText("");
@@ -237,12 +237,11 @@ public class GoalDisActivity extends AppCompatActivity {
                                 PayValue.requestFocus();
                                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
-                                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        check = 0;
-                                        val = 0;
+                                        check = 0; val = 0;
                                         dataBase = gHelper.getWritableDatabase();
-                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
+                                        Cursor mCursor = dataBase.rawQuery("SELECT * FROM "+ DbHelperGoal.TABLE_NAME+" WHERE "+DbHelperGoal.KEY_ID+"="+keyId.get(arg2), null);
                                         if (mCursor.moveToFirst()) {
                                             do {
                                                 moneyValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT));
@@ -250,8 +249,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                                 check = mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE));
                                             } while (mCursor.moveToNext());
                                         }
-                                        val = Float.valueOf(PayValue.getText().toString()) + Float.valueOf(moneyValue);
-                                        if (val - check <= Float.valueOf(dbExpAmount) && val - check >= 0) {// within the Target Amount
+                                        val = Float.valueOf(PayValue.getText().toString())+ Float.valueOf(moneyValue);
+                                        if(val-check <= Float.valueOf(dbExpAmount) && val-check >= 0) {// within the Target Amount
                                             String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                             dataBase.execSQL(strSQL);
                                             Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
@@ -260,7 +259,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                             //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                             //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                                             dialog.cancel();
-                                        } else if (val - check > Float.valueOf(dbExpAmount) && val - check >= 0) {// if client collects extra amount for that goal, the Target amount extends
+                                        }else if(val-check > Float.valueOf(dbExpAmount) && val-check >= 0){// if client collects extra amount for that goal, the Target amount extends
                                             build2 = new AlertDialog.Builder(GoalDisActivity.this);
                                             build2.setTitle("Confirmation");
                                             build2.setMessage("The Payment Amount is exceeding the Target Amount. Do you want to increment the Target amount to the new value?");
@@ -303,8 +302,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                             alert2.show();
                                             alert2.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-                                        } else {
-                                            Toast.makeText(getApplication(), "Sorry, the amount is beyond the Target Amount", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(getApplication(),"Sorry, the amount is beyond the Target Amount", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -332,8 +331,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                 //PayValue.isFocused();
                                 build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        check = 0;
-                                        val = 0;
+                                        check = 0; val = 0;
                                         dataBase = gHelper.getWritableDatabase();
                                         Cursor mCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2), null);
                                         if (mCursor.moveToFirst()) {
@@ -345,7 +343,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                         }
 
                                         val = Float.valueOf(ExpValue.getText().toString()) + Float.valueOf(moneyValue);// TextBox + db value
-                                        if (check - val <= Float.valueOf(dbExpAmount) && check - val >= 0) {
+                                        if(check-val <= Float.valueOf(dbExpAmount) && check-val >= 0) {
                                             String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_EXPENSE + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                             dataBase.execSQL(strSQL);
                                             ExpValue.setText("");
@@ -464,6 +462,14 @@ public class GoalDisActivity extends AppCompatActivity {
         }
     };
 
+    /*@Override
+    protected void onNewIntent(Intent intent) {// used for FLAG_ACTIVITY_SINGLE_TOP flag
+        super.onNewIntent(intent);
+        // getIntent() should always return the most recent
+        setIntent(intent);
+        onReceive("5");
+    }*/
+
     @Override
     protected void onResume() {
         displayData();
@@ -492,10 +498,10 @@ public class GoalDisActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getApplicationContext(), delGoal + " " + delDate + " of amount " + delAmount + " " + " is deleted.", Toast.LENGTH_LONG).show();
                             dataBase.delete(DbHelperGoal.TABLE_NAME, DbHelperGoal.KEY_ID + "=" + keyIndex, null);
-                            displayData();
-                            dialog.cancel();
                             myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                             myGoalNotifyMgr.cancel(keyIndex);
+                            displayData();
+                            dialog.cancel();
                         }
                     });
                     build.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -559,6 +565,8 @@ public class GoalDisActivity extends AppCompatActivity {
                         values.put(DbHelperGoal.ALT_PAYMENT, String.valueOf(val));
                         Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                         //PayValue.setText("");
+                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        myGoalNotifyMgr.cancel(keyIndex);
                         displayData();
                         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -573,6 +581,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 dataBase.execSQL(strSQL);
                                 Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                 //PayValue.setText("");
+                                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                myGoalNotifyMgr.cancel(keyIndex);
                                 displayData();
                                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -585,6 +595,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 dataBase.execSQL(strSQL);
                                 Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                 //PayValue.setText("");
+                                myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                myGoalNotifyMgr.cancel(keyIndex);
                                 displayData();
                                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
@@ -988,27 +1000,27 @@ public class GoalDisActivity extends AppCompatActivity {
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                     stackBuilder.addParentStack(GoalDisActivity.class);
                     stackBuilder.addNextIntent(resultIntent);
-                    resultPendingIntent =  stackBuilder.getPendingIntent(0,0);
+                    resultPendingIntent =  stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder delStackBuilder = TaskStackBuilder.create(this);
                     delStackBuilder.addParentStack(MainActivity.class);
                     delStackBuilder.addNextIntent(deleteIntent);
-                    deletePendingIntent =  delStackBuilder.getPendingIntent(1,0);
+                    deletePendingIntent =  delStackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder extStackBuilder = TaskStackBuilder.create(this);
                     extStackBuilder.addParentStack(MainActivity.class);
                     extStackBuilder.addNextIntent(extendIntent);
-                    extendPendingIntent =  extStackBuilder.getPendingIntent(2,0);
+                    extendPendingIntent =  extStackBuilder.getPendingIntent(2,PendingIntent.FLAG_UPDATE_CURRENT);//0);
 
                     TaskStackBuilder saveStackBuilder = TaskStackBuilder.create(this);
                     saveStackBuilder.addParentStack(MainActivity.class);
                     saveStackBuilder.addNextIntent(saveIntent);
-                    savePendingIntent =  saveStackBuilder.getPendingIntent(3,0);
+                    savePendingIntent =  saveStackBuilder.getPendingIntent(3,PendingIntent.FLAG_UPDATE_CURRENT);//0);
                 } else {
-                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);
-                    deletePendingIntent = PendingIntent.getActivity(this, 1, deleteIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
-                    extendPendingIntent = PendingIntent.getActivity(this, 2, extendIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
-                    savePendingIntent = PendingIntent.getActivity(this, 3, saveIntent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
+                    deletePendingIntent = PendingIntent.getActivity(this, 1, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);// PendingIntent.FLAG_UPDATE_CURRENT);
+                    extendPendingIntent = PendingIntent.getActivity(this, 2, extendIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
+                    savePendingIntent = PendingIntent.getActivity(this, 3, saveIntent, PendingIntent.FLAG_UPDATE_CURRENT);// 0);
                 }
 
 //                resultPendingIntent = PendingIntent.getActivity(this, 123, resultIntent, 0);//PendingIntent.FLAG_UPDATE_CURRENT);
@@ -1037,8 +1049,8 @@ public class GoalDisActivity extends AppCompatActivity {
                 gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 14);//set the alarm time
-                calendar.set(Calendar.MINUTE, 57);
+                calendar.set(Calendar.HOUR_OF_DAY, 21);//set the alarm time
+                calendar.set(Calendar.MINUTE, 42);
                 calendar.set(Calendar.SECOND, 0);
                 gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
                 //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
@@ -1092,7 +1104,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 // opens the resultPendingIntent
                 AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 // open the activity every 24 hours
-                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 3 * 24 * 60 * 60 * 1000 , viewPendingIntent);
+                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000 , viewPendingIntent);
                 //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , viewPendingIntent);
 
                 gBuilder.setAutoCancel(true);
@@ -1126,6 +1138,9 @@ public class GoalDisActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
+            case R.id.calculator:
+                startActivity(new Intent(this,Calc.class));
+                return true;
             case R.id.categoriesNewGD:
                 LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
                 View promptsCategoryView = li.inflate(R.layout.category_layout, null);
@@ -1173,4 +1188,3 @@ public class GoalDisActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-//end
