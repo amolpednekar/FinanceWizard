@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class rss_fragment extends Fragment implements OnItemClickListener {
     private ProgressBar progressBar;
     private ListView listView;
     private View view;
+    //private GridView gv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class rss_fragment extends Fragment implements OnItemClickListener {
             view = inflater.inflate(R.layout.rss_fragment_layout, container, false); //Load listView
            progressBar = (ProgressBar) view.findViewById(R.id.progressBar); //Load Progressbar
             listView = (ListView) view.findViewById(R.id.listView);
+            //gv=(GridView)view.findViewById(R.id.grid_view);
             listView.setOnItemClickListener(this);
             startService();
         } else {

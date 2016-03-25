@@ -24,6 +24,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class RssMainActivity extends AppCompatActivity {
         if (!isOnline(this)) {
             setContentView(R.layout.rss_main);
             frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
+           // gv = (GridView)findViewById(R.id.grid_view);
             mDrawerList = (ListView)findViewById(R.id.navList);
             mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
             mActivityTitle = "Eco Feed";//string
@@ -59,10 +62,10 @@ public class RssMainActivity extends AppCompatActivity {
             if (savedInstanceState == null) {
                 setContentView(R.layout.rss_main);
                 frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
+                //gv = (GridView)findViewById(R.id.grid_view);
                 mDrawerList = (ListView)findViewById(R.id.navList);
                 mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
                 mActivityTitle = "Eco Feed";//string
-
                 addDrawerItems();
                 setupDrawer();
 
@@ -190,7 +193,8 @@ public class RssMainActivity extends AppCompatActivity {
     public void refresh_feed()
     {
         setContentView(R.layout.rss_main);
-        frameLayout = (FrameLayout)findViewById(R.id.fragment_container);
+        //gv = (GridView)findViewById(R.id.grid_view);
+        frameLayout=(FrameLayout)findViewById(R.id.fragment_container);
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
         mActivityTitle = "Eco Feed";//string

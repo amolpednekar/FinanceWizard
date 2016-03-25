@@ -6,7 +6,8 @@
         android:id="@+id/change_feed"
         android:orderInCategory="100"
         android:icon="@drawable/edit_feed"
-        app:showAsAction="always|withText" />
+        app:showAsAction="always|withText"
+        android:title="edit" />
     <item
         android:id="@+id/refresh_rss"
         android:icon="@drawable/refresh_feed"

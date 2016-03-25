@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +41,17 @@ public class MainActivity extends AppCompatActivity {
     protected String mActivityTitle;
     protected static int position;
 
+    protected RelativeLayout mbank;
+    public TextView cib;
+    DatabaseHandler dbHand;
+    SQLiteDatabase db;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.cashflow_main);
         //TextView txt = (TextView) findViewById(R.id.custom_font);
         //Typeface font = Typeface.createFromAsset(getAssets(), "BrockScript.ttf"); Add custom font
         //txt.setTypeface(font);
@@ -52,18 +61,43 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
         mActivityTitle = "Finance Wizard";//string
 
+
         addDrawerItems();
         setupDrawer();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        mbank=(RelativeLayout)findViewById(R.id.cardview_bank);
+        mbank.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), SmsActivity.class);
+                startActivity(i);
+            }
 
+        });
+
+        cib=(TextView)findViewById(R.id.bank_amount);
+        countTotal();
     }
 
+    public void countTotal(){
+        dbHand=new DatabaseHandler(this.getBaseContext());
+        db=dbHand.getWritableDatabase();
+        Cursor mcursor = db.rawQuery("SELECT * FROM "+DatabaseHandler.TABLE_NAME3,null);
+        float total=0;
+        if(mcursor.moveToFirst()) {
+            do {
+                total += Float.valueOf(mcursor.getString(mcursor.getColumnIndex(DatabaseHandler.TOTAL)));
+            } while (mcursor.moveToNext());
+        }
+        cib.setText(String.valueOf(total));
+    }
     private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onResume() {
+        countTotal();
         super.onResume();
         this.doubleBackToExitPressedOnce = false;
     }

@@ -10,6 +10,12 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <supports-screens
+        android:xlargeScreens="true" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false"/>
@@ -34,6 +40,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+    <!--Sms parser-->
+        <activity
+            android:name=".SmsActivity"
+            android:label="Cash flow" >
+        </activity>
+        <receiver
+            android:name=".SmsBroadcastReceiver"
+            android:exported="true" >
+            <intent-filter android:priority="999" >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
         <!--Manifest for RSS-->
         <activity
             android:name=".RssMainActivity"

@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
 
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
         android:id="@+id/content_frame"
@@ -43,6 +44,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
         android:background="#ffeeeeee"
-        android:divider="@color/divider"
-        android:dividerHeight="1dp"/>
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
 </android.support.v4.widget.DrawerLayout>
