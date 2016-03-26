@@ -4,24 +4,13 @@
     android:layout_height="fill_parent" android:id="@+id/MainLayout"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="SMS Module"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
+
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/UserInput"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/submit"
-            android:text="Home"/>
 
     </LinearLayout>
 

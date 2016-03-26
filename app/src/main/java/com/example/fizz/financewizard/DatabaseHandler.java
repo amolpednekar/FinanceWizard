@@ -243,9 +243,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 deb+=cursor.getString(3);
                 tot+=cursor.getString(4);
                 Entry1+="\n "+acc+
-                        "\n CREDITED : "+cre+
-                        "\n DEBITED : "+deb+
-                        "\n TOTAL : "+tot;
+                        "\n :"+tot+" ";
                 DataList.add(Entry1);
             } while (cursor.moveToNext());
         }
