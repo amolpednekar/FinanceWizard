@@ -28,6 +28,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//API KEY AIzaSyBiht1KNsxYLPgfP73P_Gb72mULFUQV_TY
+//Server key  AIzaSyCUUjovK_G1Q-ak0wV5RPTHuzyywDO5iWA
 
 public class MainActivity extends AppCompatActivity {
     AlertDialog alert1;
@@ -164,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
             case 4:
                 startActivity(new Intent(this, CamMainActivity.class));
                 break;
-
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
             default:
                 break;
         }
@@ -194,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
 
         public myAdapter(Context context){
             this.context = context;

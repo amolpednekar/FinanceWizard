@@ -28,19 +28,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 
 
 /**
@@ -52,12 +39,8 @@ import java.util.Arrays;
 
 public class Trends_MainActivity extends AppCompatActivity {
 
-
-
-    protected FrameLayout frameLayout;
     protected ListView mDrawerList;
     protected DrawerLayout mDrawerLayout;
-    protected ArrayAdapter<String> mAdapter;
     protected ActionBarDrawerToggle mDrawerToggle;
     protected String mActivityTitle;
     protected static int position;
