@@ -64,6 +64,18 @@
         <item>¥ (Yen)</item>
     </string-array>
     <string name="title_activity_goal_info">Goal Information</string>
+    <string-array name="places">
+        <item >ATM</item>
+        <item >Bank</item>
+        <item>Finance</item>
 
 
+        <!--      <item >Cafe</item>
+              <item >Fire-Station</item>
+              <item >Hospital</item>
+              <item >Pharmacy</item>
+              <item >Police</item>
+              <item >Restaurant</item>
+              <item >Shopping Mall</item>-->
+    </string-array>
 </resources>

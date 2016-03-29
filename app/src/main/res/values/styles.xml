@@ -53,4 +53,8 @@
         <!--        <item name="android:minHeight">5dp</item>
                 <item name="android:maxHeight">5dp</item>-->
     </style>
+
+    <style name="MapsTheme" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
 </resources>

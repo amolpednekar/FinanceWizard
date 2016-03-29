@@ -7,7 +7,6 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-
     <item
         android:id="@+id/calculator"
         android:orderInCategory="100"
