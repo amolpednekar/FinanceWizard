@@ -120,6 +120,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         db.UpdateDate(PushTime);
         StartApp=0;
         //arrayAdapter.clear();
+        //arrayAdapter.clear();
 
         //for (int j = 0; j < accountI; j++) {
         //   Val = db.Selected(accountNumbers.get(j));
@@ -149,26 +150,26 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         TableRow tbrow0 = new TableRow(this);
         tbrow0.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         TextView tv0 = new TextView(this);
-        tv0.setText(" Sr.No ");
-        tv0.setTextSize(15);
+        tv0.setText("Sr.No");
+        tv0.setTextSize(12);
         tv0.setTypeface(null, Typeface.BOLD);
         tv0.setTextColor(Color.BLACK);
         tbrow0.addView(tv0);
         TextView tv1 = new TextView(this);
-        tv1.setText("  Status ");
-        tv1.setTextSize(15);
+        tv1.setText("Status");
+        tv1.setTextSize(12);
         tv1.setTypeface(null, Typeface.BOLD);
         tv1.setTextColor(Color.BLACK);
         tbrow0.addView(tv1);
         TextView tv2 = new TextView(this);
-        tv2.setText(" Amount    ");
-        tv2.setTextSize(15);
+        tv2.setText("Amount");
+        tv2.setTextSize(12);
         tv2.setTypeface(null, Typeface.BOLD);
         tv2.setTextColor(Color.BLACK);
         tbrow0.addView(tv2);
         TextView tv3 = new TextView(this);
-        tv3.setText(" TimeStamp  ");
-        tv3.setTextSize(15);
+        tv3.setText("TimeStamp");
+        tv3.setTextSize(12);
         tv3.setTypeface(null, Typeface.BOLD);
         tv3.setTextColor(Color.BLACK);
         tbrow0.addView(tv3);
@@ -190,30 +191,34 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             TableRow tbrow = new TableRow(this);
             tbrow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
             TextView t1v = new TextView(this);
-            t1v.setText("" + smsInfo[1] + " ");
-            t1v.setTextSize(15);
+            t1v.setText(smsInfo[1]);
+            t1v.setTextSize(12);
             t1v.setTextColor(Color.BLACK);
             t1v.setGravity(Gravity.CENTER);
             tbrow.addView(t1v);
             TextView t2v = new TextView(this);
             t2v.setText("  " + smsInfo[2]);
-            t2v.setTextSize(15);
+            t2v.setTextSize(12);
             t2v.setGravity(Gravity.LEFT);
             tbrow.addView(t2v);
-            if(smsInfo[2].equals("Debited"))
+            if(smsInfo[2].equals("Debited")) {
                 t2v.setTextColor(Color.rgb(176, 23, 31));
+            }
             else
+            {
                 t2v.setTextColor(Color.rgb(139, 195, 74));
+            }
+
 
             TextView t3v = new TextView(this);
-            t3v.setText("Rs. " + smsInfo[3] + "    ");
-            t3v.setTextSize(15);
+            t3v.setText("Rs. " + smsInfo[3]);
+            t3v.setTextSize(12);
             t3v.setTextColor(Color.BLACK);
             t3v.setGravity(Gravity.LEFT);
             tbrow.addView(t3v);
             TextView t4v = new TextView(this);
-            t4v.setText("  " + smsInfo[4] + " " + smsInfo[5] + "  ");
-            t4v.setTextSize(15);
+            t4v.setText( smsInfo[4] + "-" + smsInfo[5] );
+            t4v.setTextSize(12);
             t4v.setTextColor(Color.BLACK);
             t4v.setGravity(Gravity.LEFT);
             tbrow.addView(t4v);
@@ -226,7 +231,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             //smsMessagesList.add(Val.get(i));
         }
         try {
-            Toast.makeText(getApplicationContext(),"LoL",Toast.LENGTH_LONG).show();
             //Toast.makeText(getApplicationContext(),smsMessagesList.get(0),Toast.LENGTH_LONG).show();
             //String[] smsMessages = smsMessagesList.get(pos).split("\n");
             String ClickedItem="",Acc="";
@@ -237,7 +241,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
 
 
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),"Try catch block",Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

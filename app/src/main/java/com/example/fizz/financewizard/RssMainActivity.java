@@ -215,7 +215,7 @@ public class RssMainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
 
 
         public myAdapter(Context context){
@@ -328,13 +328,14 @@ public class RssMainActivity extends AppCompatActivity {
             case 2:
                 startActivity(new Intent(this, Goals_MainActivity.class));
                 break;
-            /*case 3:
-                startActivity(new Intent(this, Item4Activity.class));
+            case 3:
+                startActivity(new Intent(this, Trends_MainActivity.class));
                 break;
             case 4:
-                startActivity(new Intent(this, Item5Activity.class));
-                break;*/
-
+                startActivity(new Intent(this, CamMainActivity.class));
+                break;
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
             default:
                 break;
         }

@@ -396,6 +396,9 @@ public class Goals_MainActivity extends AppCompatActivity {
             case 4:
                 startActivity(new Intent(this, CamMainActivity.class));
                 break;
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
+                break;
 
             default:
                 break;
@@ -418,7 +421,7 @@ public class Goals_MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
 
         public myAdapter(Context context){
             this.context = context;

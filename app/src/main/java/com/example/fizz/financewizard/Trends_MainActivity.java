@@ -29,6 +29,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+
 
 /**
  * Created by Simeon on 17/02/2016.
@@ -39,16 +50,22 @@ import android.widget.Toast;
 
 public class Trends_MainActivity extends AppCompatActivity {
 
+
+
+    protected FrameLayout frameLayout;
     protected ListView mDrawerList;
     protected DrawerLayout mDrawerLayout;
+    protected ArrayAdapter<String> mAdapter;
     protected ActionBarDrawerToggle mDrawerToggle;
     protected String mActivityTitle;
     protected static int position;
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trends_main);
+        db = new DatabaseHandler(this);
 
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
@@ -59,6 +76,110 @@ public class Trends_MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        BarChart chart = (BarChart) findViewById(R.id.chart);
+
+        BarData data = new BarData(getXAxisValues(), getDataSet());
+        chart.setData(data);
+        chart.setDescription("My Chart");
+        chart.animateXY(2000, 3000);
+
+        chart.invalidate();
+    }
+
+    ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"));
+
+    //BAR graph code
+    private ArrayList<BarDataSet> getDataSet() {
+        ArrayList<BarDataSet> dataSets = null;
+
+        ArrayList<String> Val = db.Selected3(null);
+
+        Float[] sumCredit = new Float[12], sumDebit = new Float[12];
+        for(int i=0;i<12;i++)
+            sumDebit[i] = sumCredit[i] = 0f;
+
+        Toast.makeText(getApplicationContext(),"size " + String.valueOf(Val.size()),Toast.LENGTH_SHORT).show();
+
+        for(int i=0;i<Val.size();i++){
+            String[] smsInfo = Val.get(i).split(" ");
+            //Toast.makeText(getApplicationContext(),"index " + String.valueOf(Val.size()),Toast.LENGTH_SHORT).show();
+            if(smsInfo[5].equals("2016")){
+                int index = monStr.indexOf(smsInfo[4]);
+                if(monStr.get(index).equals(smsInfo[4])){
+                    if(smsInfo[2].equals("Debited"))
+                        sumDebit[index] += Float.valueOf(smsInfo[3]);
+                    else if(smsInfo[2].equals("Credited"))
+                        sumCredit[index] += Float.valueOf(smsInfo[3]);
+                    //BarEntry v1e1 = new BarEntry(110.000f, index); // Jan
+                }
+            }
+        }
+
+        ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+        ArrayList<BarEntry> valueSet2 = new ArrayList<>();
+
+        for(int i = 0;i < 12;i++){
+            BarEntry vd1 = new BarEntry(sumDebit[i],i);
+            Toast.makeText(getApplicationContext(),"Debit " + String.valueOf(sumDebit[i]),Toast.LENGTH_SHORT).show();
+            valueSet1.add(vd1);
+            BarEntry vc1 = new BarEntry(sumCredit[i],i);
+            Toast.makeText(getApplicationContext(),"Credit " + String.valueOf(sumDebit[i]),Toast.LENGTH_SHORT).show();
+            valueSet2.add(vc1);
+        }
+
+        /*BarEntry v1e1 = new BarEntry(110.000f, 0); // Jan
+        valueSet1.add(v1e1);
+        BarEntry v1e2 = new BarEntry(40.000f, 1); // Feb
+        valueSet1.add(v1e2);
+        BarEntry v1e3 = new BarEntry(60.000f, 2); // Mar
+        valueSet1.add(v1e3);
+        BarEntry v1e4 = new BarEntry(30.000f, 3); // Apr
+        valueSet1.add(v1e4);
+        BarEntry v1e5 = new BarEntry(90.000f, 4); // May
+        valueSet1.add(v1e5);
+        BarEntry v1e6 = new BarEntry(100.000f, 5); // Jun
+        valueSet1.add(v1e6);*/
+
+        /*ArrayList<BarEntry> valueSet2 = new ArrayList<>();
+        BarEntry v2e1 = new BarEntry(150.000f, 0); // Jan
+        valueSet2.add(v2e1);
+        BarEntry v2e2 = new BarEntry(90.000f, 1); // Feb
+        valueSet2.add(v2e2);
+        BarEntry v2e3 = new BarEntry(120.000f, 2); // Mar
+        valueSet2.add(v2e3);
+        BarEntry v2e4 = new BarEntry(60.000f, 3); // Apr
+        valueSet2.add(v2e4);
+        BarEntry v2e5 = new BarEntry(20.000f, 4); // May
+        valueSet2.add(v2e5);
+        BarEntry v2e6 = new BarEntry(80.000f, 5); // Jun
+        valueSet2.add(v2e6);*/
+
+        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "Debited");
+        barDataSet1.setColor(Color.rgb(176, 23, 31));
+        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "Credited");
+        barDataSet2.setColor(Color.rgb(139, 195, 74));
+
+        dataSets = new ArrayList<>();
+        dataSets.add(barDataSet1);
+        dataSets.add(barDataSet2);
+        return dataSets;
+    }
+
+    private ArrayList<String> getXAxisValues() {
+        ArrayList<String> xAxis = new ArrayList<>();
+        xAxis.add("JAN");
+        xAxis.add("FEB");
+        xAxis.add("MAR");
+        xAxis.add("APR");
+        xAxis.add("MAY");
+        xAxis.add("JUN");
+        xAxis.add("JULY");
+        xAxis.add("AUG");
+        xAxis.add("SEPT");
+        xAxis.add("OCT");
+        xAxis.add("NOV");
+        xAxis.add("DEC");
+        return xAxis;
     }
 
 
@@ -84,7 +205,7 @@ public class Trends_MainActivity extends AppCompatActivity {
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
-            /** Called when a drawer has settled in a completely closed state. */
+            /** Called when a drawer has settled in a completely closed stsate. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 getSupportActionBar().setTitle(mActivityTitle);
@@ -114,6 +235,9 @@ public class Trends_MainActivity extends AppCompatActivity {
             case 4:
                 startActivity(new Intent(this, CamMainActivity.class));
                 break;
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
+                break;
 
             default:
                 break;
@@ -142,7 +266,7 @@ public class Trends_MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
 
         public myAdapter(Context context){
             this.context = context;

@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -51,8 +52,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.util.Log;
+import android.view.View;
 
-public class CamMainActivity extends AppCompatActivity {
+
+public class CamMainActivity extends AppCompatActivity implements View.OnClickListener{
     private ArrayList<MyImage> images;
     private ImageAdapter adapter;
     private ListView listView;
@@ -93,6 +99,10 @@ public class CamMainActivity extends AppCompatActivity {
     PendingIntent resultPendingIntent,deletePendingIntent;
     public int NotiId=0;
 
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab,fab1,fab2;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +126,27 @@ public class CamMainActivity extends AppCompatActivity {
                 imageFile.mkdirs();
             }
         }
+
+        fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        fab.setOnClickListener(this);
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeGallery();
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeTakePhoto();
+            }
+        });
 
      /*   if (imageFile.isDirectory()) {
             listFile = imageFile.listFiles();
@@ -513,182 +544,7 @@ public class CamMainActivity extends AppCompatActivity {
 
 
         swipelist.invalidateViews();
-
-       /* swipelist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           final int arg2, final long position) {
-                final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
-                final CharSequence[] listClick = {"Delete", "Set Reminder"};
-
-                build = new AlertDialog.Builder(MainActivity.this);
-                build.setTitle("Choose an Option");
-                build.setItems(listClick, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0: //Delete Option
-                                build = new AlertDialog.Builder(MainActivity.this);
-                                build.setTitle("Delete");
-                                build.setMessage("Do You Wish To Delete");
-                                build.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
-                                        Log.d("Delete Image: ", "Deleting.....");
-                                        daOdb.deleteImage(image);
-                                        daOdb.getImages();
-                                        File fdelete = new File(image.getPath());
-                                        if (fdelete.exists())
-
-                                        {
-                                            if (fdelete.delete()) {
-                                                System.out.println("File Deleted :" + image.getPath());
-                                            } else {
-                                                System.out.println("File Not Deleted :" + image.getPath());
-                                            }
-                                        }
-
-                                        adapter.remove(adapter.getItem((int) position));
-                                        swipelist.invalidateViews();
-                                        dialog.cancel();
-                                    }
-                                });
-                                build.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                                alert = build.create();
-                                alert.show();
-                                break;
-                            case 1:
-                                //Reminder
-                                LayoutInflater li = LayoutInflater.from(MainActivity.this);
-                                View DateView = li.inflate(R.layout.calendar_cam, null);
-                                build = new AlertDialog.Builder(MainActivity.this);
-                                build.setTitle("Reminder");
-                                build.setMessage("Pick a date");
-                                build.setView(DateView);
-                                newDate = (Button) DateView.findViewById(R.id.buttonCalCam); //Button which opens the calender
-                                newDate.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        showDialog(DATE_DIALOG_ID);
-                                    }
-                                });
-
-                                final Calendar c = Calendar.getInstance();
-                                currentYear = c.get(Calendar.YEAR);
-                                currentMonth = c.get(Calendar.MONTH);
-                                currentDay = c.get(Calendar.DAY_OF_MONTH);
-
-                                build.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        database=dbHelper.getWritableDatabase();
-                                        ContentValues cv = new ContentValues();
-                                        cv.put(DBhelper.COLUMN_DESCRIPTION, dateString);
-                                        Log.d("Updating Date: ", ".....");
-                                        String whereClause =
-                                                DBhelper.COLUMN_TITLE + "=? AND " + DBhelper.COLUMN_DATETIME +"=?";
-                                        String[] whereArgs = new String[]{image.getTitle(), String.valueOf(image.getDatetimeLong())};
-                                        database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
-                                        Log.d("Updating Date: ", ".....");
-                                        image.setDescription(dateString);
-                                        swipelist.invalidateViews();
-                                    }
-                                });
-                                alert=build.create();
-                                alert.show();
-                        }
-                    }
-                });
-                alert=build.create();
-                alert.show();
-                return true;
-            }
-        });*/
     }
-
-
-    /*public void onReceive(final int position,Context context,Intent intent) {
-        final SwipeMenuListView swipelist=(SwipeMenuListView) findViewById(R.id.main_list_view);
-        Toast.makeText(getApplicationContext(),"onReceive",Toast.LENGTH_LONG).show();
-        final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
-        String action = intent.getAction();
-
-        if("Delete".equals(action)) {// to execute delete option
-            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_LONG).show();
-            /*DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
-                            Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
-                            Log.d("Delete Image: ", "Deleting.....");
-                            adapter.remove(adapter.getItem((int) position));
-                            swipelist.invalidateViews();
-                            File fdelete = new File(image.getTitle());
-                            if (fdelete.exists())
-
-                            {
-                                if (fdelete.delete()) {
-                                    daOdb.deleteImage(image);
-                                    daOdb.getImages();
-                                    // Gets an instance of the NotificationManager service
-                                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                    // Builds the notification and issues it.
-                                    myGoalNotifyMgr.cancel(position);
-                                    System.out.println("File Deleted :" + image.getPath());
-                                } else {
-                                    daOdb.deleteImage(image);
-                                    daOdb.getImages();
-                                    System.out.println("File Not Deleted :" + image.getPath());
-                                }
-                            }
-                            swipelist.invalidateViews();
-                            dialog.cancel();
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-                            dialog.cancel();
-                            break;
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("Do You Wish To Delete?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
-                alert = build.create();
-                alert.show();
-            Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
-            Log.d("Delete Image: ", "Deleting.....");
-            adapter.remove(adapter.getItem((int) position));
-            swipelist.invalidateViews();
-            File fdelete = new File(image.getTitle());
-            if (fdelete.exists())
-
-            {
-                if (fdelete.delete()) {
-                    daOdb.deleteImage(image);
-                    daOdb.getImages();
-                    // Gets an instance of the NotificationManager service
-                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    // Builds the notification and issues it.
-                    myGoalNotifyMgr.cancel(position);
-                    System.out.println("File Deleted :" + image.getPath());
-                } else {
-                    daOdb.deleteImage(image);
-                    daOdb.getImages();
-                    System.out.println("File Not Deleted :" + image.getPath());
-                }
-            }
-            swipelist.invalidateViews();
-            }
-        }*/
-
 
 
     // calculates days from months
@@ -786,35 +642,50 @@ public class CamMainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id){
+            case R.id.fab:
 
-    public void btnAddOnClick(View view) {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.custom_dialog_box);
-        dialog.setTitle("Choose an option");
-        /*Button btnExit = (Button) dialog.findViewById(R.id.btnExit);
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });*/
-        dialog.findViewById(R.id.btnChoosePath)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View v) {
-                        activeGallery();
-                        dialog.dismiss();
-                    }
-                });
-        dialog.findViewById(R.id.btnTakePhoto)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        activeTakePhoto();
-                        dialog.dismiss();
-                    }
-                });
-        // show dialog on screen
-        dialog.show();
+                animateFAB();
+                break;
+            case R.id.fab1:
+
+                Log.d("Raj", "Fab 1");
+                break;
+            case R.id.fab2:
+
+                Log.d("Raj", "Fab 2");
+                break;
+        }
     }
+
+    public void animateFAB(){
+
+        if(isFabOpen){
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isFabOpen = false;
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isFabOpen = true;
+            Log.d("Raj","open");
+
+        }
+    }
+
     /**
      * take a photo
      */
