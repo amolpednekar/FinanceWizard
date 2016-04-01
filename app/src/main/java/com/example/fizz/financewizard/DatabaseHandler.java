@@ -190,7 +190,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String> Selected3(String Account) {
         ArrayList<String> DataList = new ArrayList<String>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME+ " WHERE " + ACCOUNT_NO + " LIKE \"" + Account+"\"";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME+ "";
+        if(Account != null && !Account.equals(""))
+            selectQuery = "SELECT  * FROM " + TABLE_NAME+ " WHERE " + ACCOUNT_NO + " LIKE \"" + Account+"\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
