@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/maps_mode"
-        android:title="Category"
-        app:showAsAction="always"
+        android:title="ATM"
+        app:showAsAction="always|withText"
         android:icon="@drawable/change_maps"/>
 </menu>
