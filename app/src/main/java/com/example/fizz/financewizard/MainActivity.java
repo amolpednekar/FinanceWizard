@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         int catgyFlag = 0;
 
         if (gCursor.getCount() > 0) {
-            //Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
             catgyFlag = 1;
         }
 
