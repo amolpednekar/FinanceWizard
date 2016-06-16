@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -50,6 +53,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class MapsMainActivity extends AppCompatActivity {
 
+	//android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 	private final String TAG = getClass().getSimpleName();
 	private GoogleMap mMap;
 	private String[] places;
@@ -64,43 +68,61 @@ public class MapsMainActivity extends AppCompatActivity {
 	protected String mActivityTitle;
 
 
+	static final int DIALOG_ERROR_CONNECTION = 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.maps_activity_main);
+		if (!isOnline(this)) {
+			setContentView(R.layout.maps_activity_main); //Load blank map
+			// gv = (GridView)findViewById(R.id.grid_view);
+			mDrawerList = (ListView)findViewById(R.id.navList);
+			mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+			mActivityTitle = "Nearby Banks/ATMs";//string
 
-		mDrawerList = (ListView) findViewById(R.id.navList);
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mActivityTitle = "Nearby Banks/ATMs";//string
+			addDrawerItems();
+			setupDrawer();
 
-		addDrawerItems();
-		setupDrawer();
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setHomeButtonEnabled(true);
+			showDialog(DIALOG_ERROR_CONNECTION); //display no connection dialog
+		} else {
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
+				setContentView(R.layout.maps_activity_main);
 
-		InitCompoIfNeeded();
-		places = getResources().getStringArray(R.array.places);
-		currentLocation();
+				mDrawerList = (ListView) findViewById(R.id.navList);
+				mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+				mActivityTitle = "Nearby Banks/ATMs";//string
 
+				addDrawerItems();
+				setupDrawer();
 
-		if (loc != null) {
-			mMap.clear();
-			new GetPlaces(MapsMainActivity.this,
-					"Finance");
-		}
+				getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				getSupportActionBar().setHomeButtonEnabled(true);
+				getSupportActionBar().setTitle("ATM");
+				InitCompoIfNeeded();
+				places = getResources().getStringArray(R.array.places);
+				currentLocation();
+
+				if (loc != null) {
+					mMap.clear();
+					//		actionBar.setTitle("ATM");
+					new GetPlaces(MapsMainActivity.this,
+							"Finance");
+				}
+			}
 	}
 
-
-	void SetRSS() {
+	void FilterPlaces() {
 		final String sources[] = new String[]{"ATM", "Bank", "Finance"};
-
+		final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Select a category");
 		builder.setItems(sources, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (loc != null) {
+					actionBar.setTitle(sources[which]);
 					mMap.clear();
 					new GetPlaces(MapsMainActivity.this,
 							sources[which].toLowerCase().replace(
@@ -223,7 +245,7 @@ public class MapsMainActivity extends AppCompatActivity {
 		int id = item.getItemId();
 
 		if (id == R.id.maps_mode) {
-			SetRSS();
+			FilterPlaces();
 			return true;
 		}
 
@@ -410,4 +432,46 @@ public class MapsMainActivity extends AppCompatActivity {
 	}
 
 //NavigationDrawer Code Ends
+
+
+	//To check internet connectivity
+	public boolean isOnline(Context c) {
+		ConnectivityManager cm = (ConnectivityManager) c
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+
+		if (ni != null && ni.isConnected())
+			return true;
+		else
+			return false;
+	}
+
+	//No internet connection dialog
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		switch (id) {
+			case DIALOG_ERROR_CONNECTION:
+				AlertDialog.Builder errorDialog = new AlertDialog.Builder(this);
+				errorDialog.setTitle("No internet connection");
+				errorDialog.setMessage("Please try again later");
+				errorDialog.setNeutralButton("OK",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.dismiss();
+							}
+						});
+
+				AlertDialog errorAlert = errorDialog.create();
+				return errorAlert;
+
+			default:
+				break;
+		}
+		return dialog;
+	}
+
 }
