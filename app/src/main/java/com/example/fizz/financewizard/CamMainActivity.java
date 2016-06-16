@@ -4,41 +4,47 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,15 +58,16 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.util.Log;
 import android.view.View;
-
-
 public class CamMainActivity extends AppCompatActivity implements View.OnClickListener{
     private ArrayList<MyImage> images;
+    public ArrayList<String> title;
     private ImageAdapter adapter;
+    private AlarmReceiver Areceiver;
     private ListView listView;
     private ListView list;
     private Uri mCapturedImageURI;
@@ -77,7 +84,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     private String string,selectedImagePath;
     File imageFile;
     private Context mContext;
-    public String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    public String timeStamp = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(new Date());
     public String fname= "IMG_"+ timeStamp + ".jpg";
     static final int DATE_DIALOG_ID = 0;
     private int currentYear, currentMonth, currentDay;
@@ -93,22 +100,45 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     NotificationManager manager;
     private NotificationManager myGoalNotifyMgr;
     NotificationCompat.Builder gBuilder;
+    ArrayList<String> TitleRem=new ArrayList<String>();
+    ArrayList<String> dateRem=new ArrayList<String>();
+    ArrayList<Integer> countRem=new ArrayList<Integer>();
+    ArrayList<Integer> IdRem=new ArrayList<Integer>();
     ArrayList<Integer> mon = new ArrayList<Integer>(Arrays.asList(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
     ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"));
     private ArrayList<String> daysLeftGoal = new ArrayList<String>();
     PendingIntent resultPendingIntent,deletePendingIntent;
+    private DatePicker picker;
     public int NotiId=0;
+    BroadcastReceiver receiver;
+    public int delGoalId1,delGoalId;
+    Button EditButton;
+    TextView textEdit;
+    EditText DescEdit;
 
     private Boolean isFabOpen = false;
     private FloatingActionButton fab,fab1,fab2;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+
+    protected FrameLayout frameLayout;
+    protected ListView mDrawerList;
+    protected DrawerLayout mDrawerLayout;
+    protected ArrayAdapter<String> mAdapter;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected String mActivityTitle;
+    protected static int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cam_activity_main);
         // Construct the data source
-        describe = (TextView) findViewById(R.id.text_view_description);
+        TitleRem.clear();
+        countRem.clear();
+        IdRem.clear();
+        dateRem.clear();
+        //picker = (DatePicker) findViewById(R.id.scheduleTimePicker);
+        //describe = (TextView) findViewById(R.id.text_view_description);
         images = new ArrayList();
         dbHelper = new DBhelper(this);
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -126,6 +156,44 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 imageFile.mkdirs();
             }
         }
+        final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
+        // Pass String arrays to ListAdapter Class
+        adapter = new ImageAdapter(this, images);
+        // Set the ListAdapter to the ListView
+        //list.setAdapter(adapter);
+        swipelist.setAdapter(adapter);
+        addItemClickListener(swipelist);
+        initDB();
+        //NotifyFunc(images);
+        // step 1. create a MenuCreator
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+            @Override
+            public void create(SwipeMenu menu) {
+                // Create different menus depending on the view type
+                SwipeMenuItem item1 = new SwipeMenuItem(
+                        getApplicationContext());
+                item1.setBackground(new ColorDrawable(Color.rgb(0x30, 0xB1,
+                        0xF5)));
+                item1.setWidth(dp2px(65));
+                item1.setIcon(R.drawable.reminder);
+                menu.addMenuItem(item1);
+                SwipeMenuItem item2 = new SwipeMenuItem(
+                        getApplicationContext());
+                item2.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                item2.setWidth(dp2px(65));
+                item2.setIcon(R.drawable.ic_action_discard);
+                menu.addMenuItem(item2);
+                SwipeMenuItem item3 = new SwipeMenuItem(
+                        getApplicationContext());
+                item3.setBackground(new ColorDrawable(Color.rgb(0xE5, 0xE0,
+                        0x3F)));
+                item3.setWidth(dp2px(65));
+                item3.setIcon(R.drawable.ic_action_important);
+                menu.addMenuItem(item3);
+
+            }
+        };
 
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
@@ -148,111 +216,20 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-     /*   if (imageFile.isDirectory()) {
-            listFile = imageFile.listFiles();
-            // Create a String array for FilePathStrings
-            FilePathStrings = new String[listFile.length];
-            // Create a String array for FileNameStrings
-            FileNameStrings = new String[listFile.length];
-
-            for (int i = 0; i < listFile.length; i++) {
-                // Get the path of the image file
-                FilePathStrings[i] = listFile[i].getAbsolutePath();
-                // Get the name image file
-                FileNameStrings[i] = listFile[i].getName();
-            }
-        }*/
-
-        // Locate the ListView in activity_main.xml
-        // list = (ListView) findViewById(R.id.main_list_view);
-        final SwipeMenuListView swipelist=(SwipeMenuListView) findViewById(R.id.main_list_view);
-
-        // Pass String arrays to ListAdapter Class
-        adapter = new ImageAdapter(this, images);
-        // Set the ListAdapter to the ListView
-        //list.setAdapter(adapter);
-        swipelist.setAdapter(adapter);
-        addItemClickListener(swipelist);
-        initDB();
-
-        // step 1. create a MenuCreator
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-            @Override
-            public void create(SwipeMenu menu) {
-                // Create different menus depending on the view type
-                SwipeMenuItem item1 = new SwipeMenuItem(
-                        getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(0x30, 0xB1,
-                        0xF5)));
-                item1.setWidth(dp2px(90));
-                item1.setIcon(R.drawable.reminder);
-                menu.addMenuItem(item1);
-                SwipeMenuItem item2 = new SwipeMenuItem(
-                        getApplicationContext());
-                item2.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                item2.setWidth(dp2px(90));
-                item2.setIcon(R.drawable.ic_action_discard);
-                menu.addMenuItem(item2);
-            }
+        frameLayout = (FrameLayout)findViewById(R.id.content_frame);
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
+        mActivityTitle = "Finance Wizard";//string
 
 
-            private void createMenu1(SwipeMenu menu) {
-                SwipeMenuItem item1 = new SwipeMenuItem(
-                        getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(0xE5, 0x18,
-                        0x5E)));
-                item1.setWidth(dp2px(90));
-                item1.setIcon(R.drawable.ic_action_favorite);
-                menu.addMenuItem(item1);
-                SwipeMenuItem item2 = new SwipeMenuItem(
-                        getApplicationContext());
-                item2.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                item2.setWidth(dp2px(90));
-                item2.setIcon(R.drawable.ic_action_good);
-                menu.addMenuItem(item2);
-            }
+        addDrawerItems();
+        setupDrawer();
 
-            private void createMenu2(SwipeMenu menu) {
-                SwipeMenuItem item1 = new SwipeMenuItem(
-                        getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(0xE5, 0xE0,
-                        0x3F)));
-                item1.setWidth(dp2px(90));
-                item1.setIcon(R.drawable.ic_action_important);
-                menu.addMenuItem(item1);
-                SwipeMenuItem item2 = new SwipeMenuItem(
-                        getApplicationContext());
-                item2.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                item2.setWidth(dp2px(90));
-                item2.setIcon(R.drawable.ic_action_discard);
-                menu.addMenuItem(item2);
-            }
-
-            private void createMenu3(SwipeMenu menu) {
-                SwipeMenuItem item1 = new SwipeMenuItem(
-                        getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(0x30, 0xB1,
-                        0xF5)));
-                item1.setWidth(dp2px(90));
-                item1.setIcon(R.drawable.ic_action_about);
-                menu.addMenuItem(item1);
-                SwipeMenuItem item2 = new SwipeMenuItem(
-                        getApplicationContext());
-                item2.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                item2.setWidth(dp2px(90));
-                item2.setIcon(R.drawable.ic_action_share);
-                menu.addMenuItem(item2);
-            }
-        };
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // set creator
         swipelist.setMenuCreator(creator);
-
         // step 2. listener item click event
         swipelist.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
@@ -262,27 +239,25 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 switch (index) {
                     case 0:
                         // open
-
                         LayoutInflater li = LayoutInflater.from(CamMainActivity.this);
                         View DateView = li.inflate(R.layout.calendar_cam, null);
                         build = new AlertDialog.Builder(CamMainActivity.this);
                         build.setTitle("Reminder");
                         build.setMessage("Pick a date");
                         build.setView(DateView);
-                        newDate = (Button) DateView.findViewById(R.id.buttonCalCam); //Button which opens the calender
-                        newDate.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showDialog(DATE_DIALOG_ID);
-                            }
-                        });
-
                         final Calendar c = Calendar.getInstance();
                         currentYear = c.get(Calendar.YEAR);
                         currentMonth = c.get(Calendar.MONTH);
                         currentDay = c.get(Calendar.DAY_OF_MONTH);
-
-
+                        //picker = (DatePicker) findViewById(R.id.scheduleTimePicker);
+                        newDate = (Button) DateView.findViewById(R.id.buttonCalCam); //Button which opens the calender
+                        newDate.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Get the date from our datepicker
+                                showDialog(DATE_DIALOG_ID);
+                            }
+                        });
                         build.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 database = dbHelper.getWritableDatabase();
@@ -290,215 +265,28 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 cv.put(DBhelper.COLUMN_DESCRIPTION, dateString);
                                 Log.d("Updating Date: ", ".....");
                                 String whereClause =
-                                        DBhelper.COLUMN_TITLE + "=? AND " + DBhelper.COLUMN_DATETIME + "=?";
-                                String[] whereArgs = new String[]{image.getTitle(), String.valueOf(image.getDatetimeLong())};
+                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
+                                String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
                                 database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
                                 Log.d("Updating Date: ", ".....");
                                 image.setDescription(dateString);
                                 swipelist.invalidateViews();
-
-                                //Scheduling Notifications
-                                int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH) + 1, curDay = c.get(Calendar.DAY_OF_MONTH);
-                                int goalYear = Integer.parseInt(yearG), goalMonth = Integer.parseInt(monthG), goalDay = Integer.parseInt(dayG);
-                                int calYear = 0, calMonth = 0, calDay = 0, calDayGoal = 0;
-
-                                //Get current date
-                                String curDate = String.valueOf(curDay) + "/" + String.valueOf(curMonth) + "/" + String.valueOf(curYear);
-
-                                //Get goal date
-                                String goalDate = String.valueOf(goalDay) + "/" + String.valueOf(goalMonth) + "/" + String.valueOf(goalYear);
-                                int count = -1;
-
-                                //Fetches the date and Time from system, hence not used
-                                if (curYear <= goalYear || (goalYear == curYear && goalMonth >= curMonth) || (goalYear == curYear && goalMonth == curMonth && goalDay >= curDay))
-                                {
-                                    count = 0;
-                                    int i;
-                                    for (i = curYear; i < goalYear; i++) {
-                                        if (i % 4 == 0) {
-                                            count += 366;//Leap year
-                                        } else {
-                                            count += 365;// Non leap year
-                                        }
-                                    }
-                                    //calculating the no of days left from current date to goal date
-                                    count -= calMonthDay(curMonth, curYear);
-                                    count -= curDay;
-                                    count += calMonthDay(goalMonth, goalYear);
-                                    count += goalDay;
-                                    if (count < 0) {
-                                        count *= -1;
-                                    }
-
-
-                                    if (count != 1) {
-                                        daysLeftGoal.add(String.valueOf(count) + " days left");
-                                        Toast.makeText(getBaseContext(), "Days Left for  "+fname+"="+count, Toast.LENGTH_LONG).show();
-                                    }else
-                                    {daysLeftGoal.add(String.valueOf(count) + " day left");
-                                    Toast.makeText(getBaseContext(), "Days Left for  "+fname+"="+count, Toast.LENGTH_LONG).show();}
-                                } else {// current year exceeds goal year
-                                    //dailyBreak.add("Timeup");
-                                    //weeklyBreak.add("Timeup");
-                                    //monthlyBreak.add("Timeup");
-                                    daysLeftGoal.add("Times up");
-                                    Toast.makeText(getBaseContext(), "Days Left for  "+fname+"="+count, Toast.LENGTH_LONG).show();
-                                }
-                                mContext=getApplicationContext();
-                                // check if goal date is less than or equals 7 days
-                                if (count <= 7 && count >= 0) {
-                                    Intent resultIntent = new Intent(mContext, MainActivity.class);
-                                    //resultIntent.putExtra("ID", mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));
-                                    resultIntent.putExtra("update", true);
-                                    resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                                    //Opening Image in Gallery View
-                                    Intent intent=new Intent(Intent.ACTION_VIEW);
-                                    //intent.setAction(Intent.ACTION_VIEW);
-                                    intent.putExtra("IMAGE", (new Gson()).toJson(image));
-                                    intent.setDataAndType(Uri.parse("file://"  + image.getTitle()), "image/*");
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                   // startActivity(intent);
-
-                                    Intent deleteIntent = new Intent(mContext, MainActivity.class);
-                                    deleteIntent.setAction("Delete");
-                                    //onReceive(position, mContext, deleteIntent);
-                                    deleteIntent.putExtra("ID", position);
-                                    deleteIntent.putExtra("update", true);
-                                    deleteIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    //TaskStackBuilder requires API 16 [4.1] min
-                                   /* if (Build.VERSION.SDK_INT > 15) {
-                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-                                        stackBuilder.addParentStack(MainActivity.class);
-                                        stackBuilder.addNextIntent(resultIntent);
-                                        resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                        ///TaskStackBuilder delStackBuilder = TaskStackBuilder.create(MainActivity.this);
-
-                                        //delStackBuilder.addNextIntent(deleteIntent);
-                                        //deletePendingIntent = delStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                    } else {
-                                        resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        //deletePendingIntent = PendingIntent.getActivity(MainActivity.this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                    }*/
-
-
-                                    //On Click Back, Takes from gallery viewer to mainactivity
-                                    Intent backIntent = new Intent(mContext, MainActivity.class);
-                                    backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    //startActivity(resultIntent);
-                                    // Because clicking the notification opens a new ("special") activity, there's
-                                    // no need to create an artificial back stack.
-                                    PendingIntent resultPendingIntent1 = PendingIntent.getActivity(mContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                    PendingIntent resPendingIntent = PendingIntent.getActivities(mContext, 0,new Intent[] {backIntent, intent}, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    deletePendingIntent = PendingIntent.getActivity(mContext, 12345, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                        if (count == 0) {
-                                        gBuilder = new NotificationCompat.Builder(CamMainActivity.this).setSmallIcon(R.mipmap.ic_launcher)
-                                                .setContentTitle("My Goals")
-                                                .setContentText("Reminder Set: " + image.getDescription() + " Times Up!! ")
-                                                .addAction(R.drawable.ic_action_about, "View", resPendingIntent)
-                                                .addAction(R.drawable.ic_action_discard, "Delete", deletePendingIntent);
-                                        gBuilder.setContentIntent(resPendingIntent);
-                                            gBuilder.setContentIntent(deletePendingIntent);
-                                            gBuilder.setPriority(2);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
-
-                                        //for the sound and float notification
-                                        Calendar calendar = Calendar.getInstance();
-                                        calendar.set(Calendar.HOUR_OF_DAY, 9);//set the alarm time
-                                        calendar.set(Calendar.MINUTE, 0);
-                                        calendar.set(Calendar.SECOND, 0);
-                                        gBuilder.setWhen(System.currentTimeMillis())
-                                                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
-                                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
-
-                                        //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-
-                                        // opens the resultPendingIntent
-                                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                        // open the activity every 24 hours
-                                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, resultPendingIntent);
-
-                                        gBuilder.setAutoCancel(true);
-                                        //int mNotificationId = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
-                                        //keyIndex = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
-                                        int mNotificationId = position;
-
-                                        // Gets an instance of the NotificationManager service
-                                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                        // Builds the notification and issues it.
-                                        myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
-                                    } else {
-                                        gBuilder = new NotificationCompat.Builder(CamMainActivity.this).setSmallIcon(R.mipmap.ic_launcher)
-                                                .setContentTitle("My Goals")
-                                                .setContentText("Reminder Set: " + image.getDescription() + " Days Left: " + count)
-                                                .addAction(R.drawable.ic_action_about, "View", resPendingIntent)
-                                                .addAction(R.drawable.ic_action_discard, "Delete", deletePendingIntent);
-                                        gBuilder.setContentIntent(resPendingIntent);
-                                        gBuilder.setContentIntent(deletePendingIntent);
-                                        gBuilder.setPriority(2);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
-
-                                        //for the sound and float notification
-                                        Calendar calendar = Calendar.getInstance();
-                                        calendar.set(Calendar.HOUR_OF_DAY, 9);//set the alarm time
-                                        calendar.set(Calendar.MINUTE, 0);
-                                        calendar.set(Calendar.SECOND, 0);
-                                        gBuilder.setWhen(System.currentTimeMillis())
-                                                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
-                                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                                                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
-                                        //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-
-                                        // opens the resultPendingIntent
-                                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                        // open the activity every 24 hours
-                                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, resultPendingIntent);
-
-                                        gBuilder.setAutoCancel(true);
-                                        //int mNotificationId = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
-                                        //keyIndex = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.KEY_ID));
-                                        int mNotificationId = position;
-
-                                        // Gets an instance of the NotificationManager service
-                                        myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                        // Builds the notification and issues it.
-                                        myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
-                                    }
-
-                                    // Push Notification
-                                /*mContext=getApplicationContext();
-                                Intent notificationIntent = new Intent(mContext, MainActivity.class); //Opens application on clicking notification
-                                PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-                                Notification notify = new Notification(R.drawable.ic_launcher, image.getTitle(),Notification.DEFAULT_SOUND); //Push Notification variables
-                                Notification.Builder builder= new Notification.Builder(MainActivity.this);
-                                builder.setContentTitle(image.getTitle().toString().trim());
-                                builder.setSmallIcon(R.drawable.ic_launcher);
-                                builder.setContentText("Reminder Set: " + image.getDescription());
-                                notify.defaults |= Notification.DEFAULT_SOUND;
-                                notify.flags |= Notification.FLAG_AUTO_CANCEL; //cancels notification on swipe
-                                builder.setContentIntent(pending);
-                                builder.build();
-
-                                notify = builder.getNotification();
-
-                                manager.notify(11, notify);*/
-                                }
                             }
                         });
-                        alert=build.create();
+                        build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        alert = build.create();
                         alert.show();
                         break;
                     case 1:
                         // delete
-//					delete(item);
-                        //build = new AlertDialog.Builder(MainActivity.this);
-                        //build.setTitle("Choose an Option");
-
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         //Yes button clicked
                                         Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
@@ -507,7 +295,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                         swipelist.invalidateViews();
                                         File fdelete = new File(image.getTitle());
                                         if (fdelete.exists())
-
                                         {
                                             if (fdelete.delete()) {
                                                 daOdb.deleteImage(image);
@@ -522,7 +309,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                         swipelist.invalidateViews();
                                         dialog.cancel();
                                         break;
-
                                     case DialogInterface.BUTTON_NEGATIVE:
                                         //No button clicked
                                         dialog.cancel();
@@ -530,20 +316,221 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 }
                             }
                         };
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
                         builder.setMessage("Do You Wish To Delete?").setPositiveButton("Yes", dialogClickListener)
                                 .setNegativeButton("No", dialogClickListener).show();
-                        //mAppList.remove(position);
-                        //adapter.notifyDataSetChanged();
                         break;
+                    case 2:
+                        if(image.getPriority().equals("OFF")){
+                            database = dbHelper.getWritableDatabase();
+                            ContentValues cv = new ContentValues();
+                            cv.put(DBhelper.COLUMN_PRIORITY, "ON");
+                            Log.d("Updating Priority: ", ".....");
+                            String whereClause =
+                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                            Log.d("Updating Priority: ", ".....");
+                            image.setPriority("ON");
+                            Toast.makeText(getApplicationContext(), image + " " + " is marked Important.", Toast.LENGTH_SHORT).show();
+                            swipelist.invalidateViews();
+                        }
+                        else{
+                            database = dbHelper.getWritableDatabase();
+                            ContentValues cv = new ContentValues();
+                            cv.put(DBhelper.COLUMN_PRIORITY, "OFF");
+                            Log.d("Updating Priority: ", ".....");
+                            String whereClause =
+                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                            Log.d("Updating Priority: ", ".....");
+                            image.setPriority("OFF");
+                            Toast.makeText(getApplicationContext(), image + " " + " is marked UnImportant.", Toast.LENGTH_SHORT).show();
+                            swipelist.invalidateViews();
+                        }
+                        break;
+
                 }
                 return false;
             }
         });
-
-
         swipelist.invalidateViews();
+        swipelist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           final int arg2, final long position) {
+                final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+                AlertDialog.Builder alert = new AlertDialog.Builder(CamMainActivity.this);
+                //alert.setTitle("Edit"); //Set Alert dialog title here
+                alert.setMessage("Name"); //Message here
+                // Set an EditText view to get user input
+                final EditText input = new EditText(CamMainActivity.this);
+                alert.setView(input);
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //You will get as string input data in this variable.
+                        // here we convert the input to a string and show in a toast.
+                        String srt = input.getEditableText().toString();
+                        database = dbHelper.getWritableDatabase();
+                        ContentValues cv = new ContentValues();
+                        cv.put(DBhelper.COLUMN_NAME, srt);
+                        Log.d("Updating Date: ", ".....");
+                        String whereClause =  /*DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
+                        String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                        database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                        Log.d("Updating Date: ", ".....");
+                        image.setName(srt);
+                        swipelist.invalidateViews();
+                        Toast.makeText(CamMainActivity.this,srt,Toast.LENGTH_LONG).show();
+                    } // End of onClick(DialogInterface dialog, int whichButton)
+                }); //End of alert.setPositiveButton
+                alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                        dialog.cancel();
+                    }
+                }); //End of alert.setNegativeButton
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+               /* alert = build.create();
+                alert.show();*/
+                return true;
+            }
+        });
+        Intent in=getIntent();
+        // delGoalId = getIntent().getIntExtra("ID", 0);
+        if(in != null){
+            delGoalId = in.getIntExtra("ID",0);
+            //catNotify = String.valueOf(getIntent().getExtras().getInt("Category"));
+            if(delGoalId >0) {
+                onReceive(delGoalId-1);
+            }
+        }else {
+            onReceive(delGoalId-1);
+        }
+        Intent in1=getIntent();
+        // delGoalId = getIntent().getIntExtra("ID", 0);
+        if(in1 != null){
+            delGoalId1 = in.getIntExtra("DEL",0);
+            //catNotify = String.valueOf(getIntent().getExtras().getInt("Category"));
+            if(delGoalId1 >0) {
+                onRec(delGoalId1-1);
+            }
+        }else {
+            onRec(delGoalId1-1);
+        }
+
+    }
+    public void onReceive(final int position) {
+        final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
+        Toast.makeText(getApplicationContext(), "onReceive", Toast.LENGTH_LONG).show();
+        final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+        String action = getIntent().getAction();
+        if ("Delete".equals(action)) {// to execute delete option
+            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_LONG).show();
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            /*Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                            Log.d("Delete Image: ", "Deleting.....");
+                            adapter.remove(adapter.getItem((int) position));
+                            swipelist.invalidateViews();
+                            File fdelete = new File(image.getTitle());
+                            if (fdelete.exists())
+                            {
+                                if (fdelete.delete()) {
+                                    daOdb.deleteImage(image);
+                                    daOdb.getImages();
+                                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                    // Builds the notification and issues it.
+                                    myGoalNotifyMgr.cancel(position);
+                                    // Gets an instance of the NotificationManager service
+                                    System.out.println("File Deleted :" + image.getPath());
+                                } else {
+                                    daOdb.deleteImage(image);
+                                    daOdb.getImages();
+                                    System.out.println("File Not Deleted :" + image.getPath());
+                                }
+                            }
+                            swipelist.invalidateViews();
+                            dialog.cancel();
+                            break;*/
+                            database = dbHelper.getWritableDatabase();
+                            ContentValues cv = new ContentValues();
+                            cv.put(DBhelper.COLUMN_DESCRIPTION, " ");
+                            Log.d("Updating Date: ", ".....");
+                            String whereClause =
+                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                            Log.d("Updating Date: ", ".....");
+                            image.setDescription(" ");
+                            myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            // Builds the notification and issues it.
+                            myGoalNotifyMgr.cancel(position);
+                            // Gets an instance of the NotificationManager service
+                            swipelist.invalidateViews();
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            dialog.cancel();
+                            break;
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
+            builder.setMessage("Do You Wish To Delete the Reminder?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+            /*alert = build.create();
+            alert.show();*/
+        }
+    }
+    public void onRec(final int position) {
+        final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
+        Toast.makeText(getApplicationContext(), "onReceive", Toast.LENGTH_LONG).show();
+        final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+        String action = getIntent().getAction();
+        if ("Del".equals(action)) {// to execute delete option
+            // delete
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                            Log.d("Delete Image: ", "Deleting.....");
+                            adapter.remove(adapter.getItem((int) position));
+                            swipelist.invalidateViews();
+                            File fdelete = new File(image.getTitle());
+                            if (fdelete.exists())
+                            {
+                                if (fdelete.delete()) {
+                                    daOdb.deleteImage(image);
+                                    daOdb.getImages();
+                                    System.out.println("File Deleted :" + image.getPath());
+                                } else {
+                                    daOdb.deleteImage(image);
+                                    daOdb.getImages();
+                                    System.out.println("File Not Deleted :" + image.getPath());
+                                }
+                            }
+                            swipelist.invalidateViews();
+                            dialog.cancel();
+                            break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            dialog.cancel();
+                            break;
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
+            builder.setMessage("Do You Wish To Delete?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        }
     }
 
 
@@ -562,7 +549,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         }
         return(x);
     }
-
     //calculates no. of months from current month & year to goal month & year
     int calDateMonth(int mC,int yC,int mG,int yG){//(current-month, current-year, goal-month, goal-year)
         int x = 0,i,countM=0;
@@ -570,12 +556,10 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             for(i = yC; i < yG; i++)
                 countM += 12;
         }
-
         countM -= mC;
         countM += mG;
         return (countM);
     }
-
     //calculates no. of weeks from current month & year to goal month & year
     int calDateWeek(int mC,int yC,int mG,int yG){
         int x = 0,i,countW=0;
@@ -583,45 +567,43 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             for(i = yC; i < yG; i++)
                 countW+=52;
         }
-
         countW -= mC;
         countW += mG;
         countW *= 4;
         return (countW);
     }
-
-
     /**
      * initialize database
      */
     public void initDB() {
         daOdb = new DAOdb(this);
-        final Calendar c = Calendar.getInstance();
-        currentYear = c.get(Calendar.YEAR);
-        currentMonth = c.get(Calendar.MONTH);
-        currentDay = c.get(Calendar.DAY_OF_MONTH);
         //        add images from database to images ArrayList
         for (MyImage mi : daOdb.getImages()) {
             images.add(mi);
-
-            }
+        }
     }
-
-   /* @Override
+    @Override
     protected void onResume() {
-        initDB();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 12);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        AlarmManager am = (AlarmManager) CamMainActivity.this.getSystemService(ALARM_SERVICE);
+        Intent intent1 = new Intent(CamMainActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(CamMainActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
         super.onResume();
-    }*/
-
+    }
     protected Dialog onCreateDialog(int id) {
         switch(id){
             case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
-
+                //return new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
+                DatePickerDialog da=new DatePickerDialog(this, reservationDate, currentYear, currentMonth, currentDay);
+                da.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                return da;
         }
         return null;
     }
-
     private DatePickerDialog.OnDateSetListener reservationDate = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day){
@@ -635,13 +617,12 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 yearG = Integer.toString(year);
                 Log.d("Setting Date: ", ".....");
                 dateString=String.valueOf(dayG)+"-"+String.valueOf(monthG)+"-"+String.valueOf(yearG);
-                Toast.makeText(getBaseContext(), "Your reminder is set to "  + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getBaseContext(), "Your reminder is set to "  + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
             }
         }
     };
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -661,9 +642,9 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    public void animateFAB(){
+    public void animateFAB() {
 
-        if(isFabOpen){
+        if (isFabOpen) {
 
             fab.startAnimation(rotate_backward);
             fab1.startAnimation(fab_close);
@@ -681,11 +662,10 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             fab1.setClickable(true);
             fab2.setClickable(true);
             isFabOpen = true;
-            Log.d("Raj","open");
+            Log.d("Raj", "open");
 
         }
     }
-
     /**
      * take a photo
      */
@@ -693,14 +673,11 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         final Dialog dialog = new Dialog(CamMainActivity.this);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
             int MEDIA_TYPE_IMAGE = 1;
             fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
             // start the image capture Intent
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-
             try {
                 FileOutputStream outputStream_image = openFileOutput(file_image, MODE_WORLD_READABLE);
                 outputStream_image.write(string.getBytes());
@@ -711,17 +688,13 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
-
-
     private Uri getOutputMediaFileUri(int MEDIA_TYPE_IMAGE) {
         // TODO Auto-generated method stub
-
         if(isExternalStorageWritable()) {
             //Toast.makeText(getBaseContext(), "value: "+ Uri.fromFile(getOutputMediaFile(MEDIA_TYPE_IMAGE)), Toast.LENGTH_LONG).show();
             return Uri.fromFile(getOutputMediaFile(MEDIA_TYPE_IMAGE));
         }
         else
-
             return null;
     }
     /* Checks if external storage is available for read and write */
@@ -732,11 +705,9 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         }
         return false;
     }
-
     private File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
-
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "FiZZ");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
@@ -750,19 +721,16 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         }
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
         int MEDIA_TYPE_IMAGE = 1;
         if (type == MEDIA_TYPE_IMAGE){
             //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-             String fname= "IMG_"+ timeStamp + ".jpg";
+            String fname= "IMG_"+ timeStamp + ".jpg";
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg");
         } else {
             return null;
         }
         return mediaFile;
     }
-
-
     /**
      * to gallery
      */
@@ -773,7 +741,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
         dialog.dismiss();
-
     }
     /**
      * helper to retrieve the path of an image URI
@@ -797,11 +764,9 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         // this is our fallback here
         return uri.getPath();
     }
-
     public void copyFile(File src, File dst) throws IOException {
         InputStream in = null;
         OutputStream out = null;
-
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fname = "IMG_"+ timeStamp + ".jpg";
         File file = new File (dst, fname);
@@ -838,10 +803,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
         }
-
     }
-
-
     @Override protected void onActivityResult(int requestCode, int resultCode,
                                               Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -853,8 +815,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                     String fname = "IMG_"+ timeStamp + ".jpg";
                     File mediaFile1;
-
-
                     //Selected Image Uri
                     Uri selectedImageUri = data.getData();
                     selectedImagePath = getPath(selectedImageUri);
@@ -887,6 +847,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 image.setDescription(picturePath);
                                 image.setDatetime(System.currentTimeMillis());
                                 image.setPath(picturePath);
+                                image.setName(null);
+                                image.setPriority("OFF");
                                 images.add(image);
                                 daOdb.addImage(image);
                                 //swipelist.invalidateViews();
@@ -916,6 +878,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                             image.setDescription(" ");
                             image.setDatetime(System.currentTimeMillis());
                             image.setPath(picturePath);
+                            image.setName(null);
+                            image.setPriority("OFF");
                             images.add(image);
                             daOdb.addImage(image);
                             adapter.notifyDataSetChanged();
@@ -935,8 +899,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                     new String[]{MediaStore.Images.Media._ID},
                                     MediaStore.Images.Media.DATA + "=? ",
                                     new String[]{filePath}, null);
-
-
                     if( cursor != null && cursor.moveToFirst() ){
                         int column_index_data = cursor.getColumnIndexOrThrow(
                                 MediaStore.MediaColumns._ID);
@@ -946,6 +908,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         image.setDescription(" ");
                         image.setDatetime(System.currentTimeMillis());
                         image.setPath(picturePath);
+                        image.setName(null);
+                        image.setPriority("OFF");
                         images.add(image);
                         daOdb.addImage(image);
                         adapter.notifyDataSetChanged();
@@ -957,6 +921,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         image.setDescription(" ");
                         image.setDatetime(System.currentTimeMillis());
                         image.setPath(fileUri.getPath());
+                        image.setName(null);
+                        image.setPriority("OFF");
                         images.add(image);
                         daOdb.addImage(image);
                         adapter.notifyDataSetChanged();
@@ -965,7 +931,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 }
         }
     }
-
     /**
      * item clicked listener used to implement the react action when an item is
      * clicked.
@@ -978,18 +943,86 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 MyImage image = (MyImage) list.getItemAtPosition(position);
-                /*Intent intent =
-                        new Intent(getBaseContext(), DisplayImage.class);
-                intent.putExtra("IMAGE", (new Gson()).toJson(image));
-                startActivity(intent);*/
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.putExtra("IMAGE", (new Gson()).toJson(image));
-                intent.setDataAndType(Uri.parse("file://"  + image.getTitle()), "image/*");
+                intent.setDataAndType(Uri.parse("file://" + image.getTitle()), "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
+    }
+
+    private void addDrawerItems() {
+
+        myAdapter MyAdapter = new myAdapter(this);
+        mDrawerList.setAdapter(MyAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openActivity(position);
+            }
+        });
+    }
+
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mActivityTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    protected void openActivity(int position) {
+        mDrawerLayout.closeDrawer(mDrawerList);
+        MainActivity.position = position; //Setting currently selected position in this field so that it will be available in our child activities.
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this,MainActivity.class));
+                break;
+            case 1:
+                startActivity(new Intent(this, RssMainActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, Goals_MainActivity.class));
+                break;
+            case 3:
+                startActivity(new Intent(this, Trends_MainActivity.class));
+                break;
+            case 4:
+                startActivity(new Intent(this, CamMainActivity.class));
+                break;
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
+            default:
+                break;
+        }
+
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState) {
@@ -1014,4 +1047,69 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
     }
+
+    class myAdapter extends BaseAdapter {
+        private Context context;
+        String NavListCategories[];
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
+
+        public myAdapter(Context context){
+            this.context = context;
+            NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
+        }
+        @Override
+        public int getCount() {
+            return NavListCategories.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return NavListCategories[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View row = null;
+            if(convertView == null){
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                row = inflater.inflate(R.layout.custom_row, parent, false);
+            }
+            else{
+                row =convertView;
+            }
+
+            TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
+            ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
+            titleTextView.setText(NavListCategories[position]);
+            titleImageView.setImageResource(images[position]);
+            return row;
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Toast.makeText(this, " Configured " + item.getTitle(), Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        // Activate the navigation drawer toggle
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
+
+

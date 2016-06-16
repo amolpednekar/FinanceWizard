@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" id="appName">Finance Wizard</string>
+    <string name="app_name" id="appName">FiZZ</string>
 
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -78,4 +78,27 @@
               <item >Restaurant</item>
               <item >Shopping Mall</item>-->
     </string-array>
+
+    <string-array name="notifyInterval">
+        <item>No Notification</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+
+    <string name="about">
+        FiZZ is a college final year project aimed to aid the financial community
+        \n\nDevelopers:
+        \n\tAmol Pednekar
+        \n\tSimeon Fernandes
+        \n\tSharath Shreekumar
+        \n\tVallabh
+        \n\tAbhay Singh
+        \n\tSonia Wadji
+    </string>
+
+    <string name="contact_us">
+        Email: fizzapp@gmail.com
+    </string>
+
 </resources>

@@ -128,12 +128,12 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/navList"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="left|start"
-        android:background="#ffeeeeee"
-        android:divider="@color/divider"
-        android:dividerHeight="1dp"/>
+     <ListView
+    android:id="@+id/navList"
+    android:layout_width="280dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="left|start"
+    android:background="#ffeeeeee"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="0dp"/>
 </android.support.v4.widget.DrawerLayout>

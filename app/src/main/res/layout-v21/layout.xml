@@ -113,10 +113,10 @@
                 -->
             <ProgressBar
                 android:layout_width="wrap_content"
-                android:layout_height="10dp"
+                android:layout_height="14dp"
                 android:minHeight="5dp"
                 android:id="@+id/progressBarGoal"
-                style="@style/CustomProgressBarHorizontal"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:paddingLeft="1dp"
                 android:paddingRight="10dp"
                 android:layout_marginBottom="10dp"

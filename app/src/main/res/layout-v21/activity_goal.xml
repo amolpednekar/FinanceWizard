@@ -151,6 +151,17 @@
                 android:layout_alignRight="@+id/breakDownTitle"
                 android:layout_alignEnd="@+id/breakDownTitle"
                 android:layout_alignBottom="@+id/textView" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/notifyDate"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/categoryDrop"
+                android:layout_alignRight="@+id/categoryDrop"
+                android:layout_alignEnd="@+id/categoryDrop"
+                android:layout_alignLeft="@+id/calendarButton"
+                android:layout_alignStart="@+id/calendarButton" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

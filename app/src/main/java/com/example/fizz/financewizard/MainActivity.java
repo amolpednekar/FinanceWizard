@@ -1,32 +1,53 @@
 package com.example.fizz.financewizard;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //API KEY AIzaSyBiht1KNsxYLPgfP73P_Gb72mULFUQV_TY
 //Server key  AIzaSyCUUjovK_G1Q-ak0wV5RPTHuzyywDO5iWA
@@ -47,6 +68,21 @@ public class MainActivity extends AppCompatActivity {
     public TextView cib;
     DatabaseHandler dbHand;
     SQLiteDatabase db;
+    private DbHelperGoal tHelper;
+    private DbHelperCategory cHelper;
+    private DbHelperCategory chHelper;
+    private SQLiteDatabase tDataBase, cDataBase, chDataBase;
+    private AlertDialog.Builder build ;
+    TextView tGoals, tSavings, tCategoryNo, cashHandAmount;
+    private RelativeLayout totalG, handCashC;
+    EditText transAmount, PayValue;
+
+    AlertDialog alert;
+    Spinner spinnerCat;
+    String categoryG;
+    Button cashAdd, cashSpent;
+    String[] defaultCat = {"Lifestyle","Entertainment","Food & Drinks","Misc."};
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
 
 
     @Override
@@ -57,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         //TextView txt = (TextView) findViewById(R.id.custom_font);
         //Typeface font = Typeface.createFromAsset(getAssets(), "BrockScript.ttf"); Add custom font
         //txt.setTypeface(font);
+
+        /*if(checkAndRequestPermissions()){
+            ;
+        }else{
+            Toast.makeText(this,"No permissions",Toast.LENGTH_SHORT).show();
+        }*/
 
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
         mDrawerList = (ListView)findViewById(R.id.navList);
@@ -81,7 +123,411 @@ public class MainActivity extends AppCompatActivity {
 
         cib=(TextView)findViewById(R.id.bank_amount);
         countTotal();
+        cHelper = new DbHelperCategory(this);
+
+        cDataBase = cHelper.getWritableDatabase();
+        Cursor gCursor;
+        gCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
+        String dbData = null;
+        int catgyFlag = 0;
+
+        if (gCursor.getCount() > 0) {
+            //Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
+            catgyFlag = 1;
+        }
+
+        if (catgyFlag == 1) {
+            //Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+            gCursor.close();
+            cDataBase.close();
+        } else {
+            ContentValues values = new ContentValues();
+            for (int x = 0; x < defaultCat.length; x++) {
+                values.put(DbHelperCategory.CAT_TYPE, defaultCat[x]);
+                cDataBase.insert(DbHelperCategory.TABLE_NAME, null, values);
+            }
+            cDataBase.close();
+        }
+
+        cashHandAmount = (TextView) findViewById(R.id.handNo2);// cash in hand
+        handCashC = (RelativeLayout) findViewById(R.id.viewCashHandSlot);
+        cashAdd = (Button) findViewById(R.id.buttonAdd);
+        cashSpent = (Button) findViewById(R.id.buttonSpend);
+
+        cashAdd.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
+                build = new AlertDialog.Builder(MainActivity.this);
+                build.setTitle("Cash collected");
+                build.setMessage("Please Enter amount collected");
+                build.setView(promptsPaymentView);
+                PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
+                //PayValue.isFocused();
+                PayValue.setFocusableInTouchMode(true);
+                PayValue.setFocusable(true);
+                PayValue.requestFocus();
+                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
+                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        cDataBase=cHelper.getWritableDatabase();
+                        ContentValues values=new ContentValues();
+
+                        Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
+                        String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
+                        values.put(DbHelperCategory.DATE,currentDate);
+                        values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
+                        values.put(DbHelperCategory.STATUS, "Credit");
+
+                        cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
+                        cDataBase.close();
+                        Toast.makeText(getBaseContext(), "Amount saved successfully", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year),Toast.LENGTH_SHORT).show();
+                        displayData();
+                        dialog.cancel();
+                    }
+                });
+                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                        dialog.cancel();
+                    }
+                });
+                alert = build.create();
+                alert.show();
+                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
+
+        cashSpent.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
+                build = new AlertDialog.Builder(MainActivity.this);
+                build.setTitle("Cash Spent");
+                build.setMessage("Please Enter amount spent");
+                build.setView(promptsPaymentView);
+                PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
+                //PayValue.isFocused();
+                PayValue.setFocusableInTouchMode(true);
+                PayValue.setFocusable(true);
+                PayValue.requestFocus();
+                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
+                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        cDataBase=cHelper.getWritableDatabase();
+                        ContentValues values=new ContentValues();
+
+                        Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
+                        String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
+                        values.put(DbHelperCategory.DATE,currentDate);
+                        values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
+                        values.put(DbHelperCategory.STATUS, "Debit");
+
+                        cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
+                        cDataBase.close();
+                        Toast.makeText(getBaseContext(), "New amount saved successfully", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year),Toast.LENGTH_SHORT).show();
+                        displayData();
+                        dialog.cancel();
+                    }
+                });
+                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                        dialog.cancel();
+                    }
+                });
+                alert = build.create();
+                alert.show();
+                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
+        handCashC.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tableCashInHand();
+            }
+        });
     }
+
+
+
+    /*private boolean checkAndRequestPermissions(){
+
+        List<String> listPermissions = new ArrayList<String>();
+        listPermissions.clear();
+        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_SMS) !=
+        PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
+
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS},REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+            listPermissions.add(Manifest.permission.READ_SMS);
+        }
+
+        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.RECEIVE_SMS) !=
+                PackageManager.PERMISSION_GRANTED){
+            *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
+
+            }*//*
+            listPermissions.add(Manifest.permission.RECEIVE_SMS);
+        }
+
+        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.MAPS_RECEIVE) !=
+                PackageManager.PERMISSION_GRANTED){
+            *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
+
+            }*//*
+            listPermissions.add(Manifest.permission.MAPS_RECEIVE);
+        }
+
+        if(!listPermissions.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissions.toArray(new String[listPermissions.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch (requestCode){
+            case REQUEST_ID_MULTIPLE_PERMISSIONS :
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+
+                }
+                return;
+        }*/
+        //Log.d(TAG, "Permission callback called-------");
+        /*switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
+
+                Map<String, Integer> perms = new HashMap<>();
+                // Initialize the map with both permissions
+                perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.MAPS_RECEIVE, PackageManager.PERMISSION_GRANTED);
+                // Fill with actual results from user
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < permissions.length; i++)
+                        perms.put(permissions[i], grantResults[i]);
+                    // Check for both permissions
+                    if (perms.get(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.MAPS_RECEIVE) == PackageManager.PERMISSION_GRANTED) {
+                        //Log.d(TAG, "sms & location services permission granted");
+                        // process the normal flow
+                        //else any one or both the permissions are not granted
+                    } else {
+                        //Log.d(TAG, "Some permissions are not granted ask again ");
+                        //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
+//                        // shouldShowRequestPermissionRationale will return true
+                        //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.MAPS_RECEIVE)) {
+                            showDialogOK("SMS and Location Services Permission required for this app",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    checkAndRequestPermissions();
+                                                    break;
+                                                case DialogInterface.BUTTON_NEGATIVE:
+                                                    // proceed with logic by disabling the related features or quit the app.
+                                                    break;
+                                            }
+                                        }
+                                    });
+                        }
+                        //permission is denied (and never ask again is  checked)
+                        //shouldShowRequestPermissionRationale will return false
+                        else {
+                            Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
+                                    .show();
+                            //                            //proceed with logic by disabling the related features or quit the app.
+                        }
+                    }
+                }
+            }
+        }*/
+
+    //}
+
+    private void showDialogOK(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", okListener)
+                .create()
+                .show();
+    }
+
+    public void displayData() {
+        ArrayList<String> categoryList = new ArrayList<String>();
+        ArrayList<Integer> categoryCnt = new ArrayList<Integer>();
+        /*cHelper = new DbHelperCategory(this.getBaseContext());
+        cDataBase = cHelper.getWritableDatabase();
+        Cursor cCursor = cDataBase.rawQuery("SELECT  * FROM " + DbHelperCategory.TABLE_NAME, null);
+        if(cCursor.moveToFirst()){
+            do{
+                categoryList.add(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)));
+                categoryCnt.add(0);
+                //Toast.makeText(getApplicationContext(),cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)),Toast.LENGTH_LONG).show();
+            }while(cCursor.moveToNext());
+            //Toast.makeText(getApplicationContext(),String.valueOf(categoryList.size()),Toast.LENGTH_LONG).show();
+        }
+        tHelper = new DbHelperGoal(this.getBaseContext());
+        tDataBase = tHelper.getWritableDatabase();
+
+        Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
+        float savings = 0;
+        int goalCnt = 0;
+        int categoryCntTemp = 0;
+        String currencyType = "";
+        int i = 0;
+        if (mCursor.moveToFirst()) {
+            do {
+                i = 0;
+                goalCnt += 1;
+                currencyType = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY));
+                savings += (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
+                do{
+                    if(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CATEGORY)).equals(categoryList.get(i))){
+                        categoryCntTemp = categoryCnt.get(i);
+                        ++categoryCntTemp;
+                        categoryCnt.set(i, categoryCntTemp);
+                        break;
+                    }
+                    i++;
+                }while(i < categoryList.size());
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        tGoals.setText(String.valueOf(goalCnt));
+        String catContent = "";
+        for(i = 0;i<categoryList.size();i++){
+            if(i == 0)
+                catContent = categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
+            else
+                catContent += categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
+        }
+        tSavings.setText(currencyType + " " + String.format("%.0f", savings));
+        tCategoryNo.setText(catContent);
+
+
+        */
+
+        // Cash In hand Display part
+        cHelper = new DbHelperCategory(this.getBaseContext());
+        cDataBase = cHelper.getWritableDatabase();
+        Cursor cCursor = cDataBase.rawQuery("SELECT  * FROM " + DbHelperCategory.TABLE_NAMECASH, null);
+        float total = 0, credit = 0, debit = 0;
+        if(cCursor.moveToFirst()){
+            do{
+                if(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.STATUS)).equals("Credit"))
+                    total += cCursor.getFloat(cCursor.getColumnIndex(DbHelperCategory.AMOUNT));
+                else
+                    total -= cCursor.getFloat(cCursor.getColumnIndex(DbHelperCategory.AMOUNT));
+            }while(cCursor.moveToNext());
+        }
+        cCursor.close();
+        cashHandAmount.setText("₹ " + String.valueOf(total));
+    }
+
+
+    public void tableCashInHand(){
+        LayoutInflater li = LayoutInflater.from(MainActivity.this);
+        View promptsHistoryView = li.inflate(R.layout.cash_hand_layout, null);
+        build = new AlertDialog.Builder(MainActivity.this);
+        build.setTitle("History");
+        build.setView(promptsHistoryView);
+        TableLayout cht = (TableLayout) promptsHistoryView.findViewById(R.id.tableHandCash);
+        TableRow tbrow0 = new TableRow(this);
+        tbrow0.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        TextView tv0 = new TextView(this);
+        tv0.setText("Status");
+        tv0.setTextSize(12);
+        tv0.setTypeface(null, Typeface.BOLD);
+        tv0.setTextColor(Color.BLACK);
+        tv0.setGravity(Gravity.CENTER);
+        tbrow0.addView(tv0);
+        TextView tv1 = new TextView(this);
+        tv1.setText("Amount");
+        tv1.setTextSize(12);
+        tv1.setTypeface(null, Typeface.BOLD);
+        tv1.setTextColor(Color.BLACK);
+        tv1.setGravity(Gravity.CENTER);
+        tbrow0.addView(tv1);
+        TextView tv2 = new TextView(this);
+        tv2.setText("Trans Date");
+        tv2.setTextSize(12);
+        tv2.setTypeface(null, Typeface.BOLD);
+        tv2.setTextColor(Color.BLACK);
+        tv2.setGravity(Gravity.CENTER);
+        tbrow0.addView(tv2);
+        cht.addView(tbrow0);
+        cHelper = new DbHelperCategory(this.getBaseContext());
+        cDataBase = cHelper.getWritableDatabase();
+
+        Cursor cCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAMECASH, null);
+        //Toast.makeText(getApplicationContext(), String.valueOf(cCursor.getCount()),Toast.LENGTH_SHORT).show();
+        float total = 0, credit = 0, debit = 0;
+        if(cCursor.moveToFirst()){
+            do{
+                TableRow tbrow = new TableRow(this);
+                tbrow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                TextView t1v = new TextView(this);
+                t1v.setText(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.STATUS)));
+                t1v.setTextSize(12);
+                t1v.setTextColor(Color.BLACK);
+                t1v.setGravity(Gravity.CENTER);
+                tbrow.addView(t1v);
+                TextView t2v = new TextView(this);
+                t2v.setText("₹ " + String.valueOf(cCursor.getFloat(cCursor.getColumnIndex(DbHelperCategory.AMOUNT))));
+                t2v.setTextSize(12);
+                t2v.setTextColor(Color.BLACK);
+                t2v.setGravity(Gravity.CENTER);
+                tbrow.addView(t2v);
+                TextView t3v = new TextView(this);
+                t3v.setText(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.DATE)));
+                t3v.setTextSize(12);
+                t3v.setTextColor(Color.BLACK);
+                t3v.setGravity(Gravity.CENTER);
+                tbrow.addView(t3v);
+                cht.addView(tbrow);
+            }while(cCursor.moveToNext());
+        }
+        cCursor.close();
+
+        build.setNegativeButton("Close ", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                //displayData();
+                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                dialog.cancel();
+            }
+        });
+
+        alert = build.create();
+        alert.show();
+
+    }
+
 
     public void countTotal(){
         dbHand=new DatabaseHandler(this.getBaseContext());
@@ -106,12 +552,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        //moveTaskToBack(true);
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
         }
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show();
     }
 
     private void addDrawerItems() {
@@ -250,7 +696,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this,Calc.class));
         }
         if (id == R.id.action_settings) {
-            Toast.makeText(this, " Configured " + item.getTitle(), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, settings_main.class));
             return true;
         }
 

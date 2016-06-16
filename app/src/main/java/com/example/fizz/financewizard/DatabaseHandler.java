@@ -20,7 +20,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String STATUS = "credit_debit";
     public static final String AMOUNT = "amount";
     public static final String KEY_ID = "_id";
-    public static final String TIMESTAMP = "timestamp";
+    public static final String MONTH = "month";
+    public static final String YEAR = "year";
     public static final String CATEGORY = "category";
 
     //Column Name 2
@@ -32,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CREDIT = "credit";
     public static final String DEBIT = "debit";
     public static final String TOTAL = "total";
+    public static final String NAME= "name";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,7 +48,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + STATUS + " TEXT, "
                 + ACCOUNT_NO + " TEXT, "
                 + AMOUNT + " TEXT, "
-                + TIMESTAMP + " TEXT, "
+                + MONTH + " TEXT, "
+                + YEAR + " TEXT, "
                 + CATEGORY + " TEXT)";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
@@ -60,7 +63,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ACCOUNT_NO + " TEXT, "
                 + CREDIT + " TEXT, "
                 + DEBIT + " TEXT, "
-                + TOTAL + " TEXT )";
+                + TOTAL + " TEXT, "
+                + NAME + " INTEGER )";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -73,21 +77,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Insert Row into Message table
-    void add(String smsMsgStr1, String smsAccNo1, String mAmount1,String mTimeStamp) {
+    void add(String smsMsgStr1, String smsAccNo1, String mAmount1,String mTimeStamp,String Cat) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(STATUS, smsMsgStr1.toString());
         values.put(ACCOUNT_NO, smsAccNo1.toString());
         values.put(AMOUNT, mAmount1.toString());
-        values.put(TIMESTAMP,mTimeStamp.toString());
+        values.put(MONTH, mTimeStamp.substring(0,3).toString());
+        values.put(YEAR, mTimeStamp.substring(4, 8).toString());
+        values.put(CATEGORY, Cat.toString());
 
         // Inserting Row
         db.insert(TABLE_NAME, null, values);
         db.close(); // Closing database connection
     }
     //Initialize values for bank details in table3
-    void firstAdd(String smsAccNo1) {
+    void firstAdd(String smsAccNo1,Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -95,6 +101,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(CREDIT,"0");
         values.put(DEBIT,"0");
         values.put(TOTAL,"0");
+        values.put(NAME,id);
 
         db.insert(TABLE_NAME3, null, values);
         db.close();
@@ -123,7 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
         }
-        if(smsMsgStr1.equalsIgnoreCase("Credited")) {
+        else if(smsMsgStr1.equalsIgnoreCase("Credited")) {
             String cre="";
             float temp;
             if (cursor.moveToFirst()) {
@@ -160,6 +167,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update(TABLE_NAME2, values, KEY_ID2 + " LIKE \"%1%\"", null);
         db.close();
     }
+    void UpdateTotal(String Acc, String Amo)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TOTAL, Amo);
+        db.update(TABLE_NAME3,values, ACCOUNT_NO + " LIKE \"%" + Acc + "%\"",null);
+        db.close();
+    }
     //Returns the last timestamp
     public ArrayList<String> Selected2() {
         ArrayList<String> DataList = new ArrayList<String>();
@@ -190,14 +205,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String> Selected3(String Account) {
         ArrayList<String> DataList = new ArrayList<String>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME+ "";
-        if(Account != null && !Account.equals(""))
-            selectQuery = "SELECT  * FROM " + TABLE_NAME+ " WHERE " + ACCOUNT_NO + " LIKE \"" + Account+"\"";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + ACCOUNT_NO + " LIKE \"%" + Account+"%\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        String sta,acc,amo,time,Entry1;
+        String sta,acc,amo,month,year,Entry1,cat;
         int id=0;
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -207,12 +220,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 sta="";
                 acc="";
                 amo="";
-                time="";
+                month="";
+                year="";
+                cat="";
                 sta+=cursor.getString(1);
                 acc+=cursor.getString(2);
                 amo+=cursor.getString(3);
-                time+=cursor.getString(4);
-                Entry1+="\n "+id+" "+sta+" "+amo+" "+time;
+                month+=cursor.getString(4);
+                year+=cursor.getString(5);
+                cat+=cursor.getString(6);
+                Entry1+="\n "+id+" "+sta+" "+amo+" "+month+" "+year+" "+cat;
                 DataList.add(Entry1);
             } while (cursor.moveToNext());
         }
@@ -229,6 +246,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         String id,acc,cre,deb,tot,Entry1;
+        int name;
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -244,8 +262,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cre+=cursor.getString(2);
                 deb+=cursor.getString(3);
                 tot+=cursor.getString(4);
+                name=cursor.getInt(5);
                 Entry1+="\n "+acc+
-                        "\n :"+tot+" ";
+                        "\n CREDITED : "+cre+
+                        "\n DEBITED : "+deb+
+                        "\n TOTAL : "+tot+
+                        "|"+name;
                 DataList.add(Entry1);
             } while (cursor.moveToNext());
         }

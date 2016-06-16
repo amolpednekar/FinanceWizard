@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TableLayout
-             xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:stretchColumns="0,1,2,3"
-            android:id="@+id/tableView"
+            android:stretchColumns="0,1,2" android:id="@+id/tableHandCash"
             android:layout_centerHorizontal="true">
+
         </TableLayout>
     </ScrollView>
 </RelativeLayout>

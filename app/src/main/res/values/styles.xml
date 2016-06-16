@@ -57,4 +57,9 @@
     <style name="MapsTheme" parent="Base.ThemeOverlay.AppCompat.ActionBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+
+
+    <style name="Theme.AppCompat.NoActionBar" parent="@style/Theme.AppCompat">
+            <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

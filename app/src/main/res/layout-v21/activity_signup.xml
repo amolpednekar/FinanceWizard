@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.shreekumar.mybillfizz2.LoginActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Fizz"
+        android:paddingTop="25dp"
+        android:textSize="45dp"
+        android:id="@+id/SignupLabel"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_below="@+id/SignupLabel"
+        android:id="@+id/signupEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/emailSignup"
+            android:layout_width="match_parent"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="Email"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_below="@+id/signupEmail"
+        android:id="@+id/signupPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/passwordSignup"
+            android:layout_width="match_parent"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Password"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_below="@+id/signupPassword"
+        android:id="@+id/signupCPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/cPasswordSignup"
+            android:layout_width="match_parent"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="Confirm Password"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:id="@+id/signupBtn"
+        android:layout_marginTop="15dp"
+        android:textSize="20dp"
+        android:backgroundTint="@color/light_grey"
+        android:textColor="@color/green"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/signupCPassword"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <!--<Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/loginBtn2"
+        android:layout_marginTop="75dp"
+        android:textSize="20dp"
+        android:backgroundTint="@color/light_grey"
+        android:textColor="@color/green"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/signupCPassword"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/> -->
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="No Account yet? Create one"
+        android:id="@+id/loginLink"
+        android:paddingTop="10dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:gravity="center"
+        android:layout_below="@+id/loginBtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />-->
+
+</RelativeLayout>
