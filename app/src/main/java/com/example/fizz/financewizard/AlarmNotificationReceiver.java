@@ -138,6 +138,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
 
         myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         myGoalNotifyMgr.cancelAll();
+
         if (mCursor.moveToFirst()) {
             do {
                 keyId.add(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.KEY_ID)));

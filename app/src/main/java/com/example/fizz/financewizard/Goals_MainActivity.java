@@ -99,8 +99,8 @@ public class Goals_MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        tGoals = (TextView)findViewById(R.id.goalNo2);
-        tSavings = (TextView)findViewById(R.id.totalSavings2);
+        tGoals = (TextView)findViewById(R.id.goalNo2);// total no of goals
+        tSavings = (TextView)findViewById(R.id.totalSavings2);// total savings
         totalG = (RelativeLayout)findViewById(R.id.viewCashFlowSlot);
         tCategoryNo = (TextView)findViewById(R.id.category2);
 
@@ -260,7 +260,7 @@ public class Goals_MainActivity extends AppCompatActivity {
     protected void onResume() {
         displayData();
         createAlarm();
-        pieDisp();
+       // pieDisp();
         super.onResume();
     }
 
@@ -278,7 +278,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(Goals_MainActivity.this, 0, mNotificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //mAlarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, mNotificationReceiverPendingIntent);
-        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, 60 * 1000, mNotificationReceiverPendingIntent);
+        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, 5 * 60 * 1000, mNotificationReceiverPendingIntent);
         Log.i("MainActivity", "Alarm created");
         Toast.makeText(getApplicationContext(),"Alarm created",Toast.LENGTH_LONG).show();
     }
@@ -326,13 +326,13 @@ public class Goals_MainActivity extends AppCompatActivity {
         mCursor.close();
         tGoals.setText(String.valueOf(goalCnt));
         String catContent = "";
+        tSavings.setText(currencyType + " " + String.format("%.0f",savings));
         /*for(i = 0;i<categoryList.size();i++){
             if(i == 0)
                 catContent = categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
             else
                 catContent += categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
         }
-        tSavings.setText(currencyType + " " + String.format("%.0f",savings));
         tCategoryNo.setText(catContent);*/
     }
 

@@ -18,7 +18,7 @@ public class rss_service extends IntentService {
 
     public static final String ITEMS = "items";
     public static final String RECEIVER = "receiver";
-    public static String RSS_LINK = "http://timesofindia.feedsportal.com/c/33039/f/533919/index.rss";
+    public static String RSS_LINK = "http://timesofindia.indiatimes.com/rssfeeds/1898055.cms";
     public rss_service() {
         super("RssService");
     }

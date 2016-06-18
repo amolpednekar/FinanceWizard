@@ -130,7 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
         }
-        else if(smsMsgStr1.equalsIgnoreCase("Credited")) {
+        else if(smsMsgStr1.equalsIgnoreCase("Credited") || smsMsgStr1.equalsIgnoreCase("Adjustment")) {
             String cre="";
             float temp;
             if (cursor.moveToFirst()) {
@@ -205,8 +205,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<String> Selected3(String Account) {
         ArrayList<String> DataList = new ArrayList<String>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + ACCOUNT_NO + " LIKE \"%" + Account+"%\"";
-
+       String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + ACCOUNT_NO + " LIKE \"%" + Account+"%\" ORDER BY " + YEAR + " DESC, " + KEY_ID + " DESC ";
+        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + ACCOUNT_NO + " LIKE \"%" + Account+"%\"";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
         cashHandAmount.setText("₹ " + String.valueOf(total));
     }
 
-
+    //cash in hand history
     public void tableCashInHand(){
         LayoutInflater li = LayoutInflater.from(MainActivity.this);
         View promptsHistoryView = li.inflate(R.layout.cash_hand_layout, null);
@@ -546,6 +546,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         countTotal();
+        displayData();
         super.onResume();
         this.doubleBackToExitPressedOnce = false;
     }

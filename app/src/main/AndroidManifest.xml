@@ -60,10 +60,7 @@
             android:name=".LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity android:name=".MainActivity"
@@ -72,7 +69,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
 
 
     <!--Sms parser-->
@@ -110,8 +112,10 @@
         <!--Manifest for goals and Targets-->
         <activity android:name=".Goals_MainActivity"
             android:label="Goals and Targets">
+            <service android:name=".NotificationUtils$NotificationActionService" />
         </activity>
 
+        <receiver android:name=".AlarmNotificationReceiver"/>
         <activity
             android:name=".GoalDisActivity"
             android:label="@string/title_activity_goal_dis" >

@@ -52,7 +52,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  *  This class is used to search places using Places API using keywords like BANKS, ATM.
  */
 public class MapsMainActivity extends AppCompatActivity {
-
+	//reupload
 	//android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 	private final String TAG = getClass().getSimpleName();
 	private GoogleMap mMap;
