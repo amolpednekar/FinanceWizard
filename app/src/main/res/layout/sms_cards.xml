@@ -26,8 +26,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account Number: "
+                android:layout_marginTop="20dp"
+                android:textSize="16dp"
+                android:gravity="left"
+                android:paddingLeft="3dp"
+                android:id="@+id/acc_padd"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
                 android:id="@+id/smsAcc"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="120dp"
                 android:textSize="16dp"/>
             <TextView
                 android:layout_width="match_parent"
@@ -36,15 +46,18 @@
                 android:gravity="left"
                 android:textSize="16dp"
                 android:text="Bank Name:"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:paddingLeft="3dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Balance: "
                 android:id="@+id/smsBal"
+                android:textSize="16dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="5dp"
-                android:textSize="16dp"/>
+                android:text="-"
+                android:gravity="left"/>
+
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

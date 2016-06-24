@@ -273,6 +273,10 @@ public class RssMainActivity extends AppCompatActivity {
             refresh_feed();
             return true;
         }
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, settings_main.class));
+            return true;
+        }
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;

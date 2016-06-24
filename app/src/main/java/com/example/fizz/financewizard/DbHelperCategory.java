@@ -23,6 +23,12 @@ public class DbHelperCategory extends SQLiteOpenHelper {
     public static final String KEY_IDLOGIN = "_id";
     public static final String PASSWORD_LOGIN = "password";
 
+    public static final String TABLE_PERMISSION="try_permission";
+    public static final String KEY_ID_PER ="_id";
+    public static final String STATUS_PER = "status";
+    public static final String TYPE_PER = "type_per";
+
+
     public DbHelperCategory(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     @Override
@@ -35,6 +41,10 @@ public class DbHelperCategory extends SQLiteOpenHelper {
 
         String CREATE_TABLEL = "CREATE TABLE "+ TABLE_LOGIN +" ("+ KEY_IDLOGIN +" TEXT PRIMARY KEY, "+  PASSWORD_LOGIN +" TEXT)";
         db.execSQL(CREATE_TABLEL);
+
+        String CREATE_TABLEP = "CREATE TABLE "+ TABLE_PERMISSION +" ("+ KEY_ID_PER +" INTEGER PRIMARY KEY, "+  STATUS_PER+" TEXT, " + TYPE_PER + " TEXT )";
+        db.execSQL(CREATE_TABLEP);
+
     }
 
     @Override
@@ -46,6 +56,8 @@ public class DbHelperCategory extends SQLiteOpenHelper {
         onCreate(db);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
+        onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERMISSION);
         onCreate(db);
     }
 }

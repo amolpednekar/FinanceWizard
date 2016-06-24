@@ -14,6 +14,4 @@
         android:title="My Goals"
         android:icon="@drawable/edit_goal" app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/listYearMenu" android:title="Year"
-        android:orderInCategory="101" app:showAsAction="always" />
 </menu>

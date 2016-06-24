@@ -1,53 +1,59 @@
 package com.example.fizz.financewizard;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.Manifest;
+        import android.annotation.TargetApi;
+        import android.app.Activity;
+        import android.app.AlertDialog;
+        import android.content.ContentValues;
+        import android.content.Context;
+        import android.content.DialogInterface;
+        import android.content.Intent;
+        import android.content.pm.PackageManager;
+        import android.content.res.Configuration;
+        import android.content.res.Resources;
+        import android.database.Cursor;
+        import android.database.sqlite.SQLiteDatabase;
+        import android.graphics.Color;
+        import android.graphics.Paint;
+        import android.graphics.Typeface;
+        import android.net.Uri;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.provider.Settings;
+        import android.support.annotation.NonNull;
+        import android.support.v4.app.ActivityCompat;
+        import android.support.v4.content.ContextCompat;
+        import android.support.v4.widget.DrawerLayout;
+        import android.support.v7.app.ActionBarDrawerToggle;
+        import android.support.v7.app.AppCompatActivity;
+        import android.util.Log;
+        import android.view.Gravity;
+        import android.view.LayoutInflater;
+        import android.view.Menu;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.WindowManager;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.BaseAdapter;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.FrameLayout;
+        import android.widget.ImageView;
+        import android.widget.ListView;
+        import android.widget.RelativeLayout;
+        import android.widget.Spinner;
+        import android.widget.TableLayout;
+        import android.widget.TableRow;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+        import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
 
 //API KEY AIzaSyBiht1KNsxYLPgfP73P_Gb72mULFUQV_TY
 //Server key  AIzaSyCUUjovK_G1Q-ak0wV5RPTHuzyywDO5iWA
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private DbHelperCategory cHelper;
     private DbHelperCategory chHelper;
     private SQLiteDatabase tDataBase, cDataBase, chDataBase;
-    private AlertDialog.Builder build ;
+    private AlertDialog.Builder build;
     TextView tGoals, tSavings, tCategoryNo, cashHandAmount;
     private RelativeLayout totalG, handCashC;
     EditText transAmount, PayValue;
@@ -81,8 +87,22 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinnerCat;
     String categoryG;
     Button cashAdd, cashSpent;
-    String[] defaultCat = {"Lifestyle","Entertainment","Food & Drinks","Misc."};
+    String[] defaultCat = {"Lifestyle", "Entertainment", "Food & Drinks", "Misc."};
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+
+    private static final int REQUEST_APP_SETTINGS = 168;
+
+    private static final String[] requiredPermissions = new String[]{
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            //Manifest.permission.WRITE_GSERVICES,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+            /* ETC.. */
+    };
 
 
     @Override
@@ -90,19 +110,10 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cashflow_main);
-        //TextView txt = (TextView) findViewById(R.id.custom_font);
-        //Typeface font = Typeface.createFromAsset(getAssets(), "BrockScript.ttf"); Add custom font
-        //txt.setTypeface(font);
 
-        /*if(checkAndRequestPermissions()){
-            ;
-        }else{
-            Toast.makeText(this,"No permissions",Toast.LENGTH_SHORT).show();
-        }*/
-
-        frameLayout = (FrameLayout)findViewById(R.id.content_frame);
-        mDrawerList = (ListView)findViewById(R.id.navList);
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);//@ activity main
         mActivityTitle = "Finance Wizard";//string
 
 
@@ -111,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        mbank=(RelativeLayout)findViewById(R.id.cardview_bank);
+        mbank = (RelativeLayout) findViewById(R.id.cardview_bank);
         mbank.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        cib=(TextView)findViewById(R.id.bank_amount);
+        cib = (TextView) findViewById(R.id.bank_amount);
         countTotal();
         cHelper = new DbHelperCategory(this);
 
@@ -170,16 +181,16 @@ public class MainActivity extends AppCompatActivity {
                 PayValue.requestFocus();
                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
-                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        cDataBase=cHelper.getWritableDatabase();
-                        ContentValues values=new ContentValues();
+                        cDataBase = cHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
 
                         Calendar calendar = Calendar.getInstance();
                         int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
                         String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-                        values.put(DbHelperCategory.DATE,currentDate);
+                        values.put(DbHelperCategory.DATE, currentDate);
                         values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
                         values.put(DbHelperCategory.STATUS, "Credit");
 
@@ -221,16 +232,16 @@ public class MainActivity extends AppCompatActivity {
                 PayValue.requestFocus();
                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
-                build.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        cDataBase=cHelper.getWritableDatabase();
-                        ContentValues values=new ContentValues();
+                        cDataBase = cHelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
 
                         Calendar calendar = Calendar.getInstance();
                         int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
                         String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-                        values.put(DbHelperCategory.DATE,currentDate);
+                        values.put(DbHelperCategory.DATE, currentDate);
                         values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
                         values.put(DbHelperCategory.STATUS, "Debit");
 
@@ -265,59 +276,49 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*private boolean checkAndRequestPermissions(){
 
+
+    /*private boolean checkAndRequestPermissions(){
         List<String> listPermissions = new ArrayList<String>();
         listPermissions.clear();
         if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_SMS) !=
         PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS},REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
             listPermissions.add(Manifest.permission.READ_SMS);
         }
-
         if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.RECEIVE_SMS) !=
                 PackageManager.PERMISSION_GRANTED){
             *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-
             }*//*
             listPermissions.add(Manifest.permission.RECEIVE_SMS);
         }
-
         if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.MAPS_RECEIVE) !=
                 PackageManager.PERMISSION_GRANTED){
             *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-
             }*//*
             listPermissions.add(Manifest.permission.MAPS_RECEIVE);
         }
-
         if(!listPermissions.isEmpty()) {
             ActivityCompat.requestPermissions(this, listPermissions.toArray(new String[listPermissions.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-
         switch (requestCode){
             case REQUEST_ID_MULTIPLE_PERMISSIONS :
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                 } else {
-
                 }
                 return;
         }*/
-        //Log.d(TAG, "Permission callback called-------");
+    //Log.d(TAG, "Permission callback called-------");
         /*switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {
-
                 Map<String, Integer> perms = new HashMap<>();
                 // Initialize the map with both permissions
                 perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
@@ -392,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
         }
         tHelper = new DbHelperGoal(this.getBaseContext());
         tDataBase = tHelper.getWritableDatabase();
-
         Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
         float savings = 0;
         int goalCnt = 0;
@@ -427,8 +427,6 @@ public class MainActivity extends AppCompatActivity {
         }
         tSavings.setText(currencyType + " " + String.format("%.0f", savings));
         tCategoryNo.setText(catContent);
-
-
         */
 
         // Cash In hand Display part
@@ -436,20 +434,20 @@ public class MainActivity extends AppCompatActivity {
         cDataBase = cHelper.getWritableDatabase();
         Cursor cCursor = cDataBase.rawQuery("SELECT  * FROM " + DbHelperCategory.TABLE_NAMECASH, null);
         float total = 0, credit = 0, debit = 0;
-        if(cCursor.moveToFirst()){
-            do{
-                if(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.STATUS)).equals("Credit"))
+        if (cCursor.moveToFirst()) {
+            do {
+                if (cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.STATUS)).equals("Credit"))
                     total += cCursor.getFloat(cCursor.getColumnIndex(DbHelperCategory.AMOUNT));
                 else
                     total -= cCursor.getFloat(cCursor.getColumnIndex(DbHelperCategory.AMOUNT));
-            }while(cCursor.moveToNext());
+            } while (cCursor.moveToNext());
         }
         cCursor.close();
         cashHandAmount.setText("₹ " + String.valueOf(total));
     }
 
     //cash in hand history
-    public void tableCashInHand(){
+    public void tableCashInHand() {
         LayoutInflater li = LayoutInflater.from(MainActivity.this);
         View promptsHistoryView = li.inflate(R.layout.cash_hand_layout, null);
         build = new AlertDialog.Builder(MainActivity.this);
@@ -486,8 +484,8 @@ public class MainActivity extends AppCompatActivity {
         Cursor cCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAMECASH, null);
         //Toast.makeText(getApplicationContext(), String.valueOf(cCursor.getCount()),Toast.LENGTH_SHORT).show();
         float total = 0, credit = 0, debit = 0;
-        if(cCursor.moveToFirst()){
-            do{
+        if (cCursor.moveToFirst()) {
+            do {
                 TableRow tbrow = new TableRow(this);
                 tbrow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
                 TextView t1v = new TextView(this);
@@ -509,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
                 t3v.setGravity(Gravity.CENTER);
                 tbrow.addView(t3v);
                 cht.addView(tbrow);
-            }while(cCursor.moveToNext());
+            } while (cCursor.moveToNext());
         }
         cCursor.close();
 
@@ -529,18 +527,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void countTotal(){
-        dbHand=new DatabaseHandler(this.getBaseContext());
-        db=dbHand.getWritableDatabase();
-        Cursor mcursor = db.rawQuery("SELECT * FROM "+DatabaseHandler.TABLE_NAME3,null);
-        float total=0;
-        if(mcursor.moveToFirst()) {
+    public void countTotal() {
+        dbHand = new DatabaseHandler(this.getBaseContext());
+        db = dbHand.getWritableDatabase();
+        Cursor mcursor = db.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_NAME3, null);
+        float total = 0;
+        if (mcursor.moveToFirst()) {
             do {
                 total += Float.valueOf(mcursor.getString(mcursor.getColumnIndex(DatabaseHandler.TOTAL)));
             } while (mcursor.moveToNext());
         }
         cib.setText(String.valueOf(total));
     }
+
     private boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -594,21 +593,22 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+
     protected void openActivity(int position) {
         mDrawerLayout.closeDrawer(mDrawerList);
         MainActivity.position = position; //Setting currently selected position in this field so that it will be available in our child activities.
         switch (position) {
             case 0:
-                startActivity(new Intent(this,MainActivity.class));
+                startActivity(new Intent(this, MainActivity.class));
                 break;
             case 1:
                 startActivity(new Intent(this, RssMainActivity.class));
                 break;
-           case 2:
+            case 2:
                 startActivity(new Intent(this, Goals_MainActivity.class));
                 break;
             case 3:
-               startActivity(new Intent(this, Trends_MainActivity.class));
+                startActivity(new Intent(this, Trends_MainActivity.class));
                 break;
             case 4:
                 startActivity(new Intent(this, CamMainActivity.class));
@@ -620,6 +620,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -644,12 +645,13 @@ public class MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
+        int[] images = {R.drawable.cash_flow, R.drawable.rss, R.drawable.goals_targets, R.drawable.trends, R.drawable.reminders, R.drawable.map};
 
-        public myAdapter(Context context){
+        public myAdapter(Context context) {
             this.context = context;
             NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
         }
+
         @Override
         public int getCount() {
             return NavListCategories.length;
@@ -668,21 +670,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = null;
-            if(convertView == null){
-                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.custom_row, parent, false);
-            }
-            else{
-                row =convertView;
+            } else {
+                row = convertView;
             }
 
-            TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
+            TextView titleTextView = (TextView) row.findViewById(R.id.textViewRow1);
             ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
             titleTextView.setText(NavListCategories[position]);
             titleImageView.setImageResource(images[position]);
             return row;
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -692,9 +694,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id==R.id.calculator){
+        if (id == R.id.calculator) {
 
-            startActivity(new Intent(this,Calc.class));
+            startActivity(new Intent(this, Calc.class));
         }
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, settings_main.class));

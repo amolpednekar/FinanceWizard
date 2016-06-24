@@ -25,7 +25,7 @@
         android:textSize="23dp"
         android:paddingTop="15dp"
         android:id="@+id/emailLogin"
-        android:hint="Email"
+        android:hint="Username"
         android:layout_below="@+id/loginLabel"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

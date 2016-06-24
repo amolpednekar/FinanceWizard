@@ -21,7 +21,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
-    <permission
+    <!--<permission
         android:name="com.example.fizz.financewizard.permission.READ_SMS"
         android:protectionLevel="signature" />
 
@@ -36,7 +36,7 @@
     <permission
         android:name="com.example.fizz.financewizard.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
-
+-->
     <uses-permission android:name="com.example.fizz.financewizard.permission.MAPS_RECEIVE" />
 
     <uses-feature
@@ -61,6 +61,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".MainActivity"
@@ -70,10 +74,6 @@
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
             android:launchMode="singleTask">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
 
 
@@ -157,6 +157,9 @@
 
         <activity android:name=".settings_main"
             android:label="Settings">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fizz.financewizard.MainActivity" />
         </activity>
 
         <meta-data

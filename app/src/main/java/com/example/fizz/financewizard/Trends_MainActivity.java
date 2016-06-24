@@ -90,7 +90,6 @@ public class Trends_MainActivity extends AppCompatActivity {
 
         BarData data = new BarData(getXAxisValues(), getDataSet());
         chart.setData(data);
-        chart.setDescription("My Chart");
         chart.animateXY(2000, 3000);
 
         chart.invalidate();
@@ -276,7 +275,7 @@ public class Trends_MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_trends, menu);
         return true;
     }
 
@@ -413,10 +412,15 @@ public class Trends_MainActivity extends AppCompatActivity {
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, settings_main.class));
             return true;
         }
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        }
+        if(id==R.id.calculator){
+
+            startActivity(new Intent(this,Calc.class));
         }
 
         return super.onOptionsItemSelected(item);

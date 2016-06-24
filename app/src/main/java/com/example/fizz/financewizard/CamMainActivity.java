@@ -1,5 +1,7 @@
 package com.example.fizz.financewizard;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,6 +9,7 @@ import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,8 +20,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -174,21 +179,21 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         getApplicationContext());
                 item1.setBackground(new ColorDrawable(Color.rgb(0x30, 0xB1,
                         0xF5)));
-                item1.setWidth(dp2px(65));
+                item1.setWidth(dp2px(90));
                 item1.setIcon(R.drawable.reminder);
                 menu.addMenuItem(item1);
                 SwipeMenuItem item2 = new SwipeMenuItem(
                         getApplicationContext());
                 item2.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
-                item2.setWidth(dp2px(65));
+                item2.setWidth(dp2px(90));
                 item2.setIcon(R.drawable.ic_action_discard);
                 menu.addMenuItem(item2);
                 SwipeMenuItem item3 = new SwipeMenuItem(
                         getApplicationContext());
                 item3.setBackground(new ColorDrawable(Color.rgb(0xE5, 0xE0,
                         0x3F)));
-                item3.setWidth(dp2px(65));
+                item3.setWidth(dp2px(90));
                 item3.setIcon(R.drawable.ic_action_important);
                 menu.addMenuItem(item3);
 
@@ -234,11 +239,17 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         swipelist.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final int position, SwipeMenu menu, int index) {
-                // ApplicationInfo item = mAppList.get(position);
                 final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+                String[] DummyTitle = image.getTitle().split("/");
+                final String nameTitle;
+                if(image.getName()==(null))
+                    nameTitle= DummyTitle[6];
+                else
+                    nameTitle=image.getName();
                 switch (index) {
                     case 0:
                         // open
+
                         LayoutInflater li = LayoutInflater.from(CamMainActivity.this);
                         View DateView = li.inflate(R.layout.calendar_cam, null);
                         build = new AlertDialog.Builder(CamMainActivity.this);
@@ -249,7 +260,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         currentYear = c.get(Calendar.YEAR);
                         currentMonth = c.get(Calendar.MONTH);
                         currentDay = c.get(Calendar.DAY_OF_MONTH);
-                        //picker = (DatePicker) findViewById(R.id.scheduleTimePicker);
                         newDate = (Button) DateView.findViewById(R.id.buttonCalCam); //Button which opens the calender
                         newDate.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -258,19 +268,23 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 showDialog(DATE_DIALOG_ID);
                             }
                         });
+
+
                         build.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+
                                 database = dbHelper.getWritableDatabase();
                                 ContentValues cv = new ContentValues();
                                 cv.put(DBhelper.COLUMN_DESCRIPTION, dateString);
                                 Log.d("Updating Date: ", ".....");
-                                String whereClause =
-                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
-                                String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                                String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                                String[] whereArgs = new String[]{ String.valueOf(image.getDatetimeLong())};
                                 database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
                                 Log.d("Updating Date: ", ".....");
                                 image.setDescription(dateString);
+
                                 swipelist.invalidateViews();
+
                             }
                         });
                         build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -289,12 +303,14 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         //Yes button clicked
-                                        Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
+
+                                        Toast.makeText(getApplicationContext(), nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
                                         Log.d("Delete Image: ", "Deleting.....");
                                         adapter.remove(adapter.getItem((int) position));
                                         swipelist.invalidateViews();
                                         File fdelete = new File(image.getTitle());
                                         if (fdelete.exists())
+
                                         {
                                             if (fdelete.delete()) {
                                                 daOdb.deleteImage(image);
@@ -309,6 +325,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                         swipelist.invalidateViews();
                                         dialog.cancel();
                                         break;
+
                                     case DialogInterface.BUTTON_NEGATIVE:
                                         //No button clicked
                                         dialog.cancel();
@@ -316,23 +333,24 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                 }
                             }
                         };
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
-                        builder.setMessage("Do You Wish To Delete?").setPositiveButton("Yes", dialogClickListener)
+                        builder.setMessage("Do You Wish To Delete "  +nameTitle+" ?").setPositiveButton("Yes", dialogClickListener)
                                 .setNegativeButton("No", dialogClickListener).show();
+
                         break;
                     case 2:
-                        if(image.getPriority().equals("OFF")){
+                        if(image.getPriority()=="OFF"){
                             database = dbHelper.getWritableDatabase();
                             ContentValues cv = new ContentValues();
                             cv.put(DBhelper.COLUMN_PRIORITY, "ON");
                             Log.d("Updating Priority: ", ".....");
-                            String whereClause =
-                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
-                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                            String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
                             database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
                             Log.d("Updating Priority: ", ".....");
                             image.setPriority("ON");
-                            Toast.makeText(getApplicationContext(), image + " " + " is marked Important.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), nameTitle + " " + " is marked Important.", Toast.LENGTH_SHORT).show();
                             swipelist.invalidateViews();
                         }
                         else{
@@ -341,62 +359,121 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                             cv.put(DBhelper.COLUMN_PRIORITY, "OFF");
                             Log.d("Updating Priority: ", ".....");
                             String whereClause =
-                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
-                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
+                                    DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{ String.valueOf(image.getDatetimeLong())};
                             database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
                             Log.d("Updating Priority: ", ".....");
                             image.setPriority("OFF");
-                            Toast.makeText(getApplicationContext(), image + " " + " is marked UnImportant.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), nameTitle + " " + " is marked UnImportant.", Toast.LENGTH_SHORT).show();
                             swipelist.invalidateViews();
                         }
                         break;
-
                 }
+
                 return false;
             }
         });
+
         swipelist.invalidateViews();
         swipelist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            final int arg2, final long position) {
                 final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
-                AlertDialog.Builder alert = new AlertDialog.Builder(CamMainActivity.this);
-                //alert.setTitle("Edit"); //Set Alert dialog title here
-                alert.setMessage("Name"); //Message here
-                // Set an EditText view to get user input
-                final EditText input = new EditText(CamMainActivity.this);
-                alert.setView(input);
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //You will get as string input data in this variable.
-                        // here we convert the input to a string and show in a toast.
-                        String srt = input.getEditableText().toString();
-                        database = dbHelper.getWritableDatabase();
-                        ContentValues cv = new ContentValues();
-                        cv.put(DBhelper.COLUMN_NAME, srt);
-                        Log.d("Updating Date: ", ".....");
-                        String whereClause =  /*DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
-                        String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
-                        database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
-                        Log.d("Updating Date: ", ".....");
-                        image.setName(srt);
-                        swipelist.invalidateViews();
-                        Toast.makeText(CamMainActivity.this,srt,Toast.LENGTH_LONG).show();
-                    } // End of onClick(DialogInterface dialog, int whichButton)
-                }); //End of alert.setPositiveButton
-                alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                        dialog.cancel();
+                String[] DummyTitle = image.getTitle().split("/");
+                final String nameTitle;
+                if(image.getName()==null)
+                    nameTitle= DummyTitle[6];
+                else
+                    nameTitle=image.getName();
+
+                final CharSequence[] items = {"Delete Reminder", "Rename"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
+                builder.setTitle("Choose An Option");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0:
+                                if (!image.getDescription().equals("")) {
+                                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    //Yes button clicked
+
+                                                    Toast.makeText(getApplicationContext(), "Notification for " + nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                                                    database = dbHelper.getWritableDatabase();
+                                                    ContentValues cv = new ContentValues();
+                                                    cv.put(DBhelper.COLUMN_DESCRIPTION, "");
+                                                    Log.d("Updating Date: ", ".....");
+                                                    String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                                                    String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
+                                                    database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                                                    Log.d("Updating Date: ", ".....");
+                                                    image.setDescription("No Reminder set");
+                                                    swipelist.invalidateViews();
+                                                    dialog.cancel();
+                                                    break;
+
+                                                case DialogInterface.BUTTON_NEGATIVE:
+                                                    //No button clicked
+                                                    dialog.cancel();
+                                                    break;
+                                            }
+                                        }
+                                    };
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
+                                    builder.setMessage("Do You Wish To Delete the reminder for " + nameTitle + " ?").setPositiveButton("Yes", dialogClickListener)
+                                            .setNegativeButton("No", dialogClickListener).show();
+                                } else {
+
+                                    Toast.makeText(getApplicationContext(), "Please Set A Reminder.", Toast.LENGTH_LONG).show();
+
+                                }
+                                break;
+                            case 1:
+                                AlertDialog.Builder alert = new AlertDialog.Builder(CamMainActivity.this);
+                                //Renaming the image
+                                alert.setMessage("Rename"); //Message here
+                                final EditText input = new EditText(CamMainActivity.this);
+                                alert.setView(input);
+
+                                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        //You will get as string input data in this variable.
+                                        // here we convert the input to a string and show in a toast.
+                                        String srt = input.getEditableText().toString();
+                                        database = dbHelper.getWritableDatabase();
+                                        ContentValues cv = new ContentValues();
+                                        cv.put(DBhelper.COLUMN_NAME, srt);
+                                        Log.d("Updating Name: ", ".....");
+                                        String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                                        String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
+                                        database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                                        Log.d("Updating Name: ", ".....");
+                                        image.setName(srt);
+                                        swipelist.invalidateViews();
+                                        Toast.makeText(CamMainActivity.this, srt, Toast.LENGTH_LONG).show();
+                                    } // End of onClick(DialogInterface dialog, int whichButton)
+                                }); //End of alert.setPositiveButton
+                                alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // Canceled.
+                                        dialog.cancel();
+                                    }
+                                }); //End of alert.setNegativeButton
+                                alert.show();
+                                break;
+                        }
                     }
-                }); //End of alert.setNegativeButton
-                AlertDialog alertDialog = alert.create();
-                alertDialog.show();
-               /* alert = build.create();
-                alert.show();*/
+                });
+                builder.show();
                 return true;
             }
         });
+
         Intent in=getIntent();
         // delGoalId = getIntent().getIntExtra("ID", 0);
         if(in != null){
@@ -421,76 +498,15 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-    public void onReceive(final int position) {
-        final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
-        Toast.makeText(getApplicationContext(), "onReceive", Toast.LENGTH_LONG).show();
-        final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
-        String action = getIntent().getAction();
-        if ("Delete".equals(action)) {// to execute delete option
-            Toast.makeText(getApplicationContext(), "Delete", Toast.LENGTH_LONG).show();
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
-                            /*Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
-                            Log.d("Delete Image: ", "Deleting.....");
-                            adapter.remove(adapter.getItem((int) position));
-                            swipelist.invalidateViews();
-                            File fdelete = new File(image.getTitle());
-                            if (fdelete.exists())
-                            {
-                                if (fdelete.delete()) {
-                                    daOdb.deleteImage(image);
-                                    daOdb.getImages();
-                                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                    // Builds the notification and issues it.
-                                    myGoalNotifyMgr.cancel(position);
-                                    // Gets an instance of the NotificationManager service
-                                    System.out.println("File Deleted :" + image.getPath());
-                                } else {
-                                    daOdb.deleteImage(image);
-                                    daOdb.getImages();
-                                    System.out.println("File Not Deleted :" + image.getPath());
-                                }
-                            }
-                            swipelist.invalidateViews();
-                            dialog.cancel();
-                            break;*/
-                            database = dbHelper.getWritableDatabase();
-                            ContentValues cv = new ContentValues();
-                            cv.put(DBhelper.COLUMN_DESCRIPTION, " ");
-                            Log.d("Updating Date: ", ".....");
-                            String whereClause =
-                                       /* DBhelper.COLUMN_TITLE + "=? AND " +*/ DBhelper.COLUMN_DATETIME + "=?";
-                            String[] whereArgs = new String[]{/*image.getTitle(),*/ String.valueOf(image.getDatetimeLong())};
-                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
-                            Log.d("Updating Date: ", ".....");
-                            image.setDescription(" ");
-                            myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                            // Builds the notification and issues it.
-                            myGoalNotifyMgr.cancel(position);
-                            // Gets an instance of the NotificationManager service
-                            swipelist.invalidateViews();
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-                            dialog.cancel();
-                            break;
-                    }
-                }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
-            builder.setMessage("Do You Wish To Delete the Reminder?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
-            /*alert = build.create();
-            alert.show();*/
-        }
-    }
     public void onRec(final int position) {
         final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
-        Toast.makeText(getApplicationContext(), "onReceive", Toast.LENGTH_LONG).show();
         final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+        String[] DummyTitle = image.getTitle().split("/");
+        final String nameTitle;
+        if(image.getName()==(null))
+            nameTitle= DummyTitle[6];
+        else
+            nameTitle=image.getName();
         String action = getIntent().getAction();
         if ("Del".equals(action)) {// to execute delete option
             // delete
@@ -500,7 +516,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
-                            Toast.makeText(getApplicationContext(), image + " " + " is deleted.", Toast.LENGTH_LONG).show();
+
+                            Toast.makeText(getApplicationContext(), nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
                             Log.d("Delete Image: ", "Deleting.....");
                             adapter.remove(adapter.getItem((int) position));
                             swipelist.invalidateViews();
@@ -509,6 +526,9 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                             {
                                 if (fdelete.delete()) {
                                     daOdb.deleteImage(image);
+                                    myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                    // Builds the notification and issues it.
+                                    myGoalNotifyMgr.cancel(position + 1);
                                     daOdb.getImages();
                                     System.out.println("File Deleted :" + image.getPath());
                                 } else {
@@ -528,50 +548,65 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 }
             };
             AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
-            builder.setMessage("Do You Wish To Delete?").setPositiveButton("Yes", dialogClickListener)
+            builder.setMessage("Do You Wish To Delete "+nameTitle+" ?").setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
         }
     }
 
 
-    // calculates days from months
-    int calMonthDay(int m,int y){//calMonthDay(month,year)
-        int x=0,c;
-        for(c = 1; c < m; c++) {// Jan to less than the month 'm' as 'm' we are not taking the the whole days of that month
-            if(c == 2) {//if Feb
-                if(y%4 == 0)//checks if year is leap or not
-                    x += 29;
-                else
-                    x += 28;
-            }
-            else
-                x += mon.get(c-1);
+    public void onReceive(final int position) {
+        final SwipeMenuListView swipelist = (SwipeMenuListView) findViewById(R.id.main_list_view);
+        final MyImage image = (MyImage) swipelist.getItemAtPosition((int) position);
+        String[] DummyTitle = image.getTitle().split("/");
+        final String nameTitle;
+        if(image.getName()==(null))
+            nameTitle= DummyTitle[6];
+        else
+            nameTitle=image.getName();
+        String action = getIntent().getAction();
+
+        if ("Delete".equals(action)) {// to execute delete option
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+
+                            Toast.makeText(getApplicationContext(), "Notification for " + nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
+                            database = dbHelper.getWritableDatabase();
+                            ContentValues cv = new ContentValues();
+                            cv.put(DBhelper.COLUMN_DESCRIPTION, "");
+                            Log.d("Updating Date: ", ".....");
+                            String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
+                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                            Log.d("Updating Date: ", ".....");
+                            image.setDescription("No Reminder set");
+                            swipelist.invalidateViews();
+                            myGoalNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            // Builds the notification and issues it.
+                            myGoalNotifyMgr.cancel(position+1);
+                            // Gets an instance of the NotificationManager service
+
+                            dialog.cancel();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            dialog.cancel();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(CamMainActivity.this);
+            builder.setMessage("Do You Wish To Delete the reminder for "+nameTitle+" ?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
         }
-        return(x);
     }
-    //calculates no. of months from current month & year to goal month & year
-    int calDateMonth(int mC,int yC,int mG,int yG){//(current-month, current-year, goal-month, goal-year)
-        int x = 0,i,countM=0;
-        if(yC<=yG){
-            for(i = yC; i < yG; i++)
-                countM += 12;
-        }
-        countM -= mC;
-        countM += mG;
-        return (countM);
-    }
-    //calculates no. of weeks from current month & year to goal month & year
-    int calDateWeek(int mC,int yC,int mG,int yG){
-        int x = 0,i,countW=0;
-        if(yC<=yG){
-            for(i = yC; i < yG; i++)
-                countW+=52;
-        }
-        countW -= mC;
-        countW += mG;
-        countW *= 4;
-        return (countW);
-    }
+
+
     /**
      * initialize database
      */
@@ -789,23 +824,128 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             IOUtils.closeQuietly(in);
         }
     }
-    private void moveFile(File file, File dir) throws IOException {
-        File newFile = new File(dir, file.getName());
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            outputChannel = new FileOutputStream(newFile).getChannel();
-            inputChannel = new FileInputStream(file).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-            file.delete();
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
+    @SuppressLint("NewApi")
+    public static String getPath(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
         }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
     }
-    @Override protected void onActivityResult(int requestCode, int resultCode,
-                                              Intent data) {
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RESULT_LOAD_IMAGE:
@@ -813,13 +953,12 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         resultCode == RESULT_OK && null != data) {
                     final Dialog dialog = new Dialog(this);
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                    String fname = "IMG_"+ timeStamp + ".jpg";
                     File mediaFile1;
                     //Selected Image Uri
                     Uri selectedImageUri = data.getData();
-                    selectedImagePath = getPath(selectedImageUri);
+                    selectedImagePath = getPath(CamMainActivity.this,selectedImageUri);
                     Toast.makeText(getApplication(),selectedImagePath,Toast.LENGTH_SHORT).show();
-                    File mediaStored = new File(getPath(selectedImageUri));//Source file
+                    File mediaStored = new File(getPath(CamMainActivity.this,selectedImageUri));//Source file
                     File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "FiZZ");
                     mediaFile1 = new File(mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg");
                     String imageName=String.valueOf(mediaFile1);
@@ -830,60 +969,95 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         if (!mediaStorageDir.mkdirs()) {
                             Log.d("FiZZ", "failed to create directory");
                             Toast.makeText(getBaseContext(),"File directory creation failed",Toast.LENGTH_SHORT).show();
-                            //return null;
                         }else{
-                            try {
+                            //File creation succesful
+                            Toast.makeText(getBaseContext(),"File directory created",Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        try {
+                            try{
                                 copyFile(mediaStored, mediaStorageDir);
-                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                                Cursor cursor = getContentResolver()
-                                        .query(selectedImageUri, filePathColumn, null, null,
-                                                null);
-                                cursor.moveToFirst();
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String picturePath = cursor.getString(columnIndex);
+                                String wholeID = DocumentsContract.getDocumentId(selectedImageUri);
+
+                                // Split at colon, use second item in the array
+                                String id = wholeID.split(":")[1];
+
+                                String[] column = { MediaStore.Images.Media.DATA };
+
+                                // where id is equal to
+                                String sel = MediaStore.Images.Media._ID + "=?";
+
+                                Cursor cursor = getContentResolver().query(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, column, sel,
+                                        new String[] { id }, null);
+
+                                String filePath = "";
+
+                                int columnIndex = cursor.getColumnIndex(column[0]);
+
+                                if (cursor.moveToFirst()) {
+                                    filePath = cursor.getString(columnIndex);
+                                }
+
                                 cursor.close();
                                 MyImage image = new MyImage();
                                 image.setTitle(imageName);
-                                image.setDescription(picturePath);
+                                image.setDescription("No Reminder set");
+                                image.setDatetime(System.currentTimeMillis());
+                                image.setPath(filePath);
+                                image.setName(null);
+                                image.setPriority("OFF");
+                                images.add(image);
+                                daOdb.addImage(image);
+                                adapter.notifyDataSetChanged();
+                            }catch(IllegalArgumentException ie) {
+                                Toast.makeText(getApplication(), "Copying", Toast.LENGTH_SHORT).show();
+                                copyFile(mediaStored, mediaStorageDir);
+                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                                String picturePath = null;
+                                Cursor cursor = getContentResolver()
+                                        .query(selectedImageUri, filePathColumn, null, null,
+                                                null);
+                                if (cursor.moveToFirst()) {
+                                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                    picturePath = cursor.getString(columnIndex);
+                                }
+                                cursor.close();
+                                MyImage image = new MyImage();
+                                image.setTitle(imageName);
+                                image.setDescription("No Reminder set");
                                 image.setDatetime(System.currentTimeMillis());
                                 image.setPath(picturePath);
                                 image.setName(null);
                                 image.setPriority("OFF");
                                 images.add(image);
                                 daOdb.addImage(image);
-                                //swipelist.invalidateViews();
                                 adapter.notifyDataSetChanged();
-                            }catch (IOException e){
-                                e.printStackTrace();
-                            }finally {
                             }
-                        }
-                    }else{
-                        try {
-                            //moveFile(mediaStored,mediaStorageDir);
-                            Toast.makeText(getApplication(),"Copying",Toast.LENGTH_SHORT).show();
-                            copyFile(mediaStored, mediaStorageDir);
-                            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                            String picturePath = null;
-                            Cursor cursor = getContentResolver()
-                                    .query(selectedImageUri, filePathColumn, null, null,
-                                            null);
-                            if(cursor.moveToFirst()) {
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                picturePath = cursor.getString(columnIndex);
+                            catch(ArrayIndexOutOfBoundsException ae){
+                                Toast.makeText(getApplication(), "Copying", Toast.LENGTH_SHORT).show();
+                                copyFile(mediaStored, mediaStorageDir);
+                                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                                String picturePath = null;
+                                Cursor cursor = getContentResolver()
+                                        .query(selectedImageUri, filePathColumn, null, null,
+                                                null);
+                                if (cursor.moveToFirst()) {
+                                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                    picturePath = cursor.getString(columnIndex);
+                                }
+                                cursor.close();
+                                MyImage image = new MyImage();
+                                image.setTitle(imageName);
+                                image.setDescription("No Reminder set");
+                                image.setDatetime(System.currentTimeMillis());
+                                image.setPath(picturePath);
+                                image.setName(null);
+                                image.setPriority("OFF");
+                                images.add(image);
+                                daOdb.addImage(image);
+                                adapter.notifyDataSetChanged();
                             }
-                            cursor.close();
-                            MyImage image = new MyImage();
-                            image.setTitle(imageName);
-                            image.setDescription(" ");
-                            image.setDatetime(System.currentTimeMillis());
-                            image.setPath(picturePath);
-                            image.setName(null);
-                            image.setPriority("OFF");
-                            images.add(image);
-                            daOdb.addImage(image);
-                            adapter.notifyDataSetChanged();
-                            //swipelist.invalidateViews();
                         }catch (IOException e){
                             e.printStackTrace();
                         }
@@ -899,38 +1073,49 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                     new String[]{MediaStore.Images.Media._ID},
                                     MediaStore.Images.Media.DATA + "=? ",
                                     new String[]{filePath}, null);
+
+
                     if( cursor != null && cursor.moveToFirst() ){
-                        int column_index_data = cursor.getColumnIndexOrThrow(
-                                MediaStore.MediaColumns._ID);
-                        String picturePath = cursor.getString(column_index_data);
-                        MyImage image = new MyImage();
-                        image.setTitle(imageName);
-                        image.setDescription(" ");
-                        image.setDatetime(System.currentTimeMillis());
-                        image.setPath(picturePath);
-                        image.setName(null);
-                        image.setPriority("OFF");
-                        images.add(image);
-                        daOdb.addImage(image);
-                        adapter.notifyDataSetChanged();
                         cursor.close();
                     }
-                    else{
-                        MyImage image = new MyImage();
-                        image.setTitle(imageName);
-                        image.setDescription(" ");
-                        image.setDatetime(System.currentTimeMillis());
-                        image.setPath(fileUri.getPath());
-                        image.setName(null);
-                        image.setPriority("OFF");
-                        images.add(image);
-                        daOdb.addImage(image);
-                        adapter.notifyDataSetChanged();
-                        //swipelist.invalidateViews();
+                    else {
+                        try {
+                            MyImage image = new MyImage();
+                            image.setTitle(imageName);
+                            image.setDescription("No Reminder set");
+                            image.setDatetime(System.currentTimeMillis());
+                            image.setPath(fileUri.getPath());
+                            image.setName(null);
+                            image.setPriority("OFF");
+                            images.add(image);
+                            daOdb.addImage(image);
+                            adapter.notifyDataSetChanged();
+                        } catch (NullPointerException e) {
+                            int column_index_data = 0;
+                            if (cursor != null) {
+                                column_index_data = cursor.getColumnIndexOrThrow(
+                                        MediaStore.Images.Media.DATA);
+                            }
+                            String picturePath = null;
+                            if (cursor != null) {
+                                picturePath = cursor.getString(column_index_data);
+                            }
+                            MyImage image = new MyImage();
+                            image.setTitle(imageName);
+                            image.setDescription("No Reminder set");
+                            image.setDatetime(System.currentTimeMillis());
+                            image.setPath(picturePath);
+                            image.setName(null);
+                            image.setPriority("OFF");
+                            images.add(image);
+                            daOdb.addImage(image);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
         }
     }
+
     /**
      * item clicked listener used to implement the react action when an item is
      * clicked.

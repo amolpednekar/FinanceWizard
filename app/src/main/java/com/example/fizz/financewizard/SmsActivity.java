@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -13,19 +15,25 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -53,9 +61,9 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     String mAmount2 = "", balanceTemp = "";
     public int StartApp=0, balA;
     /*BANK SMS ADDRESSES*/
-    public static int NoBank = 7;
-    public static String stringArray[] = {"BP-ATMSBI","BZ-ATMSBI","BX-ATMSBI","VK-CorpBK","VM-BOIIND","VK-BOIIND","VM-CBSSBI","VK-CBSSBI"};
-    public static String bankNames[]={"State Bank Of India","State Bank Of India","State Bank Of India","Cooporative Bank","Bank of India","Bank of India","State Bank of India","State Bank of India"};
+    public static int NoBank = 6;
+    public static String stringArray[] = {"BP-ATMSBI","BZ-ATMSBI","BX-ATMSBI","VK-CorpBK","VM-BOIIND","VK-BOIIND","VM-CBSSBI"};
+    public static String bankNames[]={"State Bank Of India","State Bank Of India","State Bank Of India","Cooporation Bank","Bank of India","Bank of India","State Bank of India"};
 
     ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
     // public static String stringArray[] = {/*"8451043280", */"VM-HDFCBK", "VM-BOIIND", "BP-SBIMBS", "AM-HDFCBK", "VM-UnionB", "VM-UIICHO", "VM-CBSSBI", "VM-CorpBk", "VL-CENTBK", "VM-CENTBK", "BW-PNBSMS","VK-BOIIND","VM-CBSSBI","VM-BOIIND","BZ-ATMSBI","VK-AxisBk"};
@@ -66,7 +74,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     public String PushTime;
     /*CALENDER*/
     Calendar calendar = Calendar.getInstance();
-    //Alertbox
+    //AlertboxF
     AlertDialog.Builder build;
     EditText transAmount;
     Spinner spinnerCat;
@@ -75,6 +83,14 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     AlertDialog alert;
     String[] defaultCat = {"Lifestyle","Entertainment","Misc."};
     int catgyFlag;
+
+    protected FrameLayout frameLayout;
+    protected ListView mDrawerList;
+    protected DrawerLayout mDrawerLayout;
+    protected ArrayAdapter<String> mAdapter;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected String mActivityTitle;
+    protected static int position;
 
     public static SmsActivity instance() {
         return inst;
@@ -111,6 +127,14 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             }
             cDataBase.close();
         }
+        frameLayout = (FrameLayout)findViewById(R.id.content_frame);
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
+        mActivityTitle = "Cash in Bank";//string
+        addDrawerItems();
+        setupDrawer();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
 
 
@@ -348,6 +372,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                     ClickedItem += smsMessages[i];
                 }
                 setContentView(R.layout.table_view);
+
                 a = ClickedItem.indexOf(" ");
                 b = ClickedItem.indexOf(" ", a + 2);
                 Acc += smsMessages[1];
@@ -356,6 +381,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                 init(arg2, Acc);
                 /*Intent i = new Intent(getApplicationContext(), SmsActivity.class);
                 startActivity(i);*/
+
             }
         });
 
@@ -590,7 +616,11 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                         a = smsMessage.indexOf("account");
                         b = smsMessage.indexOf(" ", a + 8);
                         smsAccNo += smsMessage.substring(a + 8, b);
-                    } else if (smsMessage.contains("ac")) {
+                    } /*else if (smsMessage.contains("ac no.")) {
+                        a = smsMessage.indexOf("ac");
+                        b = smsMessage.indexOf(" ", a + 6);
+                        smsAccNo += smsMessage.substring(a + 6, b);}*/
+                     else if (smsMessage.contains("ac")) {
                         a = smsMessage.indexOf("ac");
                         b = smsMessage.indexOf(" ", a + 3);
                         smsAccNo += smsMessage.substring(a + 3, b);
@@ -862,6 +892,77 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             e.printStackTrace();
         }
     }
+    private void addDrawerItems() {
+
+        myAdapter MyAdapter = new myAdapter(this);
+        mDrawerList.setAdapter(MyAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openActivity(position);
+            }
+        });
+    }
+
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mActivityTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    protected void openActivity(int position) {
+        mDrawerLayout.closeDrawer(mDrawerList);
+        MainActivity.position = position; //Setting currently selected position in this field so that it will be available in our child activities.
+        switch (position) {
+            case 0:
+                startActivity(new Intent(this,MainActivity.class));
+                break;
+            case 1:
+                startActivity(new Intent(this, RssMainActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(this, Goals_MainActivity.class));
+                break;
+            case 3:
+                startActivity(new Intent(this, Trends_MainActivity.class));
+                break;
+            case 4:
+                startActivity(new Intent(this, CamMainActivity.class));
+                break;
+            case 5:
+                startActivity(new Intent(this, MapsMainActivity.class));
+            default:
+                break;
+        }
+
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -870,12 +971,62 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         return true;
     }
 
+    class myAdapter extends BaseAdapter {
+        private Context context;
+        String NavListCategories[];
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
+
+        public myAdapter(Context context){
+            this.context = context;
+            NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
+        }
+        @Override
+        public int getCount() {
+            return NavListCategories.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return NavListCategories[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View row = null;
+            if(convertView == null){
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                row = inflater.inflate(R.layout.custom_row, parent, false);
+            }
+            else{
+                row =convertView;
+            }
+
+            TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
+            ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
+            titleTextView.setText(NavListCategories[position]);
+            titleImageView.setImageResource(images[position]);
+            return row;
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, settings_main.class));
+            return true;
+        }
 
         switch(id) {
             case android.R.id.home:
