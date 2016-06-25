@@ -126,26 +126,7 @@ public class GoalAdapter  extends BaseAdapter {
         mHolder.progressGoal.setProgress(progressValue.get(pos));
         return child;
     }
-        //For button
-        /** LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.layout, parent, false);
-        final int position = pos;
-        final String temp = String.valueOf(getItem(position));
-        Button payBtn = (Button) rowView.findViewById(R.id.btnPayment);
-        mHolder.paymentBtn = (Button) rowView.findViewById(R.id.btnPayment);
-        //String temp = getItem(pos);
-        //mHolder.text.setText(temp);
-        mHolder.paymentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(customListener!=null){
-                    customListener.onButtonClickListener(position, temp);
-                }
-            }
-        });
 
-        return child;
-    }*/
 
     public class Holder {
         TextView g_Id;

@@ -8,16 +8,6 @@
     android:background="@color/primaryColor"
     android:backgroundTint="@color/primaryColor">
 
-   <!-- <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Fizz"
-        android:paddingTop="25dp"
-        android:textSize="45dp"
-        android:id="@+id/loginLabel"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />-->
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"

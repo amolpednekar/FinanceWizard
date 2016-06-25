@@ -30,5 +30,6 @@
     <color name="colorFAB2">#E040FB</color>
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#388E3C</color>
+    <color name="primary_light">#9fc178</color>
     <color name="colorAccent">#F44336</color>
 </resources>

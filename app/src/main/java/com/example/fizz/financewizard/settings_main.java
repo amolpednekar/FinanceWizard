@@ -58,11 +58,9 @@ public Switch sms_per;
                 sms_per.setChecked(true);
             }
         }else {
-            Toast.makeText(getApplicationContext(),"2nd"+String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
             if (cur.moveToFirst()) {
                 do {
                     status = cur.getString(cur.getColumnIndex(DbHelperCategory.STATUS_PER));
-                    Toast.makeText(getApplicationContext(),"2nd"+status,Toast.LENGTH_SHORT).show();
                 } while (cur.moveToNext());
             }
             if (status.equals("disabled")) {

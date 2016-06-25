@@ -480,13 +480,6 @@ public class GoalDisActivity extends AppCompatActivity {
         return null;
     }
 
-    /*@Override
-    protected void onNewIntent(Intent intent) {// used for FLAG_ACTIVITY_SINGLE_TOP flag
-        super.onNewIntent(intent);
-        // getIntent() should always return the most recent
-        setIntent(intent);
-        onReceive("5");
-    }*/
 
     @Override
     protected void onResume() {

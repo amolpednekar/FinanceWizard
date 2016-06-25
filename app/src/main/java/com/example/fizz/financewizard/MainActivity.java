@@ -21,12 +21,9 @@ package com.example.fizz.financewizard;
         import android.os.Bundle;
         import android.provider.Settings;
         import android.support.annotation.NonNull;
-        import android.support.v4.app.ActivityCompat;
-        import android.support.v4.content.ContextCompat;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.ActionBarDrawerToggle;
         import android.support.v7.app.AppCompatActivity;
-        import android.util.Log;
         import android.view.Gravity;
         import android.view.LayoutInflater;
         import android.view.Menu;
@@ -48,12 +45,8 @@ package com.example.fizz.financewizard;
         import android.widget.TableRow;
         import android.widget.TextView;
         import android.widget.Toast;
-
         import java.util.ArrayList;
         import java.util.Calendar;
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Map;
 
 //API KEY AIzaSyBiht1KNsxYLPgfP73P_Gb72mULFUQV_TY
 //Server key  AIzaSyCUUjovK_G1Q-ak0wV5RPTHuzyywDO5iWA
@@ -70,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     protected String mActivityTitle;
     protected static int position;
 
-    protected RelativeLayout mbank;
+    protected Button mbank;
     public TextView cib;
     DatabaseHandler dbHand;
     SQLiteDatabase db;
@@ -89,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     Button cashAdd, cashSpent;
     String[] defaultCat = {"Lifestyle", "Entertainment", "Food & Drinks", "Misc."};
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+
+    //sharath add database variables
 
     private static final int REQUEST_APP_SETTINGS = 168;
 
@@ -110,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cashflow_main);
-
+        if (Build.VERSION.SDK_INT > 22 && !hasPermissions(requiredPermissions)) {
+            Toast.makeText(this, "Please grant all permissions", Toast.LENGTH_LONG).show();
+            goToSettings();
+        }
+        //sharath add check for enabled and disabled
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         mDrawerList = (ListView) findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);//@ activity main
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        mbank = (RelativeLayout) findViewById(R.id.cardview_bank);
+        mbank = (Button) findViewById(R.id.cardview_bank);
         mbank.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         handCashC = (RelativeLayout) findViewById(R.id.viewCashHandSlot);
         cashAdd = (Button) findViewById(R.id.buttonAdd);
         cashSpent = (Button) findViewById(R.id.buttonSpend);
-
+        // sharath add condition if disabled to disable card view
         cashAdd.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,98 +275,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-    /*private boolean checkAndRequestPermissions(){
-        List<String> listPermissions = new ArrayList<String>();
-        listPermissions.clear();
-        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_SMS) !=
-        PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS},REQUEST_ID_MULTIPLE_PERMISSIONS);
-            }
-            listPermissions.add(Manifest.permission.READ_SMS);
-        }
-        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.RECEIVE_SMS) !=
-                PackageManager.PERMISSION_GRANTED){
-            *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-            }*//*
-            listPermissions.add(Manifest.permission.RECEIVE_SMS);
-        }
-        if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.MAPS_RECEIVE) !=
-                PackageManager.PERMISSION_GRANTED){
-            *//*if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.READ_SMS)){
-            }*//*
-            listPermissions.add(Manifest.permission.MAPS_RECEIVE);
-        }
-        if(!listPermissions.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissions.toArray(new String[listPermissions.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode){
-            case REQUEST_ID_MULTIPLE_PERMISSIONS :
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
-        }*/
-    //Log.d(TAG, "Permission callback called-------");
-        /*switch (requestCode) {
-            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
-                Map<String, Integer> perms = new HashMap<>();
-                // Initialize the map with both permissions
-                perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
-                perms.put(Manifest.permission.MAPS_RECEIVE, PackageManager.PERMISSION_GRANTED);
-                // Fill with actual results from user
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < permissions.length; i++)
-                        perms.put(permissions[i], grantResults[i]);
-                    // Check for both permissions
-                    if (perms.get(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
-                            && perms.get(Manifest.permission.MAPS_RECEIVE) == PackageManager.PERMISSION_GRANTED) {
-                        //Log.d(TAG, "sms & location services permission granted");
-                        // process the normal flow
-                        //else any one or both the permissions are not granted
-                    } else {
-                        //Log.d(TAG, "Some permissions are not granted ask again ");
-                        //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
-//                        // shouldShowRequestPermissionRationale will return true
-                        //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.MAPS_RECEIVE)) {
-                            showDialogOK("SMS and Location Services Permission required for this app",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            switch (which) {
-                                                case DialogInterface.BUTTON_POSITIVE:
-                                                    checkAndRequestPermissions();
-                                                    break;
-                                                case DialogInterface.BUTTON_NEGATIVE:
-                                                    // proceed with logic by disabling the related features or quit the app.
-                                                    break;
-                                            }
-                                        }
-                                    });
-                        }
-                        //permission is denied (and never ask again is  checked)
-                        //shouldShowRequestPermissionRationale will return false
-                        else {
-                            Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
-                                    .show();
-                            //                            //proceed with logic by disabling the related features or quit the app.
-                        }
-                    }
-                }
-            }
-        }*/
-
-    //}
-
     private void showDialogOK(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(this)
                 .setMessage(message)
@@ -380,55 +287,6 @@ public class MainActivity extends AppCompatActivity {
     public void displayData() {
         ArrayList<String> categoryList = new ArrayList<String>();
         ArrayList<Integer> categoryCnt = new ArrayList<Integer>();
-        /*cHelper = new DbHelperCategory(this.getBaseContext());
-        cDataBase = cHelper.getWritableDatabase();
-        Cursor cCursor = cDataBase.rawQuery("SELECT  * FROM " + DbHelperCategory.TABLE_NAME, null);
-        if(cCursor.moveToFirst()){
-            do{
-                categoryList.add(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)));
-                categoryCnt.add(0);
-                //Toast.makeText(getApplicationContext(),cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)),Toast.LENGTH_LONG).show();
-            }while(cCursor.moveToNext());
-            //Toast.makeText(getApplicationContext(),String.valueOf(categoryList.size()),Toast.LENGTH_LONG).show();
-        }
-        tHelper = new DbHelperGoal(this.getBaseContext());
-        tDataBase = tHelper.getWritableDatabase();
-        Cursor mCursor = tDataBase.rawQuery("SELECT * FROM " + DbHelperGoal.TABLE_NAME, null);
-        float savings = 0;
-        int goalCnt = 0;
-        int categoryCntTemp = 0;
-        String currencyType = "";
-        int i = 0;
-        if (mCursor.moveToFirst()) {
-            do {
-                i = 0;
-                goalCnt += 1;
-                currencyType = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CURRENCY));
-                savings += (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE)));
-                do{
-                    if(mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.CATEGORY)).equals(categoryList.get(i))){
-                        categoryCntTemp = categoryCnt.get(i);
-                        ++categoryCntTemp;
-                        categoryCnt.set(i, categoryCntTemp);
-                        break;
-                    }
-                    i++;
-                }while(i < categoryList.size());
-            } while (mCursor.moveToNext());
-        }
-        mCursor.close();
-        tGoals.setText(String.valueOf(goalCnt));
-        String catContent = "";
-        for(i = 0;i<categoryList.size();i++){
-            if(i == 0)
-                catContent = categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
-            else
-                catContent += categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
-        }
-        tSavings.setText(currencyType + " " + String.format("%.0f", savings));
-        tCategoryNo.setText(catContent);
-        */
-
         // Cash In hand Display part
         cHelper = new DbHelperCategory(this.getBaseContext());
         cDataBase = cHelper.getWritableDatabase();
@@ -537,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                 total += Float.valueOf(mcursor.getString(mcursor.getColumnIndex(DatabaseHandler.TOTAL)));
             } while (mcursor.moveToNext());
         }
-        cib.setText(String.valueOf(total));
+        cib.setText("₹ " + String.valueOf(total));
     }
 
     private boolean doubleBackToExitPressedOnce = false;
@@ -683,6 +541,33 @@ public class MainActivity extends AppCompatActivity {
             titleImageView.setImageResource(images[position]);
             return row;
         }
+    }
+
+    private void goToSettings() {
+        Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(myAppSettings, REQUEST_APP_SETTINGS);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public boolean hasPermissions(@NonNull String... permissions) {
+        for (String permission : permissions)
+            if (PackageManager.PERMISSION_GRANTED != checkSelfPermission(permission))
+                return false;
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_APP_SETTINGS) {
+            if (hasPermissions(requiredPermissions)) {
+                Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permissions not granted.", Toast.LENGTH_LONG).show();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

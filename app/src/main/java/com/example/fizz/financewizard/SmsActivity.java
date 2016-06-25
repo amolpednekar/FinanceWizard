@@ -83,7 +83,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     AlertDialog alert;
     String[] defaultCat = {"Lifestyle","Entertainment","Misc."};
     int catgyFlag;
-
+    Button smslist_but;
     protected FrameLayout frameLayout;
     protected ListView mDrawerList;
     protected DrawerLayout mDrawerLayout;
@@ -186,111 +186,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         });
 */
         smsListView = (ListView) findViewById(R.id.SMSList);
-        // default adapter
-        //arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);
-        //smsListView.setAdapter(arrayAdapter);
-        //arrayAdapter = new ArrayAdapter<String>(this, R.layout.sms_cards, smsMessagesList);
-        //smsListView.setOnItemClickListener(this);
-
-        /*ArrayList<String> ValMain = db.getAllvalues();
-        for (int i = 0; i < ValMain.size(); i++) {
-            String[] tempContent = ValMain.get(i).split("\n");
-            accounT.add(tempContent[1]);
-
-            //String[] tempContent2 = tempContent[tempContent.length - 1].split("|");
-            // id of the bank name
-            bankNameS.add(bankNames[Integer.valueOf(tempContent[tempContent.length - 1].substring(tempContent[tempContent.length - 1].indexOf('|') + 1))]);
-            //amount
-            double x = Double.valueOf(tempContent[tempContent.length - 1].substring(9, tempContent[tempContent.length - 1].indexOf('|')));
-
-            //Toast.makeText(getApplicationContext(),String.format("%.2f",x),Toast.LENGTH_SHORT).show();
-            totaL.add(tempContent[tempContent.length - 1].substring(0,9) + String.format("%.2f",x));
-        }
-
-        //custom adapter
-        smsDisAdapt = new SmsDisAdapter(SmsActivity.this, accounT, bankNameS, totaL);// format of adapter
-        smsListView.setAdapter(smsDisAdapt);*/// set adapter to the list
-
-
-        // on account list click
-        /*smsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            //@Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                String[] smsMessages = accounT.get(arg2).split(" ");
-                String ClickedItem = "", Acc = "";
-                int a = 0, b = 0;
-
-                for (int i = 1; i < smsMessages.length; ++i) {
-                    ClickedItem += smsMessages[i];
-                }
-                setContentView(R.layout.table_view);
-                a = ClickedItem.indexOf(" ");
-                b = ClickedItem.indexOf(" ", a + 2);
-                Acc += smsMessages[1];
-                Toast.makeText(getApplicationContext(), "Acc : |-" + Acc + "=>" + String.valueOf(arg2) + "|", Toast.LENGTH_SHORT).show();
-
-                init(arg2, Acc);
-                *//*Intent i = new Intent(getApplicationContext(), SmsActivity.class);
-                startActivity(i);*//*
-            }
-        });
-
-        smsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                build = new AlertDialog.Builder(SmsActivity.this);
-                build.setTitle("Make your selection");
-                LayoutInflater le = LayoutInflater.from(SmsActivity.this);
-                View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
-                build = new AlertDialog.Builder(SmsActivity.this);
-                build.setTitle("New Balance");
-                build.setMessage("Please Enter current balance amount");
-                build.setView(promptsExpenseView);
-                TotalValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
-                //PayValue.isFocused();
-                build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String[] smsMessages = accounT.get(arg2).split(" ");
-                        String ClickedItem = "", Acc = "";
-                        int a = 0, b = 0;
-
-                        for (int i = 1; i < smsMessages.length; ++i) {
-                            ClickedItem += smsMessages[i];
-                        }
-                        setContentView(R.layout.table_view);
-                        a = ClickedItem.indexOf(" ");
-                        b = ClickedItem.indexOf(" ", a + 2);
-                        Acc += smsMessages[1];
-                        Toast.makeText(getApplicationContext(), "Acc : |-" + Acc + "=>" + String.valueOf(arg2) + "|", Toast.LENGTH_SHORT).show();
-
-
-                        double x = Double.valueOf(totaL.get(arg2).substring(9, totaL.get(arg2).length()));
-
-                        double finalMoney = Double.valueOf(TotalValue.getText().toString()) - x;
-                        final Calendar c = Calendar.getInstance();
-                        int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH) + 1;
-
-                        String timeStamp = monStr.get(curMonth) + " " + String.valueOf(curYear);
-                        db.add("Adjustment", Acc, String.valueOf(finalMoney), timeStamp, "Misc.");
-                        db.Bank("Adjustment", Acc, String.valueOf(finalMoney));
-                        //displayList();
-                        finish();
-                        dialog.cancel();
-
-                    }
-                });
-                build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplication(), "Expense Cancelled", Toast.LENGTH_SHORT).show();
-                        dialog.cancel();
-                    }
-                });
-                alert = build.create();
-                alert.show();
-                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                return true;
-            }
-        });*/
-
         ArrayList<String> Val = db.Selected2();
         if(Val.size()==0) {
             db.AddFirstDate("0000000000000");
@@ -331,12 +226,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     }
     void displayList(){
         smsListView = (ListView) findViewById(R.id.SMSList);
-        // default adapter
-        //arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, smsMessagesList);
-        //smsListView.setAdapter(arrayAdapter);
-        //arrayAdapter = new ArrayAdapter<String>(this, R.layout.sms_cards, smsMessagesList);
-        //smsListView.setOnItemClickListener(this);
-
         bankNameS.clear();
         accounT.clear();
         totaL.clear();
@@ -360,7 +249,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         //custom adapter
         smsDisAdapt = new SmsDisAdapter(SmsActivity.this, accounT, bankNameS, totaL);// format of adapter
         smsListView.setAdapter(smsDisAdapt);// set adapter to the list
-
         smsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             //@Override
             public void onItemClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
@@ -372,12 +260,14 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                     ClickedItem += smsMessages[i];
                 }
                 setContentView(R.layout.table_view);
-
+                mDrawerList = (ListView) findViewById(R.id.navList);
+                mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeButtonEnabled(true);
                 a = ClickedItem.indexOf(" ");
                 b = ClickedItem.indexOf(" ", a + 2);
                 Acc += smsMessages[1];
                 Toast.makeText(getApplicationContext(), "Acc : |-" + Acc + "=>" + String.valueOf(arg2) + "|", Toast.LENGTH_SHORT).show();
-
                 init(arg2, Acc);
                 /*Intent i = new Intent(getApplicationContext(), SmsActivity.class);
                 startActivity(i);*/
@@ -389,7 +279,11 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
                 build = new AlertDialog.Builder(SmsActivity.this);
                 build.setTitle("Make your selection");
+                mDrawerList = (ListView) findViewById(R.id.navList);
+                mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 LayoutInflater le = LayoutInflater.from(SmsActivity.this);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeButtonEnabled(true);
                 View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
                 build = new AlertDialog.Builder(SmsActivity.this);
                 build.setTitle("New Balance");
@@ -446,16 +340,20 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     public void init(int pos, String AccountSearch) { // convert to tableview & display info of that account
         TableLayout stk = (TableLayout) findViewById(R.id.tableView);
         TableRow tbrow0 = new TableRow(this);
-        tbrow0.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tbrow0.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        //TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        //params.gravity = Gravity.CENTER;
         TextView tv0 = new TextView(this);
         tv0.setText("Sr.No");
         tv0.setTextSize(12);
+        tv0.setGravity(Gravity.CENTER);
         tv0.setTypeface(null, Typeface.BOLD);
         tv0.setTextColor(Color.BLACK);
         tbrow0.addView(tv0);
         TextView tv1 = new TextView(this);
         tv1.setText("Status");
         tv1.setTextSize(12);
+        tv1.setGravity(Gravity.CENTER);
         tv1.setTypeface(null, Typeface.BOLD);
         tv1.setTextColor(Color.BLACK);
         tbrow0.addView(tv1);
@@ -464,12 +362,14 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         tv2.setTextSize(12);
         tv2.setTypeface(null, Typeface.BOLD);
         tv2.setTextColor(Color.BLACK);
+        tv2.setGravity(Gravity.CENTER);
         tbrow0.addView(tv2);
         TextView tv3 = new TextView(this);
         tv3.setText("TimeStamp");
         tv3.setTextSize(12);
         tv3.setTypeface(null, Typeface.BOLD);
         tv3.setTextColor(Color.BLACK);
+        tv3.setGravity(Gravity.CENTER);
         tbrow0.addView(tv3);
         TextView tv4 = new TextView(this);
         tv4.setText("  ");
@@ -497,7 +397,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             TextView t2v = new TextView(this);
             t2v.setText("  " + smsInfo[2]);
             t2v.setTextSize(12);
-            t2v.setGravity(Gravity.LEFT);
+            t2v.setGravity(Gravity.CENTER);
             tbrow.addView(t2v);
             TextView t3v = new TextView(this);
             TextView t4v = new TextView(this);
@@ -530,18 +430,18 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             t3v.setText("Rs. " + smsInfo[3]);
             t3v.setTextSize(12);
             t3v.setTextColor(Color.WHITE);
-            t3v.setGravity(Gravity.LEFT);
+            t3v.setGravity(Gravity.CENTER);
             tbrow.addView(t3v);
 
             t4v.setText( smsInfo[4] + "-" + smsInfo[5] );
             t4v.setTextSize(12);
             t4v.setTextColor(Color.WHITE);
-            t4v.setGravity(Gravity.LEFT);
+            t4v.setGravity(Gravity.CENTER);
             tbrow.addView(t4v);
 
             t5v.setText(" " + "  ");
             t5v.setTextColor(Color.WHITE);
-            t5v.setGravity(Gravity.LEFT);
+            t5v.setGravity(Gravity.CENTER);
             tbrow.addView(t5v);
             stk.addView(tbrow);
             //smsMessagesList.add(Val.get(i));
