@@ -4,9 +4,14 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Date"
+        android:layout_height="40dp"
+        android:text="Set a Date"
         android:id="@+id/buttonCalCam"
+        android:theme="@style/Button"
+        android:textSize="15dp"
+        android:textAllCaps="false"
+        android:textColor="@color/accentColor"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button2" />
 </RelativeLayout>

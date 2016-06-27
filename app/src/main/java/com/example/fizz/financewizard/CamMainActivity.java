@@ -254,7 +254,6 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         View DateView = li.inflate(R.layout.calendar_cam, null);
                         build = new AlertDialog.Builder(CamMainActivity.this);
                         build.setTitle("Reminder");
-                        build.setMessage("Pick a date");
                         build.setView(DateView);
                         final Calendar c = Calendar.getInstance();
                         currentYear = c.get(Calendar.YEAR);
@@ -1236,7 +1235,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.cam,R.drawable.map};
 
         public myAdapter(Context context){
             this.context = context;

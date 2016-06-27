@@ -403,28 +403,28 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             TextView t4v = new TextView(this);
             TextView t5v = new TextView(this);
             if(smsInfo[2].equals("Debited")) {
-                t2v.setTextColor(Color.WHITE);
-                t2v.setBackgroundColor(Color.rgb(245,69,89));
+                t2v.setTextColor(Color.RED);
+                /*t2v.setBackgroundColor(Color.rgb(245,69,89));
                 t1v.setBackgroundColor(Color.rgb(245,69,89));
                 t3v.setBackgroundColor(Color.rgb(245,69,89));
                 t4v.setBackgroundColor(Color.rgb(245,69,89));
-                t5v.setBackgroundColor(Color.rgb(245,69,89));
+                t5v.setBackgroundColor(Color.rgb(245,69,89));*/
             }
             else if(smsInfo[2].equals("Credited")){
-                t2v.setTextColor(Color.WHITE);
-                t2v.setBackgroundColor(Color.rgb(54,201,72));
+                t2v.setTextColor(Color.GREEN);
+                /*t2v.setBackgroundColor(Color.rgb(54,201,72));
                 t1v.setBackgroundColor(Color.rgb(54,201,72));
                 t3v.setBackgroundColor(Color.rgb(54,201,72));
                 t4v.setBackgroundColor(Color.rgb(54,201,72));
-                t5v.setBackgroundColor(Color.rgb(54,201,72));
+                t5v.setBackgroundColor(Color.rgb(54,201,72));*/
             }
             else{
                 t2v.setTextColor(Color.WHITE);
-                t2v.setBackgroundColor(Color.rgb(169, 169, 169));
+               /* t2v.setBackgroundColor(Color.rgb(169, 169, 169));
                 t1v.setBackgroundColor(Color.rgb(169, 169, 169));
                 t3v.setBackgroundColor(Color.rgb(169, 169, 169));
                 t4v.setBackgroundColor(Color.rgb(169, 169, 169));
-                t5v.setBackgroundColor(Color.rgb(169, 169, 169));
+                t5v.setBackgroundColor(Color.rgb(169, 169, 169));*/
             }
 
             t3v.setText("Rs. " + smsInfo[3]);

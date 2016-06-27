@@ -314,7 +314,7 @@ public class MapsMainActivity extends AppCompatActivity {
 	class myAdapter extends BaseAdapter {
 		private Context context;
 		String NavListCategories[];
-		int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
+		int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.cam,R.drawable.map};
 
 
 		public myAdapter(Context context){

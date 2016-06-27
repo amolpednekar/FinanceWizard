@@ -5,11 +5,12 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SET GOAL DATE"
-        android:textColor="@color/primaryColor"
+        android:text=" Select Date "
         android:id="@+id/newGoalDate"
-        android:textSize="23dp"
-        android:backgroundTint="@color/accentColor"
+        android:theme="@style/Button"
+        android:textSize="15dp"
+        android:textColor="@color/accentColor"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@color/primaryColor"/>
 </RelativeLayout>

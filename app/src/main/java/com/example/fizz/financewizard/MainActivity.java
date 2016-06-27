@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public TextView cib;
     DatabaseHandler dbHand;
     SQLiteDatabase db;
+    SQLiteDatabase database;
     private DbHelperGoal tHelper;
     private DbHelperCategory cHelper;
     private DbHelperCategory chHelper;
@@ -110,6 +111,19 @@ public class MainActivity extends AppCompatActivity {
             goToSettings();
         }
         //sharath add check for enabled and disabled
+        final ContentValues valuesPer = new ContentValues();
+        cHelper = new DbHelperCategory(this);
+        cDataBase = cHelper.getWritableDatabase();
+        final Cursor cur = cDataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_PERMISSION /*+ " WHERE " +DbHelperCategory.TYPE_PER + "=" + "SMS"*/, null);
+        if(cur.getCount() <= 0){// verifies if the SMS-permission is present in the database
+            Toast.makeText(getApplicationContext(),"1st" +String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
+            valuesPer.put(DbHelperCategory.TYPE_PER, "SMS");
+            valuesPer.put(DbHelperCategory.STATUS_PER, "enabled");
+            cDataBase.insert(DbHelperCategory.TABLE_PERMISSION, null, valuesPer);
+        }else{
+            Toast.makeText(getApplicationContext(),"1st SMS present",Toast.LENGTH_SHORT).show();
+        }
+
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         mDrawerList = (ListView) findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);//@ activity main
@@ -125,8 +139,25 @@ public class MainActivity extends AppCompatActivity {
         mbank.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), SmsActivity.class);
-                startActivity(i);
+                // this is for cash in bank SMS permission
+                final Cursor curS = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_PERMISSION + " WHERE " + DbHelperCategory.TYPE_PER + "=" + "'SMS'", null);
+
+                if (curS.getCount() > 0) {
+                    if (curS.moveToFirst()) {
+                        //Toast.makeText(getApplicationContext(),curS.getString(curS.getColumnIndex(DbHelperCategory.STATUS_PER)),Toast.LENGTH_SHORT).show();
+                        do {
+                            if (curS.getString(curS.getColumnIndex(DbHelperCategory.STATUS_PER)).equals("enabled")) {
+                                Intent i = new Intent(getApplicationContext(), SmsActivity.class);
+                                startActivity(i);
+                                //Toast.makeText(getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
+                                break;
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Please enable the SMS permission from App Settings", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        } while (curS.moveToNext());
+                    }
+                }
             }
 
         });
@@ -503,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow, R.drawable.rss, R.drawable.goals_targets, R.drawable.trends, R.drawable.reminders, R.drawable.map};
+        int[] images = {R.drawable.cash_flow, R.drawable.rss, R.drawable.goals_targets, R.drawable.trends, R.drawable.cam, R.drawable.map};
 
         public myAdapter(Context context) {
             this.context = context;
