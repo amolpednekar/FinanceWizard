@@ -235,8 +235,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             String[] tempContent = ValMain.get(i).split("\n");
             accounT.add(tempContent[1]);
 
-            //String[] tempContent2 = tempContent[tempContent.length - 1].split("|");
-            // id of the bank name
             bankNameS.add(bankNames[Integer.valueOf(tempContent[tempContent.length - 1].substring(tempContent[tempContent.length - 1].indexOf('|') + 1))]);
             //amount
             double x = Double.valueOf(tempContent[tempContent.length - 1].substring(9, tempContent[tempContent.length - 1].indexOf('|')));
