@@ -204,6 +204,9 @@ public class GoalDisActivity extends AppCompatActivity {
                                                 dayValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY));
                                             } while (mCursor.moveToNext());
                                         }
+                                        if (dayG != null && !dayG.isEmpty() && monthG != null && !monthG.isEmpty() && yearG != null && !yearG.isEmpty())
+                                        {
+
                                         int dayVal = Integer.valueOf(dayG), monthVal = Integer.valueOf(monthG), yearVal = Integer.valueOf(yearG);
                                         String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", "+ DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                         dataBase.execSQL(strSQL);
@@ -212,7 +215,11 @@ public class GoalDisActivity extends AppCompatActivity {
                                         displayData();
                                         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                         //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
-                                        dialog.cancel();
+                                        dialog.cancel();}
+                                        else{
+                                            displayData();
+                                            Toast.makeText(getApplicationContext(),"Please select a date", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 });
                                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -685,15 +692,22 @@ public class GoalDisActivity extends AppCompatActivity {
                         dayValue = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.DAY));
                     } while (mCursor.moveToNext());
                 }
-                int dayVal = Integer.valueOf(dayG), monthVal = Integer.valueOf(monthG), yearVal = Integer.valueOf(yearG);
-                String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", "+ DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + updateId;
-                dataBase.execSQL(strSQL);
-                Toast.makeText(getApplication(), dayValue.toString(), Toast.LENGTH_SHORT).show();
-                //PayValue.setText("");
-                displayData();
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
-                dialog.cancel();
+                if (dayG != null && !dayG.isEmpty() && monthG != null && !monthG.isEmpty() && yearG != null && !yearG.isEmpty())
+                {
+                    int dayVal = Integer.valueOf(dayG), monthVal = Integer.valueOf(monthG), yearVal = Integer.valueOf(yearG);
+                    String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.DAY + "=" + String.valueOf(dayVal) + ", " + DbHelperGoal.MONTH + "=" + String.valueOf(monthVal) + ", "+ DbHelperGoal.YEAR + "=" + String.valueOf(yearVal) + " WHERE " + DbHelperGoal.KEY_ID + "=" + updateId;
+                    dataBase.execSQL(strSQL);
+                    Toast.makeText(getApplication(), dayValue.toString(), Toast.LENGTH_SHORT).show();
+                    //PayValue.setText("");
+                    displayData();
+                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+                    dialog.cancel();
+                }
+                else{
+                    displayData();
+                    Toast.makeText(getApplicationContext(),"Please select a date", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

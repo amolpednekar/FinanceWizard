@@ -116,7 +116,7 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        notifyIntervalG = "";
+                        notifyIntervalG = "none";
                         break;
                     case 1:
                         notifyIntervalG = "daily";

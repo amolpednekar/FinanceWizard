@@ -192,7 +192,7 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 // For notification
                 // check if goal date is less than or equals 2 days
                 String tempNotif = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.NOTIFICATION_DATE));
-                int notifCnt = 1;
+                int notifCnt = Integer.MAX_VALUE;
                 if(tempNotif == "daily")
                     notifCnt = 1;
                 else if(tempNotif == "weekly")

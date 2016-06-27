@@ -387,19 +387,34 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             TableRow tbrow = new TableRow(this);
             tbrow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
             TextView t1v = new TextView(this);
+            TextView t2v = new TextView(this);
+            TextView t3v = new TextView(this);
+            TextView t4v = new TextView(this);
+            TextView t5v = new TextView(this);
+            if(i%2 == 0){
+                t2v.setBackgroundColor(Color.rgb(211,211,211));
+                t1v.setBackgroundColor(Color.rgb(211,211,211));
+                t3v.setBackgroundColor(Color.rgb(211,211,211));
+                t4v.setBackgroundColor(Color.rgb(211,211,211));
+                t5v.setBackgroundColor(Color.rgb(211,211,211));
+            }
+            else
+            {
+                t2v.setBackgroundColor(Color.rgb(247,247,247));
+                t1v.setBackgroundColor(Color.rgb(247,247,247));
+                t3v.setBackgroundColor(Color.rgb(247,247,247));
+                t4v.setBackgroundColor(Color.rgb(247,247,247));
+                t5v.setBackgroundColor(Color.rgb(247,247,247));
+            }
             t1v.setText(smsInfo[1]);
             t1v.setTextSize(12);
-            t1v.setTextColor(Color.WHITE);
+            t1v.setTextColor(Color.BLACK);
             t1v.setGravity(Gravity.CENTER);
             tbrow.addView(t1v);
-            TextView t2v = new TextView(this);
             t2v.setText("  " + smsInfo[2]);
             t2v.setTextSize(12);
             t2v.setGravity(Gravity.CENTER);
             tbrow.addView(t2v);
-            TextView t3v = new TextView(this);
-            TextView t4v = new TextView(this);
-            TextView t5v = new TextView(this);
             if(smsInfo[2].equals("Debited")) {
                 t2v.setTextColor(Color.RED);
                 /*t2v.setBackgroundColor(Color.rgb(245,69,89));
@@ -427,13 +442,13 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
 
             t3v.setText("Rs. " + smsInfo[3]);
             t3v.setTextSize(12);
-            t3v.setTextColor(Color.WHITE);
+            t3v.setTextColor(Color.BLACK);
             t3v.setGravity(Gravity.CENTER);
             tbrow.addView(t3v);
 
             t4v.setText( smsInfo[4] + "-" + smsInfo[5] );
             t4v.setTextSize(12);
-            t4v.setTextColor(Color.WHITE);
+            t4v.setTextColor(Color.BLACK);
             t4v.setGravity(Gravity.CENTER);
             tbrow.addView(t4v);
 

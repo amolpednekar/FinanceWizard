@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             signupBtn.setOnClickListener(new AdapterView.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!signupPass.getEditText().getText().toString().equals("") && signupPass.getEditText().getText().toString().equals(signupCPass.getEditText().getText().toString()) && signupPass.getEditText().getText().length() > 6) {
+                    if (!signupPass.getEditText().getText().toString().equals("") && signupPass.getEditText().getText().toString().equals(signupCPass.getEditText().getText().toString()) && signupPass.getEditText().getText().length() >= 6) {
                         ContentValues values = new ContentValues();
                         values.put(DbHelperCategory.KEY_IDLOGIN, signupEmail.getEditText().getText().toString());
                         values.put(DbHelperCategory.PASSWORD_LOGIN, signupPass.getEditText().getText().toString());
@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
-                    } else if(signupPass.getEditText().getText().length() <= 6) {
+                    } else if(signupPass.getEditText().getText().length() < 6) {
                         signupEmail.getEditText().setText("");
                         signupPass.getEditText().setText("");
                         signupCPass.getEditText().setText("");
