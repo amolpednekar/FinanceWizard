@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase tDataBase, cDataBase, chDataBase;
     private AlertDialog.Builder build;
     TextView tGoals, tSavings, tCategoryNo, cashHandAmount;
-    private RelativeLayout totalG, handCashC;
+    private RelativeLayout totalG;
     EditText transAmount, PayValue;
 
     AlertDialog alert;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     Button cashAdd, cashSpent;
     String[] defaultCat = {"Lifestyle", "Entertainment", "Food & Drinks", "Misc."};
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-
+    Button handCashC;
     //sharath add database variables
 
     private static final int REQUEST_APP_SETTINGS = 168;
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         cashHandAmount = (TextView) findViewById(R.id.handNo2);// cash in hand
-        handCashC = (RelativeLayout) findViewById(R.id.viewCashHandSlot);
+        handCashC = (Button) findViewById(R.id.viewCashHandSlot);
         cashAdd = (Button) findViewById(R.id.buttonAdd);
         cashSpent = (Button) findViewById(R.id.buttonSpend);
         // sharath add condition if disabled to disable card view

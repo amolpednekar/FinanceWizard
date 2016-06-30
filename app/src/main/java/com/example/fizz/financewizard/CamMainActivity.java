@@ -393,7 +393,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                     public void onClick(DialogInterface dialog, int item) {
                         switch (item) {
                             case 0:
-                                if (!image.getDescription().equals("")) {
+                                if (!image.getDescription().equals("No Reminder set")) {
                                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
