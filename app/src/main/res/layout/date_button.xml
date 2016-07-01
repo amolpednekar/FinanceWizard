@@ -12,5 +12,5 @@
         android:textColor="@color/accentColor"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/primaryColor"/>
+        android:background="@drawable/button2"/>
 </RelativeLayout>

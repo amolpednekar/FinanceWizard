@@ -79,7 +79,7 @@ public class Trends_MainActivity extends AppCompatActivity {
 
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
-        mActivityTitle = "Trends";//string
+        mActivityTitle = "User Trends";//string
         addDrawerItems();
         setupDrawer();
 
@@ -91,8 +91,9 @@ public class Trends_MainActivity extends AppCompatActivity {
         BarData data = new BarData(getXAxisValues(), getDataSet());
         chart.setData(data);
         chart.animateXY(2000, 3000);
-
+        chart.setDescription("");
         chart.invalidate();
+
     }
 
     ArrayList<String> monStr = new ArrayList<String>(Arrays.asList("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"));
@@ -120,7 +121,7 @@ public class Trends_MainActivity extends AppCompatActivity {
                         sumDebit[index] += Float.valueOf(smsInfo[3]);
                     else if(smsInfo[2].equals("Credited"))
                         sumCredit[index] += Float.valueOf(smsInfo[3]);
-                    //BarEntry v1e1 = new BarEntry(110.000f, index); // Jan
+                        //BarEntry v1e1 = new BarEntry(110.000f, index); // Jan
                 }
             }
         }
@@ -307,8 +308,8 @@ public class Trends_MainActivity extends AppCompatActivity {
             LayoutInflater li = LayoutInflater.from(Trends_MainActivity.this);
             View promptsCategoryView = li.inflate(R.layout.dropdown, null);
             AlertDialog.Builder build = new AlertDialog.Builder(Trends_MainActivity.this);
-            build.setTitle("New Category");
-            build.setMessage("Please Enter new Category");
+            build.setTitle("Change Year");
+            build.setMessage("Select a year");
             build.setView(promptsCategoryView);
 
             yearDrop = (Spinner) promptsCategoryView.findViewById(R.id.year_spinner);

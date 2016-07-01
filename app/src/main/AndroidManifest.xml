@@ -59,8 +59,8 @@
         <activity
             android:name=".LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:clearTaskOnLaunch="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -74,6 +74,9 @@
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
             android:launchMode="singleTask">
+
+
+
         </activity>
 
 
@@ -81,6 +84,9 @@
         <activity
             android:name=".SmsActivity"
             android:label="Cash In Bank" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fizz.financewizard.MainActivity" />
         </activity>
         <receiver
             android:name=".SmsBroadcastReceiver"

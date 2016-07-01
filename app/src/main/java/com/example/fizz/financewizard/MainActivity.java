@@ -1,52 +1,54 @@
 package com.example.fizz.financewizard;
 
-        import android.Manifest;
-        import android.annotation.TargetApi;
-        import android.app.Activity;
-        import android.app.AlertDialog;
-        import android.content.ContentValues;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.content.pm.PackageManager;
-        import android.content.res.Configuration;
-        import android.content.res.Resources;
-        import android.database.Cursor;
-        import android.database.sqlite.SQLiteDatabase;
-        import android.graphics.Color;
-        import android.graphics.Paint;
-        import android.graphics.Typeface;
-        import android.net.Uri;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.provider.Settings;
-        import android.support.annotation.NonNull;
-        import android.support.v4.widget.DrawerLayout;
-        import android.support.v7.app.ActionBarDrawerToggle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.view.Gravity;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.WindowManager;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.BaseAdapter;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.FrameLayout;
-        import android.widget.ImageView;
-        import android.widget.ListView;
-        import android.widget.RelativeLayout;
-        import android.widget.Spinner;
-        import android.widget.TableLayout;
-        import android.widget.TableRow;
-        import android.widget.TextView;
-        import android.widget.Toast;
-        import java.util.ArrayList;
-        import java.util.Calendar;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 //API KEY AIzaSyBiht1KNsxYLPgfP73P_Gb72mULFUQV_TY
 //Server key  AIzaSyCUUjovK_G1Q-ak0wV5RPTHuzyywDO5iWA
@@ -67,10 +69,8 @@ public class MainActivity extends AppCompatActivity {
     public TextView cib;
     DatabaseHandler dbHand;
     SQLiteDatabase db;
-    SQLiteDatabase database;
     private DbHelperGoal tHelper;
     private DbHelperCategory cHelper;
-    private DbHelperCategory chHelper;
     private SQLiteDatabase tDataBase, cDataBase, chDataBase;
     private AlertDialog.Builder build;
     TextView tGoals, tSavings, tCategoryNo, cashHandAmount;
@@ -80,14 +80,15 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog alert;
     Spinner spinnerCat;
     String categoryG;
-    Button cashAdd, cashSpent;
+    Button cashAdd, cashSpent, alertOKButton;
     String[] defaultCat = {"Lifestyle", "Entertainment", "Food & Drinks", "Misc."};
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-    Button handCashC;
-    //sharath add database variables
+
+    //sharath add database variables <- already declared on Top
+
 
     private static final int REQUEST_APP_SETTINGS = 168;
-
+    Button handCashC;
     private static final String[] requiredPermissions = new String[]{
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -114,14 +115,14 @@ public class MainActivity extends AppCompatActivity {
         final ContentValues valuesPer = new ContentValues();
         cHelper = new DbHelperCategory(this);
         cDataBase = cHelper.getWritableDatabase();
+
         final Cursor cur = cDataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_PERMISSION /*+ " WHERE " +DbHelperCategory.TYPE_PER + "=" + "SMS"*/, null);
         if(cur.getCount() <= 0){// verifies if the SMS-permission is present in the database
-            Toast.makeText(getApplicationContext(),"1st" +String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
             valuesPer.put(DbHelperCategory.TYPE_PER, "SMS");
             valuesPer.put(DbHelperCategory.STATUS_PER, "enabled");
             cDataBase.insert(DbHelperCategory.TABLE_PERMISSION, null, valuesPer);
         }else{
-            Toast.makeText(getApplicationContext(),"1st SMS present",Toast.LENGTH_SHORT).show();
+            ;
         }
 
         frameLayout = (FrameLayout) findViewById(R.id.content_frame);
@@ -136,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         mbank = (Button) findViewById(R.id.cardview_bank);
-        mbank.setOnClickListener(new AdapterView.OnClickListener() {
+        cib = (TextView) findViewById(R.id.bank_amount);
+
+        mbank.setOnClickListener(new AdapterView.OnClickListener() { // Cash in Bank
             @Override
             public void onClick(View view) {
                 // this is for cash in bank SMS permission
@@ -144,12 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (curS.getCount() > 0) {
                     if (curS.moveToFirst()) {
-                        //Toast.makeText(getApplicationContext(),curS.getString(curS.getColumnIndex(DbHelperCategory.STATUS_PER)),Toast.LENGTH_SHORT).show();
                         do {
                             if (curS.getString(curS.getColumnIndex(DbHelperCategory.STATUS_PER)).equals("enabled")) {
                                 Intent i = new Intent(getApplicationContext(), SmsActivity.class);
                                 startActivity(i);
-                                //Toast.makeText(getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
                                 break;
                             } else {
                                 Toast.makeText(getApplicationContext(), "Please enable the SMS permission from App Settings", Toast.LENGTH_SHORT).show();
@@ -162,23 +163,34 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        cib = (TextView) findViewById(R.id.bank_amount);
-        countTotal();
-        cHelper = new DbHelperCategory(this);
 
-        cDataBase = cHelper.getWritableDatabase();
+        countTotal();
+
+        final Cursor curS = cDataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_PERMISSION + " WHERE " +DbHelperCategory.TYPE_PER + "=" + "'SMS'", null);
+
+        if(curS.getCount() > 0){
+            if (curS.moveToFirst()) {
+                do {
+                    if (curS.getString(curS.getColumnIndex(DbHelperCategory.STATUS_PER)).equals("disabled")) {
+                        cib.setText("-");
+                        break;
+                    }
+                } while (curS.moveToNext());
+            }
+        }
+
+
         Cursor gCursor;
         gCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME, null);
         String dbData = null;
         int catgyFlag = 0;
 
         if (gCursor.getCount() > 0) {
-            Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
             catgyFlag = 1;
         }
 
         if (catgyFlag == 1) {
-            //Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+
             gCursor.close();
             cDataBase.close();
         } else {
@@ -194,15 +206,15 @@ public class MainActivity extends AppCompatActivity {
         handCashC = (Button) findViewById(R.id.viewCashHandSlot);
         cashAdd = (Button) findViewById(R.id.buttonAdd);
         cashSpent = (Button) findViewById(R.id.buttonSpend);
-        // sharath add condition if disabled to disable card view
+        // sharath add condition if disabled to disable card view <- This is cash in Hand
         cashAdd.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater li = LayoutInflater.from(MainActivity.this);
                 View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
                 build = new AlertDialog.Builder(MainActivity.this);
-                build.setTitle("Cash collected");
-                build.setMessage("Please Enter amount collected");
+                build.setTitle("Cash Collected");
+                build.setMessage("Enter Amount");
                 build.setView(promptsPaymentView);
                 PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
                 //PayValue.isFocused();
@@ -211,37 +223,39 @@ public class MainActivity extends AppCompatActivity {
                 PayValue.requestFocus();
                 //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
+
                 build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        if (!PayValue.getText().toString().isEmpty()) {
+                            cDataBase = cHelper.getWritableDatabase();
+                            ContentValues values = new ContentValues();
 
-                        cDataBase = cHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
+                            Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
+                            String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
+                            values.put(DbHelperCategory.DATE, currentDate);
+                            values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
+                            values.put(DbHelperCategory.STATUS, "Credit");
 
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
-                        String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-                        values.put(DbHelperCategory.DATE, currentDate);
-                        values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
-                        values.put(DbHelperCategory.STATUS, "Credit");
-
-                        cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
-                        cDataBase.close();
-                        Toast.makeText(getBaseContext(), "Amount saved successfully", Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(getApplicationContext(),String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year),Toast.LENGTH_SHORT).show();
-                        displayData();
-                        dialog.cancel();
+                            cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
+                            cDataBase.close();
+                            displayData();
+                            dialog.cancel();
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "Enter Amount", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
-                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                         dialog.cancel();
                     }
                 });
                 alert = build.create();
                 alert.show();
+                alertOKButton = alert.getButton(AlertDialog.BUTTON1);
+                alertOKButton.setEnabled(false);
+                PayValue.addTextChangedListener(textWatcher);
                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         });
@@ -253,49 +267,49 @@ public class MainActivity extends AppCompatActivity {
                 View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
                 build = new AlertDialog.Builder(MainActivity.this);
                 build.setTitle("Cash Spent");
-                build.setMessage("Please Enter amount spent");
+                build.setMessage("Enter Amount");
                 build.setView(promptsPaymentView);
                 PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
-                //PayValue.isFocused();
                 PayValue.setFocusableInTouchMode(true);
                 PayValue.setFocusable(true);
                 PayValue.requestFocus();
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
                 build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        if (!PayValue.getText().toString().isEmpty()) {
+                            cDataBase = cHelper.getWritableDatabase();
+                            ContentValues values = new ContentValues();
+                            Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
+                            String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
+                            values.put(DbHelperCategory.DATE, currentDate);
+                            values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
+                            values.put(DbHelperCategory.STATUS, "Debit");
 
-                        cDataBase = cHelper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(calendar.YEAR), month = calendar.get(calendar.MONTH) + 1, date = calendar.get(calendar.DATE);
-                        String currentDate = String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-                        values.put(DbHelperCategory.DATE, currentDate);
-                        values.put(DbHelperCategory.AMOUNT, Float.valueOf(PayValue.getText().toString()));
-                        values.put(DbHelperCategory.STATUS, "Debit");
-
-                        cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
-                        cDataBase.close();
-                        Toast.makeText(getBaseContext(), "New amount saved successfully", Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(getApplicationContext(),String.valueOf(date) + "-" + String.valueOf(month) + "-" + String.valueOf(year),Toast.LENGTH_SHORT).show();
-                        displayData();
-                        dialog.cancel();
+                            cDataBase.insert(DbHelperCategory.TABLE_NAMECASH, null, values);
+                            cDataBase.close();
+                           // Toast.makeText(getBaseContext(), "New amount saved successfully", Toast.LENGTH_SHORT).show();
+                            displayData();
+                            dialog.cancel();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Enter Amount", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
-                        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
+
                         dialog.cancel();
                     }
                 });
                 alert = build.create();
                 alert.show();
+                alertOKButton = alert.getButton(AlertDialog.BUTTON1);
+                alertOKButton.setEnabled(false);
+                PayValue.addTextChangedListener(textWatcher);
                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         });
+
         handCashC.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -304,7 +318,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //TextWatcher
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            checkFieldsForEmptyValues();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    };
+
+    // checks if textBox is empty or not & Enables/Disables the button
+    private  void checkFieldsForEmptyValues(){
+        String s1 = PayValue.getText().toString();
+
+        if(s1.equals("")) {
+            alertOKButton.setEnabled(false);
+        }
+        else {
+            alertOKButton.setEnabled(true);
+        }
+    }
 
     private void showDialogOK(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(this)
@@ -315,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    // display cash in hand amount
     public void displayData() {
         ArrayList<String> categoryList = new ArrayList<String>();
         ArrayList<Integer> categoryCnt = new ArrayList<Integer>();
@@ -360,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
         tv1.setGravity(Gravity.CENTER);
         tbrow0.addView(tv1);
         TextView tv2 = new TextView(this);
-        tv2.setText("Trans Date");
+        tv2.setText("Date");
         tv2.setTextSize(12);
         tv2.setTypeface(null, Typeface.BOLD);
         tv2.setTextColor(Color.BLACK);
@@ -370,9 +412,7 @@ public class MainActivity extends AppCompatActivity {
         cHelper = new DbHelperCategory(this.getBaseContext());
         cDataBase = cHelper.getWritableDatabase();
 
-        Cursor cCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAMECASH, null);
-        //Toast.makeText(getApplicationContext(), String.valueOf(cCursor.getCount()),Toast.LENGTH_SHORT).show();
-        float total = 0, credit = 0, debit = 0;
+        Cursor cCursor = cDataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAMECASH + " ORDER BY " + DbHelperCategory.DATE + " DESC", null);
         if (cCursor.moveToFirst()) {
             do {
                 TableRow tbrow = new TableRow(this);
@@ -402,10 +442,6 @@ public class MainActivity extends AppCompatActivity {
 
         build.setNegativeButton("Close ", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                //Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
-                //displayData();
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(PayValue.getWindowToken(), 0);
                 dialog.cancel();
             }
         });
@@ -415,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    // cash in bank total amount
     public void countTotal() {
         dbHand = new DatabaseHandler(this.getBaseContext());
         db = dbHand.getWritableDatabase();
@@ -426,7 +462,23 @@ public class MainActivity extends AppCompatActivity {
                 total += Float.valueOf(mcursor.getString(mcursor.getColumnIndex(DatabaseHandler.TOTAL)));
             } while (mcursor.moveToNext());
         }
-        cib.setText("₹ " + String.valueOf(total));
+        mcursor.close();
+
+        cHelper = new DbHelperCategory(this.getBaseContext());
+        cDataBase = cHelper.getWritableDatabase();
+
+        mcursor = cDataBase.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_PERMISSION, null);
+        if (mcursor.moveToFirst()) {
+            do {
+                if(mcursor.getString(mcursor.getColumnIndex(DbHelperCategory.STATUS_PER)).equals("enabled")) {
+                    cib.setText("₹ " + String.valueOf(total));
+                    break;
+                }else{
+                    cib.setText("-");
+                }
+            } while (mcursor.moveToNext());
+        }
+        mcursor.close();
     }
 
     private boolean doubleBackToExitPressedOnce = false;
@@ -439,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
         this.doubleBackToExitPressedOnce = false;
     }
 
+    //to prevent user from exiting the app on single Back click
     @Override
     public void onBackPressed() {
         //moveTaskToBack(true);
@@ -483,7 +536,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    protected void openActivity(int position) {
+    protected void openActivity(int position) {// navbar drawer list contents
         mDrawerLayout.closeDrawer(mDrawerList);
         MainActivity.position = position; //Setting currently selected position in this field so that it will be available in our child activities.
         switch (position) {
@@ -530,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
+    // NavBar Side Drawer
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
@@ -593,9 +646,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_APP_SETTINGS) {
             if (hasPermissions(requiredPermissions)) {
-                Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Permissions not granted.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -628,4 +681,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-//end

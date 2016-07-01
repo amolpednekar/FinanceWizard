@@ -38,9 +38,9 @@ public Switch sms_per;
         database.insert(DbHelperCategory.TABLE_PERMISSION, null, values);
         */isUpdate=false;
         final Cursor cur=database.rawQuery("SELECT * FROM "+ DbHelperCategory.TABLE_PERMISSION /*+ " WHERE " +DbHelperCategory.TYPE_PER + "=" + "SMS"*/, null);
-        Toast.makeText(getApplicationContext(),String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
+
         if(cur.getCount()<=0){
-            Toast.makeText(getApplicationContext(),"1st" +String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
+
             values.put(DbHelperCategory.TYPE_PER, "SMS");
             values.put(DbHelperCategory.STATUS_PER, "enabled");
             //database.insert(DbHelperCategory.TABLE_PERMISSION, null, values);
@@ -79,7 +79,7 @@ public Switch sms_per;
                     values.clear();
                     values.put(DbHelperCategory.STATUS_PER, "enabled");
                     database.update(DbHelperCategory.TABLE_PERMISSION, values, DbHelperCategory.TYPE_PER + "='SMS'", null);
-                    Toast.makeText(getApplicationContext(), "Enabled" + DbHelperCategory.STATUS_PER, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
                 } else {
                     //Toast.makeText(getApplicationContext(),String.valueOf(cur.getCount()),Toast.LENGTH_SHORT).show();
                     values.clear();
@@ -87,7 +87,7 @@ public Switch sms_per;
                     //String x = "SMS";
                     //database.rawQuery("UPDATE "+DbHelperCategory.TABLE_PERMISSION+" SET " + DbHelperCategory.STATUS_PER + "=" +  "'disabled' WHERE "+DbHelperCategory.TYPE_PER + " ='SMS' ",null);
                     database.update(DbHelperCategory.TABLE_PERMISSION, values, DbHelperCategory.TYPE_PER + "='SMS'" , null);
-                    Toast.makeText(getApplicationContext(), "disabled" + DbHelperCategory.STATUS_PER, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
                 }
             }
 

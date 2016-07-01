@@ -88,6 +88,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     private String file_image = "myimage", id;
     private String string,selectedImagePath;
     File imageFile;
+    View DateView;
     private Context mContext;
     public String timeStamp = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(new Date());
     public String fname= "IMG_"+ timeStamp + ".jpg";
@@ -98,7 +99,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     AlertDialog alert;
     AlertDialog.Builder build;
     Button newDate;
-    String dateString="4-4-2016";
+    String dateString="";
     private SQLiteDatabase database;
     private DBhelper dbHelper;
     public File mediaFile;
@@ -224,7 +225,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
         frameLayout = (FrameLayout)findViewById(R.id.content_frame);
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
-        mActivityTitle = "Finance Wizard";//string
+        mActivityTitle = "Photo Repository";//string
 
 
         addDrawerItems();
@@ -249,9 +250,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                 switch (index) {
                     case 0:
                         // open
-
                         LayoutInflater li = LayoutInflater.from(CamMainActivity.this);
-                        View DateView = li.inflate(R.layout.calendar_cam, null);
+                        DateView = li.inflate(R.layout.calendar_cam, null);
                         build = new AlertDialog.Builder(CamMainActivity.this);
                         build.setTitle("Reminder");
                         build.setView(DateView);
@@ -272,18 +272,23 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                         build.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                database = dbHelper.getWritableDatabase();
-                                ContentValues cv = new ContentValues();
-                                cv.put(DBhelper.COLUMN_DESCRIPTION, dateString);
-                                Log.d("Updating Date: ", ".....");
-                                String whereClause = DBhelper.COLUMN_DATETIME + "=?";
-                                String[] whereArgs = new String[]{ String.valueOf(image.getDatetimeLong())};
-                                database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
-                                Log.d("Updating Date: ", ".....");
-                                image.setDescription(dateString);
+                                if (!dateString.equals("")) {
+                                    database = dbHelper.getWritableDatabase();
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(DBhelper.COLUMN_DESCRIPTION, dateString);
+                                    Log.d("Updating Date: ", ".....");
+                                    String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                                    String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
+                                    database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                                    Log.d("Updating Date: ", ".....");
+                                    newDate.setText(dateString);
+                                    image.setDescription(dateString);
+                                    dateString = "";
+                                    swipelist.invalidateViews();
 
-                                swipelist.invalidateViews();
-
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"Please Set A Date",Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                         build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -404,7 +409,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                                     Toast.makeText(getApplicationContext(), "Notification for " + nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
                                                     database = dbHelper.getWritableDatabase();
                                                     ContentValues cv = new ContentValues();
-                                                    cv.put(DBhelper.COLUMN_DESCRIPTION, "");
+                                                    cv.put(DBhelper.COLUMN_DESCRIPTION, "No Reminder set");
                                                     Log.d("Updating Date: ", ".....");
                                                     String whereClause = DBhelper.COLUMN_DATETIME + "=?";
                                                     String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
@@ -575,7 +580,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                             Toast.makeText(getApplicationContext(), "Notification for " + nameTitle + " " + " is deleted.", Toast.LENGTH_LONG).show();
                             database = dbHelper.getWritableDatabase();
                             ContentValues cv = new ContentValues();
-                            cv.put(DBhelper.COLUMN_DESCRIPTION, "");
+                            cv.put(DBhelper.COLUMN_DESCRIPTION, "No Reminder set");
                             Log.d("Updating Date: ", ".....");
                             String whereClause = DBhelper.COLUMN_DATETIME + "=?";
                             String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
@@ -645,12 +650,14 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
             Date convertedDate = new Date();
             int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
             //Picks the selected date, month & year & displays on button
+            newDate = (Button) DateView.findViewById(R.id.buttonCalCam); //Button which opens the calender
             if((year>=curYear)||(year==curYear && month+1>=curMonth)||(year==curYear && month+1==curMonth && day>=curDay)) {
                 dayG = Integer.toString(day);
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 Log.d("Setting Date: ", ".....");
                 dateString=String.valueOf(dayG)+"-"+String.valueOf(monthG)+"-"+String.valueOf(yearG);
+                newDate.setText(dateString);
                 // Toast.makeText(getBaseContext(), "Your reminder is set to "  + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();

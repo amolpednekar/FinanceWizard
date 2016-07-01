@@ -10,8 +10,5 @@
         android:title="Calculator"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/goal"
-        android:title="My Goals"
-        android:icon="@drawable/edit_goal" app:showAsAction="ifRoom"/>
 
 </menu>

@@ -48,23 +48,23 @@ public class LoginActivity extends AppCompatActivity {
                     if(!loginEmail.getEditText().getText().toString().equals("") && !loginPass.getEditText().getText().toString().equals("")){
                         gCursor.moveToFirst();
                         if(gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.KEY_IDLOGIN)).equals(loginEmail.getEditText().getText().toString()) && gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.PASSWORD_LOGIN)).equals(loginPass.getEditText().getText().toString())) {
-                            Toast.makeText(getApplicationContext(),"Successful",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),"Sign-up Successful",Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         }else{
                             loginEmail.getEditText().setText("");
                             loginPass.getEditText().setText("");
-                            Toast.makeText(getApplicationContext(),"Invalid userId or Password",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Invalid User ID or Password",Toast.LENGTH_SHORT).show();
                         }
                     }else {
                         loginEmail.getEditText().setText("");
                         loginPass.getEditText().setText("");
-                        Toast.makeText(getApplicationContext(),"Please complete the text boxes",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Please enter all fields",Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }else {
-            setTitle("Signup");
+            setTitle("SignUp");
             setContentView(R.layout.activity_signup);
             signupEmail = (TextInputLayout) findViewById(R.id.signupEmail);
             signupPass = (TextInputLayout) findViewById(R.id.signupPassword);
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         values.put(DbHelperCategory.PASSWORD_LOGIN, signupPass.getEditText().getText().toString());
                         cDataBase.insert(DbHelperCategory.TABLE_LOGIN, null, values);
                         cDataBase.close();
-                        Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
+
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else if(signupPass.getEditText().getText().length() < 6) {
@@ -88,13 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                         signupPass.getEditText().setText("");
                         signupCPass.getEditText().setText("");
                         signupEmail.getEditText().setFocusable(true);
-                        Toast.makeText(getApplicationContext(), "Password length too short(Atleast 6 characters)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Password length too short (At least 6 characters)", Toast.LENGTH_SHORT).show();
                     }  else{
                         signupEmail.getEditText().setText("");
                         signupPass.getEditText().setText("");
                         signupCPass.getEditText().setText("");
                         signupEmail.getEditText().setFocusable(true);
-                        Toast.makeText(getApplicationContext(), "Password & Confirm not matching", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Passwords not matching", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

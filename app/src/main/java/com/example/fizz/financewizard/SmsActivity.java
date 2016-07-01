@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,14 +85,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
     AlertDialog alert;
     String[] defaultCat = {"Lifestyle","Entertainment","Misc."};
     int catgyFlag;
-    Button smslist_but;
-    protected FrameLayout frameLayout;
-    protected ListView mDrawerList;
-    protected DrawerLayout mDrawerLayout;
-    protected ArrayAdapter<String> mAdapter;
-    protected ActionBarDrawerToggle mDrawerToggle;
-    protected String mActivityTitle;
-    protected static int position;
+    Button smslist_but, alertOKButton;
 
     public static SmsActivity instance() {
         return inst;
@@ -127,64 +122,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             }
             cDataBase.close();
         }
-        frameLayout = (FrameLayout)findViewById(R.id.content_frame);
-        mDrawerList = (ListView)findViewById(R.id.navList);
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);//@ activity main
-        mActivityTitle = "Cash in Bank";//string
-        addDrawerItems();
-        setupDrawer();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
-
-
-            /*
-            /* Button for Database
-            Button But1 = (Button) findViewById(R.id.buttonDb);
-            But1.setOnClickListener(new AdapterView.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ArrayList<String> Val = db.getAllvalues();
-                    arrayAdapter.clear();
-                    for (int i = 0; i < Val.size(); i++) {
-                        arrayAdapter.add(Val.get(i));
-                    }
-                }
-            });
-
-            /* Button for Messages
-            Button But2 = (Button) findViewById(R.id.messages);
-            But2.setOnClickListener(new AdapterView.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    refreshSmsInbox();
-                }
-            });
-            */
-        /*Button But3 = (Button) findViewById(R.id.submit);
-        But3.setOnClickListener(new AdapterView.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //For selected account number
-                arrayAdapter.clear();
-                //for (int j = 0; j < accountI; j++) {
-                //  ArrayList<String> Val = db.Selected(accountNumbers.get(j));
-                ArrayList<String> Val = db.getAllvalues();
-                for (int i = 0; i < Val.size(); i++) {
-                    String temp=Val.get(i);
-                    int a=temp.indexOf("|");
-                    String index="";
-                    String Data="",BankName="";
-                    index+=temp.substring(a+1);
-                    BankName+=bankNames[Integer.parseInt(index)];
-                    Data+=temp.substring(0,a);
-                    String Disp=BankName+ "\n"+Data;
-                    arrayAdapter.add(Disp);
-                }
-                //}
-            }
-        });
-*/
         smsListView = (ListView) findViewById(R.id.SMSList);
         ArrayList<String> Val = db.Selected2();
         if(Val.size()==0) {
@@ -239,8 +177,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             //amount
             double x = Double.valueOf(tempContent[tempContent.length - 1].substring(9, tempContent[tempContent.length - 1].indexOf('|')));
 
-            //Toast.makeText(getApplicationContext(),String.format("%.2f",x),Toast.LENGTH_SHORT).show();
-            // check this statement
             totaL.add(tempContent[tempContent.length - 1].substring(0,9) + String.format("%.2f",x));
         }
 
@@ -258,14 +194,9 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                     ClickedItem += smsMessages[i];
                 }
                 setContentView(R.layout.table_view);
-                mDrawerList = (ListView) findViewById(R.id.navList);
-                mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setHomeButtonEnabled(true);
                 a = ClickedItem.indexOf(" ");
                 b = ClickedItem.indexOf(" ", a + 2);
                 Acc += smsMessages[1];
-                Toast.makeText(getApplicationContext(), "Acc : |-" + Acc + "=>" + String.valueOf(arg2) + "|", Toast.LENGTH_SHORT).show();
                 init(arg2, Acc);
                 /*Intent i = new Intent(getApplicationContext(), SmsActivity.class);
                 startActivity(i);*/
@@ -277,15 +208,11 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
                 build = new AlertDialog.Builder(SmsActivity.this);
                 build.setTitle("Make your selection");
-                mDrawerList = (ListView) findViewById(R.id.navList);
-                mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 LayoutInflater le = LayoutInflater.from(SmsActivity.this);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setHomeButtonEnabled(true);
                 View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
                 build = new AlertDialog.Builder(SmsActivity.this);
-                build.setTitle("New Balance");
-                build.setMessage("Please Enter current balance amount");
+                build.setTitle("Set Balance");
+                build.setMessage("Enter Amount");
                 build.setView(promptsExpenseView);
                 TotalValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
                 //PayValue.isFocused();
@@ -302,7 +229,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                         a = ClickedItem.indexOf(" ");
                         b = ClickedItem.indexOf(" ", a + 2);
                         Acc += smsMessages[1];
-                        Toast.makeText(getApplicationContext(), "Acc : |-" + Acc + "=>" + String.valueOf(arg2) + "|", Toast.LENGTH_SHORT).show();
+
 
 
                         double x = Double.valueOf(totaL.get(arg2).substring(9, totaL.get(arg2).length()));
@@ -322,16 +249,46 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                 });
                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplication(), "Expense Cancelled", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                     }
                 });
                 alert = build.create();
                 alert.show();
+                alertOKButton = alert.getButton(AlertDialog.BUTTON1);
+                alertOKButton.setEnabled(false);
+                TotalValue.addTextChangedListener(textWatcher);
                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 return true;
             }
         });
+    }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            checkFieldsForEmptyValues();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    };
+
+    // checks if textBox is empty or not & Enables/Disables the button
+    private  void checkFieldsForEmptyValues(){
+        String s1 = TotalValue.getText().toString();
+
+        if(s1.equals("")) {
+            alertOKButton.setEnabled(false);
+        }
+        else {
+            alertOKButton.setEnabled(true);
+        }
     }
 
     //table
@@ -374,13 +331,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
         tv4.setTextColor(Color.BLACK);
         tbrow0.addView(tv4);
         stk.addView(tbrow0);
-        //String[] smsAcc = AccountSearch.split("\n");
-        //Toast.makeText(getApplicationContext(),String.valueOf(pos),Toast.LENGTH_LONG).show();
         ArrayList<String> Val = db.Selected3(AccountSearch);
-        //arrayAdapter.clear();
-        //smsMessagesList.clear();
-        //Toast.makeText(getApplicationContext(),String.valueOf(Val.size()),Toast.LENGTH_LONG).show();
-        //Toast.makeText(getApplicationContext(),Val.get(0),Toast.LENGTH_LONG).show();
         for (int i = 0; i < Val.size(); i++) {
             //arrayAdapter.add(Val.get(i));
             String[] smsInfo = Val.get(i).split(" ");
@@ -400,11 +351,11 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             }
             else
             {
-                t2v.setBackgroundColor(Color.rgb(247,247,247));
-                t1v.setBackgroundColor(Color.rgb(247,247,247));
-                t3v.setBackgroundColor(Color.rgb(247,247,247));
-                t4v.setBackgroundColor(Color.rgb(247,247,247));
-                t5v.setBackgroundColor(Color.rgb(247,247,247));
+                t2v.setBackgroundColor(Color.rgb(230,230,230));
+                t1v.setBackgroundColor(Color.rgb(230,230,230));
+                t3v.setBackgroundColor(Color.rgb(230,230,230));
+                t4v.setBackgroundColor(Color.rgb(230,230,230));
+                t5v.setBackgroundColor(Color.rgb(230,230,230));
             }
             t1v.setText(smsInfo[1]);
             t1v.setTextSize(12);
@@ -424,20 +375,10 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
                 t5v.setBackgroundColor(Color.rgb(245,69,89));*/
             }
             else if(smsInfo[2].equals("Credited")){
-                t2v.setTextColor(Color.GREEN);
-                /*t2v.setBackgroundColor(Color.rgb(54,201,72));
-                t1v.setBackgroundColor(Color.rgb(54,201,72));
-                t3v.setBackgroundColor(Color.rgb(54,201,72));
-                t4v.setBackgroundColor(Color.rgb(54,201,72));
-                t5v.setBackgroundColor(Color.rgb(54,201,72));*/
+                t2v.setTextColor(Color.rgb(51,105,31));
             }
             else{
-                t2v.setTextColor(Color.WHITE);
-               /* t2v.setBackgroundColor(Color.rgb(169, 169, 169));
-                t1v.setBackgroundColor(Color.rgb(169, 169, 169));
-                t3v.setBackgroundColor(Color.rgb(169, 169, 169));
-                t4v.setBackgroundColor(Color.rgb(169, 169, 169));
-                t5v.setBackgroundColor(Color.rgb(169, 169, 169));*/
+                t2v.setTextColor(Color.rgb(0,55,230));
             }
 
             t3v.setText("Rs. " + smsInfo[3]);
@@ -460,8 +401,6 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             //smsMessagesList.add(Val.get(i));
         }
         try {
-            //Toast.makeText(getApplicationContext(),smsMessagesList.get(0),Toast.LENGTH_LONG).show();
-            //String[] smsMessages = smsMessagesList.get(pos).split("\n");
             String ClickedItem="",Acc="";
             String _id,amo,time,sta,temp;
             int a=0,b=0;
@@ -586,15 +525,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
 
 
     public void updateList(final String smsMessage, final String strAddress2) {
-        /*int i;
-        for (i = 0; i <= NoBank; i++) {
-            if (stringArray[i].equalsIgnoreCase(strAddress2)) {
 
-                Toast.makeText(this,"smsMessage : "+smsMessage +" add : " + strAddress2,Toast.LENGTH_SHORT);
-
-                break;
-            }
-        }*/
     }
 
     public void AddEntry(String Message,String Time) {
@@ -805,136 +736,19 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             e.printStackTrace();
         }
     }
-    private void addDrawerItems() {
-
-        myAdapter MyAdapter = new myAdapter(this);
-        mDrawerList.setAdapter(MyAdapter);
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openActivity(position);
-            }
-        });
-    }
-
-    private void setupDrawer() {
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mActivityTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-    }
-    protected void openActivity(int position) {
-        mDrawerLayout.closeDrawer(mDrawerList);
-        MainActivity.position = position; //Setting currently selected position in this field so that it will be available in our child activities.
-        switch (position) {
-            case 0:
-                startActivity(new Intent(this,MainActivity.class));
-                break;
-            case 1:
-                startActivity(new Intent(this, RssMainActivity.class));
-                break;
-            case 2:
-                startActivity(new Intent(this, Goals_MainActivity.class));
-                break;
-            case 3:
-                startActivity(new Intent(this, Trends_MainActivity.class));
-                break;
-            case 4:
-                startActivity(new Intent(this, CamMainActivity.class));
-                break;
-            case 5:
-                startActivity(new Intent(this, MapsMainActivity.class));
-            default:
-                break;
-        }
-
-    }
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_sms, menu);
         return true;
     }
 
-    class myAdapter extends BaseAdapter {
-        private Context context;
-        String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
-
-        public myAdapter(Context context){
-            this.context = context;
-            NavListCategories = context.getResources().getStringArray(R.array.NavigationDrawerList);
-        }
-        @Override
-        public int getCount() {
-            return NavListCategories.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return NavListCategories[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View row = null;
-            if(convertView == null){
-                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.custom_row, parent, false);
-            }
-            else{
-                row =convertView;
-            }
-
-            TextView titleTextView =(TextView) row.findViewById(R.id.textViewRow1);
-            ImageView titleImageView = (ImageView) row.findViewById(R.id.imageViewRow1);
-            titleTextView.setText(NavListCategories[position]);
-            titleImageView.setImageResource(images[position]);
-            return row;
-        }
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
 
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, settings_main.class));

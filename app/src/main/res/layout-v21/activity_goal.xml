@@ -118,13 +118,13 @@
                 android:layout_centerHorizontal="true" />
 
             <Button
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/set_goal_date"
                 android:textAllCaps="false"
                 android:textColor="@color/primaryColor"
                 android:id="@+id/calendarButton"
-                android:textSize="23dp"
+                android:textSize="20dp"
                 android:backgroundTint="@color/accentColor"
                 android:layout_below="@+id/deadlineTitle"
                 android:layout_centerHorizontal="true"
@@ -156,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/notifyDate"
-                android:layout_alignParentBottom="true"
+                android:layout_marginTop="270dp"
                 android:layout_below="@+id/categoryDrop"
                 android:layout_alignRight="@+id/categoryDrop"
                 android:layout_alignEnd="@+id/categoryDrop"

@@ -9,14 +9,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -228,10 +226,9 @@ public class GoalActivity extends AppCompatActivity {
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 dateG.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
-                Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
+
             }else{// Reset the value on button
                 dateG.setText("Set Goal Date");
-                Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -291,7 +288,6 @@ public class GoalActivity extends AppCompatActivity {
         }
         //close database
         dataBase.close();
-        Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -373,7 +369,6 @@ public class GoalActivity extends AppCompatActivity {
                     View promptsCategoryView = li.inflate(R.layout.category_layout, null);
                     build = new AlertDialog.Builder(GoalActivity.this);
                     build.setTitle("New Category");
-                    build.setMessage("Please Enter new Category");
                     build.setView(promptsCategoryView);
                     CatgyValue = (EditText) promptsCategoryView.findViewById(R.id.CategoryEnter1);
                     //PayValue.isFocused();

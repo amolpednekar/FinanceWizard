@@ -168,7 +168,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         mChart=new PieChart(this);
         mainLayout.addView(mChart);
         mainLayout.setBackgroundColor(Color.WHITE);
-
+        mChart.setDescription("");
         mChart.setUsePercentValues(false);
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
@@ -185,7 +185,7 @@ public class Goals_MainActivity extends AppCompatActivity {
                 if (entry == null)
                     return;
 
-                Toast.makeText(Goals_MainActivity.this, cat.get(entry.getXIndex()) + "=" + entry.getVal() + "%", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Goals_MainActivity.this, cat.get(entry.getXIndex()) + "=" + entry.getVal() + "%", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -280,7 +280,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         //mAlarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, mNotificationReceiverPendingIntent);
         mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, 5 * 60 * 1000, mNotificationReceiverPendingIntent);
         Log.i("MainActivity", "Alarm created");
-        Toast.makeText(getApplicationContext(),"Alarm created",Toast.LENGTH_LONG).show();
+
     }
 
     public void displayData() {
@@ -468,12 +468,12 @@ public class Goals_MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
-            case R.id.goal:
+            /*case R.id.goal:
                 Intent i = new Intent(getApplicationContext(), GoalDisActivity.class);
                 i.putExtra("update", false);
                 startActivity(i);
                 return true;
-            //case R.id.currency_info:
+           */ //case R.id.currency_info:
               //  return true;
         }
         //noinspection SimplifiableIfStatement

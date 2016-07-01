@@ -246,30 +246,31 @@ public class AlarmReceiver extends BroadcastReceiver {
             cursor.close();
             if(MyImageDescription.size() > 0 && flag==1) {
                 myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                Intent delIntent = new Intent(context, MainActivity.class);
+                Intent delIntent = new Intent(context, CamMainActivity.class);
                 delIntent.setAction("Del");
                 int ID=MyImageID.get(0);
                 delIntent.putExtra("DEL", ID);
                 delIntent.putExtra("update", true);
                 delIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                Intent resultIntent = new Intent(context, MainActivity.class);
+                Intent resultIntent = new Intent(context, CamMainActivity.class);
                 resultIntent.putExtra("update", true);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                PendingIntent resultPendingIntent1 = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent resultPendingIntent1 = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent resultPendingIntent2 = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 PendingIntent delPendingIntent = PendingIntent.getActivity(context, 0, delIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 if (MyImageDescription.size() == 1) {
                     int cnt = MyImageDescription.size();
                     String [] DummyImageName=MyImageTitle.get(0).split("/");
                     String title=DummyImageName[6];
                     if(MyImageName.size()>0) {
-                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Fizz")
+                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo)
+                                .setContentTitle("FiZZ")
                                 .setContentText("The reminder date for " + MyImageName.get(0) + " has exceeded the 3 months limit")
                                 .addAction(R.drawable.ic_action_discard, "Delete", delPendingIntent);
                         gBuilder.setContentIntent(delPendingIntent);
-                        String summary = String.valueOf(cnt) + " goals";
+                        String summary = String.valueOf(cnt) + " reminders";
                         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                         inboxStyle.setSummaryText(summary);
                         gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
@@ -280,12 +281,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                     else{
-                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Fizz")
+                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo)
+                                .setContentTitle("FiZZ")
                                 .setContentText("The reminder date for " + title + " has exceeded the 3 months limit")
                                 .addAction(R.drawable.ic_action_discard, "Delete", delPendingIntent);
                         gBuilder.setContentIntent(delPendingIntent);
-                        String summary = String.valueOf(cnt) + " goals";
+                        String summary = String.valueOf(cnt) + " reminders";
                         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                         inboxStyle.setSummaryText(summary);
                         gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
@@ -297,11 +298,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }
                 } else if (MyImageDescription.size() > 1) {
                     int cnt = MyImageDescription.size();
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("Fizz")
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo)
+                            .setContentTitle("FiZZ")
                             .setContentText("The deadline dates for the below images have exceeded the 3 month limit");
-                    gBuilder.setContentIntent(resultPendingIntent1);
-                    String summary = String.valueOf(cnt) + " goals";
+                    gBuilder.setContentIntent(resultPendingIntent2);
+                    String summary = String.valueOf(cnt) + " reminders";
                     NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                     if (cnt <= 3)
                         for (int i = 0; i < cnt; i++) {
@@ -340,46 +341,49 @@ public class AlarmReceiver extends BroadcastReceiver {
             else if(MyImageDescription.size() > 0)
             {
                 myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                Intent notificationIntent = new Intent(context, MainActivity.class);
+                Intent notificationIntent = new Intent(context, CamMainActivity.class);
                 notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                Intent resultIntent = new Intent(context, MainActivity.class);
+                Intent resultIntent = new Intent(context, CamMainActivity.class);
                 resultIntent.putExtra("update", true);
                 resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //Opening Image in Gallery View
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse("file://" + MyImageTitle.get(0)), "image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Intent deleteIntent = new Intent(context, MainActivity.class);
+                Intent deleteIntent = new Intent(context, CamMainActivity.class);
                 deleteIntent.setAction("Delete");
                 int ID=MyImageID.get(0);
                 deleteIntent.putExtra("ID", ID);
                 deleteIntent.putExtra("update", true);
                 deleteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 deleteIntent.addFlags(/*Intent.FLAG_ACTIVITY_SINGLE_TOP |*/ Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Intent backIntent = new Intent(context, MainActivity.class);
+                Intent backIntent = new Intent(context, CamMainActivity.class);
                 backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 // Because clicking the notification opens a new ("special") activity, there's
                 // no need to create an artificial back stack.
-                PendingIntent resultPendingIntent1 = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                PendingIntent resPendingIntent = PendingIntent.getActivities(context, 0, new Intent[]{backIntent, intent}, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent resultPendingIntent1 = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent resultPendingIntent2 = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 deletePendingIntent = PendingIntent.getActivity(context, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 if (MyImageDescription.size() == 1) {
                     int cnt = MyImageDescription.size();
                     String [] DummyImageName=MyImageTitle.get(0).split("/");
                     String title=DummyImageName[6];
-                    if(MyImageName.size()>0) {
-                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Fizz")
+                    if(MyImageName.size() > 0) {
+                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo)
+                                .setContentTitle("FiZZ")
                                 .setContentText("Reminder Set: " + MyImageName.get(0))
-                                .addAction(R.drawable.ic_action_about, "View", resPendingIntent)
+                                .addAction(R.drawable.ic_action_about, "View", resultPendingIntent1)
                                 .addAction(R.drawable.ic_action_discard, "Delete", deletePendingIntent);
                         gBuilder.setContentIntent(resultPendingIntent1);
-                        String summary = String.valueOf(cnt) + " goals";
+                        String summary = String.valueOf(cnt) + " reminders";
                         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                         inboxStyle.setSummaryText(summary);
+                        String dayLeft = "Deadline";
+                        if(MyImageCount.get(0) > 0)
+                            dayLeft = MyImageCount.get(0).toString()  + " day(s) left" ;
                         gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(MyImageName.get(0)).
-                                addLine(MyImageID.get(0) + ". " + MyImageName.get(0) + " - " + String.valueOf(MyImageCount.get(0)) + " days left"));
+                                addLine(MyImageID.get(0) + ". " + MyImageName.get(0) + " - " + dayLeft));
                         gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
                         gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
@@ -388,17 +392,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                     else{
-                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Fizz")
+                        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo)
+                                .setContentTitle("FiZZ")
                                 .setContentText("Reminder Set: " + title)
-                                .addAction(R.drawable.ic_action_about, "View", resPendingIntent)
+                                .addAction(R.drawable.ic_action_about, "View", resultPendingIntent1)
                                 .addAction(R.drawable.ic_action_discard, "Delete", deletePendingIntent);
                         gBuilder.setContentIntent(resultPendingIntent1);
-                        String summary = String.valueOf(cnt) + " goals";
+                        String summary = String.valueOf(cnt) + " reminders";
                         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                         inboxStyle.setSummaryText(summary);
+                        String dayLeft = "Deadline";
+                        if(MyImageCount.get(0) > 0)
+                            dayLeft = MyImageCount.get(0).toString()  + " day(s) left" ;
                         gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(title).
-                                addLine(MyImageID.get(0) + ". " + title + " - " + String.valueOf(MyImageCount.get(0)) + " days left"));
+                                addLine(MyImageID.get(0) + ". " + title + " - " + dayLeft));
                         gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
                         gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
@@ -408,34 +415,39 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }
                 } else if (MyImageDescription.size() > 1) {
                     int cnt = MyImageDescription.size();
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle("Fizz")
-                            .setContentText("Reminder Set: ");
-                    gBuilder.setContentIntent(resultPendingIntent1);
-                    String summary = String.valueOf(cnt) + " goals";
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("FiZZ").setContentText("Reminder Set: ");
+                    gBuilder.setContentIntent(resultPendingIntent2);
+                    String summary = String.valueOf(cnt) + " reminders";
                     NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                     if (cnt <= 3)
                         for (int i = 0; i < cnt; i++) {
                             String[] DummyImageName = MyImageTitle.get(i).split("/");
                             String title = DummyImageName[6];
+                            String dayLeft = "Deadline";
+                            if(MyImageCount.get(i) > 0)
+                                dayLeft = MyImageCount.get(i).toString()  + " day(s) left" ;
+
                             try {
                                 if (MyImageName.get(i) != null) {
-                                    inboxStyle.addLine(MyImageID.get(i) + ". " + MyImageName.get(i) + " - " + String.valueOf(MyImageCount.get(i)) + " days left");
+                                    inboxStyle.addLine(MyImageID.get(i) + ". " + MyImageName.get(i) + " - " + dayLeft);
                                 }
                             }catch(IndexOutOfBoundsException ie){
-                                inboxStyle.addLine(MyImageID.get(i) + ". " + title + " - " + String.valueOf(MyImageCount.get(i)) + " days left");
+                                inboxStyle.addLine(MyImageID.get(i) + ". " + title + " - " + dayLeft);
                             }
                         }
                     else
                         for (int i = 0; i < 3; i++) {
                             String [] DummyImageName=MyImageTitle.get(i).split("/");
                             String title=DummyImageName[6];
+                            String dayLeft = "Deadline";
+                            if(MyImageCount.get(i) > 0)
+                                dayLeft = MyImageCount.get(i).toString()  + " day(s) left" ;
                             try {
                                 if (MyImageName.get(i) != null) {
-                                    inboxStyle.addLine(MyImageID.get(i) + ". " + MyImageName.get(i) + " - " + String.valueOf(MyImageCount.get(i)) + " days left");
+                                    inboxStyle.addLine(MyImageID.get(i) + ". " + MyImageName.get(i) + " - " + dayLeft);
                                 }
                             }catch(IndexOutOfBoundsException ie){
-                                inboxStyle.addLine(MyImageID.get(i) + ". " + title + " - " + String.valueOf(MyImageCount.get(i)) + " days left");
+                                inboxStyle.addLine(MyImageID.get(i) + ". " + title + " - " + dayLeft);
                             }
                         }
                     inboxStyle.setSummaryText(summary);
@@ -445,6 +457,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                             setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                     gBuilder.setAutoCancel(true);
+                    myGoalNotifyMgr.cancelAll();
                     myGoalNotifyMgr.notify(10, gBuilder.build());
                 }
             }
