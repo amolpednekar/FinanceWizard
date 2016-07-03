@@ -113,9 +113,7 @@ public class Goals_MainActivity extends AppCompatActivity {
             }
         });
         pieDisp();
-
-
-          }
+    }
     public void pieDisp(){
         // fetching categories from database
         dbhelp=new DbHelperCategory(this);
@@ -168,7 +166,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         mChart=new PieChart(this);
         mainLayout.addView(mChart);
         mainLayout.setBackgroundColor(Color.WHITE);
-        mChart.setDescription("");
+
         mChart.setUsePercentValues(false);
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
@@ -185,7 +183,7 @@ public class Goals_MainActivity extends AppCompatActivity {
                 if (entry == null)
                     return;
 
-                //Toast.makeText(Goals_MainActivity.this, cat.get(entry.getXIndex()) + "=" + entry.getVal() + "%", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Goals_MainActivity.this, cat.get(entry.getXIndex()) + "=" + entry.getVal() + "%", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -200,6 +198,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         mChart.getLegend().setWordWrapEnabled(true);
         mChart.getLegend().setTextSize(12);
     }
+
     private void addData(){
         ArrayList<Entry> yValsl= new ArrayList<Entry>();
         yValsl.clear();
@@ -260,7 +259,6 @@ public class Goals_MainActivity extends AppCompatActivity {
     protected void onResume() {
         displayData();
         createAlarm();
-       // pieDisp();
         super.onResume();
     }
 
@@ -269,18 +267,13 @@ public class Goals_MainActivity extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY,07);
         calendar.set(Calendar.MINUTE, 00);
         calendar.set(Calendar.SECOND, 00);
-        //calendar.get(Calendar.HOUR_OF_DAY);//set the alarm time
-        //calendar.get(Calendar.MINUTE);
-        //calendar.get(Calendar.SECOND);
 
         AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent mNotificationReceiverIntent = new Intent(Goals_MainActivity.this, AlarmNotificationReceiver.class);
         PendingIntent mNotificationReceiverPendingIntent = PendingIntent.getBroadcast(Goals_MainActivity.this, 0, mNotificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //mAlarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, mNotificationReceiverPendingIntent);
-        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 5000, 5 * 60 * 1000, mNotificationReceiverPendingIntent);
+        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_HALF_HOUR, mNotificationReceiverPendingIntent);
         Log.i("MainActivity", "Alarm created");
-
     }
 
     public void displayData() {
@@ -293,9 +286,7 @@ public class Goals_MainActivity extends AppCompatActivity {
             do{
                 categoryList.add(cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)));
                 categoryCnt.add(0);
-                //Toast.makeText(getApplicationContext(),cCursor.getString(cCursor.getColumnIndex(DbHelperCategory.CAT_TYPE)),Toast.LENGTH_LONG).show();
             }while(cCursor.moveToNext());
-            //Toast.makeText(getApplicationContext(),String.valueOf(categoryList.size()),Toast.LENGTH_LONG).show();
         }
         tHelper = new DbHelperGoal(this.getBaseContext());
         tDataBase = tHelper.getWritableDatabase();
@@ -325,15 +316,7 @@ public class Goals_MainActivity extends AppCompatActivity {
         }
         mCursor.close();
         tGoals.setText(String.valueOf(goalCnt));
-        String catContent = "";
         tSavings.setText(currencyType + " " + String.format("%.0f",savings));
-        /*for(i = 0;i<categoryList.size();i++){
-            if(i == 0)
-                catContent = categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
-            else
-                catContent += categoryList.get(i) + ":" + String.valueOf(categoryCnt.get(i)) + "\n";
-        }
-        tCategoryNo.setText(catContent);*/
     }
 
 
@@ -421,7 +404,7 @@ public class Goals_MainActivity extends AppCompatActivity {
     class myAdapter extends BaseAdapter {
         private Context context;
         String NavListCategories[];
-        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.cam,R.drawable.map};
+        int[] images = {R.drawable.cash_flow,R.drawable.rss,R.drawable.goals_targets,R.drawable.trends,R.drawable.reminders,R.drawable.map};
 
         public myAdapter(Context context){
             this.context = context;
@@ -468,12 +451,12 @@ public class Goals_MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch(id){
-            /*case R.id.goal:
+ /*           case R.id.goal:
                 Intent i = new Intent(getApplicationContext(), GoalDisActivity.class);
                 i.putExtra("update", false);
                 startActivity(i);
-                return true;
-           */ //case R.id.currency_info:
+                return true;*/
+            //case R.id.currency_info:
               //  return true;
         }
         //noinspection SimplifiableIfStatement

@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -114,7 +116,7 @@ public class GoalActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        notifyIntervalG = "none";
+                        notifyIntervalG = "";
                         break;
                     case 1:
                         notifyIntervalG = "daily";
@@ -226,9 +228,10 @@ public class GoalActivity extends AppCompatActivity {
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 dateG.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
-
+                Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
             }else{// Reset the value on button
                 dateG.setText("Set Goal Date");
+                Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -288,6 +291,7 @@ public class GoalActivity extends AppCompatActivity {
         }
         //close database
         dataBase.close();
+        Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -348,7 +352,7 @@ public class GoalActivity extends AppCompatActivity {
                 //Toast.makeText(getBaseContext(),monthB.toString(),Toast.LENGTH_LONG).show();
 
                 // Checks if Text box slots are empty or not, if not, & if category options are chosen or not, then save data
-                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !categoryG.equals("") && !notifyIntervalG.equals("") && !dateG.getText().toString().equals("Set Goal Date")) {
+                if(!goalG.getText().toString().isEmpty() && !amountG.getText().toString().isEmpty() && !categoryG.equals("") && !dateG.getText().toString().equals("Set Goal Date")) {// && !notifyIntervalG.equals("")) {
                     //Toast.makeText(getBaseContext(),dateB.toString(),Toast.LENGTH_LONG).show();
                     saveData();
                 }else{// if slots found blank, pop an alert
@@ -369,14 +373,12 @@ public class GoalActivity extends AppCompatActivity {
                     View promptsCategoryView = li.inflate(R.layout.category_layout, null);
                     build = new AlertDialog.Builder(GoalActivity.this);
                     build.setTitle("New Category");
+                    build.setMessage("Please Enter new Category");
                     build.setView(promptsCategoryView);
                     CatgyValue = (EditText) promptsCategoryView.findViewById(R.id.CategoryEnter1);
-                    //PayValue.isFocused();
                     CatgyValue.setFocusableInTouchMode(true);
                     CatgyValue.setFocusable(true);
                     CatgyValue.requestFocus();
-                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    //imm.showSoftInput(PayValue, InputMethodManager.SHOW_IMPLICIT);
                     build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if (CatgyValue.getText().toString().isEmpty() || CatgyValue.getText().toString().equals(" ")) {// check is textbox is empty or Not
@@ -384,7 +386,20 @@ public class GoalActivity extends AppCompatActivity {
                             } else {
                                 dataBase = cHelper.getWritableDatabase();
                                 Cursor gCursor;
-                                String str = Character.toUpperCase(CatgyValue.getText().toString().charAt(0)) + CatgyValue.getText().toString().substring(1).toLowerCase();//capitalize the string
+                                String[] catSet = CatgyValue.getText().toString().split(" ");
+                                String str = "";
+                                for (int i = 0; i < catSet.length; i++){
+                                    if(!catSet[i].equals(" ") && !catSet[i].equals("")){
+                                        str += Character.toUpperCase(catSet[i].charAt(0)) + catSet[i].substring(1).toLowerCase();//catSet[i].charAt(0);
+                                        if(i< catSet.length - 1)
+                                            str += " ";
+                                    }
+                                }
+
+                                //str = Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();//capitalize the string
+                                if( str.contains(" And ") || str.contains(" and "))
+                                    str = str.replace(" And ", " & ");
+
                                 if (Build.VERSION.SDK_INT > 15) {
                                     gCursor = dataBase.rawQuery("SELECT * FROM " + DbHelperCategory.TABLE_NAME + " WHERE " + DbHelperCategory.CAT_TYPE + "=?", new String[]{str}, null);
                                 } else {
@@ -396,8 +411,6 @@ public class GoalActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
                                     catgyFlag = 1;
                                 }
-                                //gCursor.close();
-                                //dataBase.close();
                                 if (catgyFlag == 1) {
                                     Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
                                     gCursor.close();

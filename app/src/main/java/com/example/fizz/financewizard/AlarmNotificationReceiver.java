@@ -95,33 +95,6 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("Tag:", "Alarm Notification received");
-        //Toast.makeText(context,"Alarm created2",Toast.LENGTH_LONG).show();
-
-//        gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("FiZZ");
-//        gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine("Time's up"));
-//        gBuilder.setGroup("My Goals");
-//        gBuilder.setGroupSummary(true);
-//        gBuilder.setPriority(Notification.PRIORITY_HIGH);// [-2,2]->[PRIORITY_MIN,PRIORITY_MAX]
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR_OF_DAY, 22);//set the alarm time
-//        calendar.set(Calendar.MINUTE, 53);
-//        calendar.set(Calendar.SECOND, 00);
-//        gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-//            //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-//
-//            // opens the resultPendingIntent
-//            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//            // open the activity every 24 hours
-//            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, resultPendingIntent);
-//
-//            gBuilder.setAutoCancel(true);
-//            int mNotificationId = 10;
-//            keyIndex = 10;
-//            // Gets an instance of the NotificationManager service
-//            myGoalNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            // Builds the notification and issues it.
-//            myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
 
         gHelper = new DbHelperGoal(context);
         dataBase = gHelper.getWritableDatabase();
@@ -152,13 +125,8 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 final Calendar c = Calendar.getInstance();
                 int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
                 int goalYear = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.YEAR)), goalMonth = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.MONTH)), goalDay = mCursor.getInt(mCursor.getColumnIndex(DbHelperGoal.DAY));
-                int calYear = 0,calMonth = 0,calDay = 0,calDayGoal = 0;
-                float dailyAmount = 0;
 
                 //Get current date
-                String curDate = String.valueOf(curDay)+"/"+String.valueOf(curMonth)+"/"+String.valueOf(curYear);
-
-                String goalDate = String.valueOf(goalDay)+"/"+String.valueOf(goalMonth)+"/"+String.valueOf(goalYear);
                 int count = -1;
 
                 //Fetches the date and Time from system, hence not used
@@ -193,11 +161,11 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 // check if goal date is less than or equals 2 days
                 String tempNotif = mCursor.getString(mCursor.getColumnIndex(DbHelperGoal.NOTIFICATION_DATE));
                 int notifCnt = Integer.MAX_VALUE;
-                if(tempNotif == "daily")
+                if(tempNotif.equals("daily"))
                     notifCnt = 1;
-                else if(tempNotif == "weekly")
+                else if(tempNotif.equals("weekly"))
                     notifCnt = 7;
-                else if (tempNotif == "monthly")
+                else if (tempNotif.equals("monthly"))
                     notifCnt = 30;
 
                 if(count <= 2 || count % notifCnt == 0){
@@ -287,16 +255,16 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                         remContent = String.valueOf("Time's up");
                     else
                         remContent = String.valueOf(notifyLastDay.get(0)) + " days left";
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("FiZZ").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", savePendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("Fizz").setContentText("Goals: " + notifyTitle.get(0)).addAction(R.mipmap.money_transfer, "Contribute", savePendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
                     gBuilder.setContentIntent(resultPendingIntent);
                     gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(notifyTitle.get(0)).addLine(remContent));
                 }else if(notifyLastDay.get(0) == -1){ // Goals that are Timed out
                     String remContent = notifyTitle.get(0);
                     int cnt = notifyLastDay.size();
-                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("FiZZ").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", extendPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
+                    gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("Fizz").setContentText("Goals : " + remContent).addAction(R.mipmap.tear_calendar, "Extend", extendPendingIntent).addAction(R.mipmap.delete_w, "Delete", deletePendingIntent);
                     //gBuilder.setLargeIcon();
                     gBuilder.setContentIntent(resultPendingIntent);
-                    gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(remContent).addLine("Deadline"));
+                    gBuilder.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(remContent).addLine("Time's up"));
                 }
 
                 gBuilder.setGroup("My Goals");
@@ -308,7 +276,6 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 calendar.set(Calendar.MINUTE, 00);
                 calendar.set(Calendar.SECOND, 0);
                 gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-                //gBuilder.setWhen(calendar.getTimeInMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
 
                 // opens the resultPendingIntent
                 //getSystemService(NOTIFICATION_SERVICE) -> context.getSystemService(Context.NOTIFICATION_SERVICE) coz it is not an activity class, & context is directed from Activity class
@@ -329,13 +296,11 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 myGoalNotifyMgr.notify(mNotificationId, gBuilder.build());
             } else if(notifyLastDay.size() > 1) { //many
                 int cnt = notifyLastDay.size();
-                Toast.makeText(context, String.valueOf(cnt), Toast.LENGTH_LONG).show();
                 //NotificationCompat.Builder(this) -> NotificationCompat.Builder(context) as this is not an Activity class
-                gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("FiZZ").setContentText(String.valueOf(cnt) + "goals");
+                gBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.app_logo).setContentTitle("Fizz").setContentText(String.valueOf(cnt) + "goals");
                 gBuilder.setContentIntent(viewPendingIntent);
                 String summary = String.valueOf(cnt) + " goals";
 
-                //gBuilder.setStyle(new NotificationCompat.InboxStyle().addLine(notifyTitle.get(0) + " - " + notifyLastDay.get(0) + " days left").addLine(notifyTitle.get(1) + " - " + notifyLastDay.get(1) + " days left").setSummaryText(summary));
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
                 if (cnt <= 7)// if only 7 near date goals, show all
@@ -368,13 +333,6 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 calendar.set(Calendar.MINUTE, 57);
                 calendar.set(Calendar.SECOND, 0);
                 gBuilder.setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).setLights(Color.WHITE, 0, 1);
-
-                // opens the resultPendingIntent
-                AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-                // open the activity every 24 hours
-                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 3 * 24 * 60 * 60 * 1000 , viewPendingIntent);
-                //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() , viewPendingIntent);
-
                 gBuilder.setAutoCancel(true);
                 int mNotificationId = 10;
                 // Builds the notification and issues it.

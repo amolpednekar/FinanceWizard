@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (gCursor.getCount() > 0) {
             //Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
+            setTitle("Login");
             setContentView(R.layout.activity_login);
 
             loginEmail = (TextInputLayout) findViewById(R.id.loginEmail);
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(!loginEmail.getEditText().getText().toString().equals("") && !loginPass.getEditText().getText().toString().equals("")){
                         gCursor.moveToFirst();
                         if(gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.KEY_IDLOGIN)).equals(loginEmail.getEditText().getText().toString()) && gCursor.getString(gCursor.getColumnIndex(DbHelperCategory.PASSWORD_LOGIN)).equals(loginPass.getEditText().getText().toString())) {
-                            //Toast.makeText(getApplicationContext(),"Sign-up Successful",Toast.LENGTH_SHORT).show();
+
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         }else{
@@ -80,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                         values.put(DbHelperCategory.PASSWORD_LOGIN, signupPass.getEditText().getText().toString());
                         cDataBase.insert(DbHelperCategory.TABLE_LOGIN, null, values);
                         cDataBase.close();
-
+                        Toast.makeText(getApplicationContext(),"Sign-up Successful",Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else if(signupPass.getEditText().getText().length() < 6) {
