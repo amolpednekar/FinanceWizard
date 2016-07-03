@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +25,7 @@ public Switch sms_per;
     public String status;
     public TextView about;
     private boolean isUpdate;
+    protected String mActivityTitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -99,14 +101,23 @@ public Switch sms_per;
     }
     public void about_msg(View v){
         setContentView(R.layout.about);
+        mActivityTitle = "About";
+        getSupportActionBar().setTitle(mActivityTitle);
+        TextView faq=(TextView)findViewById(R.id.about_main);
+        faq.setText(Html.fromHtml(getString(R.string.about1)));
     }
-    /*public void faq(View v){
-        setContentView(R.layout.settings_faq);
-    }*/
     public void contact(View v){
         setContentView(R.layout.settings_contact_us);
+        mActivityTitle = "Contact Us";
+        getSupportActionBar().setTitle(mActivityTitle);
     }
-
+    public void faq(View v){
+        setContentView(R.layout.settings_faq);
+        mActivityTitle = "FAQ";
+        getSupportActionBar().setTitle(mActivityTitle);
+        TextView faq=(TextView)findViewById(R.id.faq);
+        faq.setText(Html.fromHtml(getString(R.string.faq1)));
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

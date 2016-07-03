@@ -44,5 +44,15 @@
         android:layout_marginLeft="8dp"
         android:onClick="about_msg"
         android:clickable="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FAQ"
+        android:id="@+id/faqs"
+        android:textSize="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="8dp"
+        android:onClick="faq"
+        android:clickable="true"/>
 
 </LinearLayout>

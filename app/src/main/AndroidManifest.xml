@@ -148,7 +148,7 @@
             android:label="Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fizz.financewizard.MainActivity" />
+                android:value="com.example.fizz.financewizard.settings_main" />
         </activity>
 
         <meta-data
