@@ -56,14 +56,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="false"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask">
-
-
-
         </activity>
 
 
-    <!--Sms parser-->
+        <!--Sms parser-->
         <activity
             android:name=".SmsActivity"
             android:label="Cash In Bank" >
@@ -71,6 +69,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.fizz.financewizard.MainActivity" />
         </activity>
+
         <receiver
             android:name=".SmsBroadcastReceiver"
             android:exported="true" >
@@ -86,13 +85,15 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:launchMode="singleInstance"
-            android:clearTaskOnLaunch="true">
+            android:clearTaskOnLaunch="true"
+            android:screenOrientation="portrait">
         </activity>
 
         <!--Manifest for Floating calculator-->
         <activity android:name=".Calc"
             android:label="Calculator"
-            android:theme="@style/Theme.Floating">
+            android:theme="@style/Theme.Floating"
+            android:screenOrientation="portrait">
         </activity>
 
         <service android:name=".rss_service" />
@@ -100,25 +101,30 @@
 
         <!--Manifest for goals and Targets-->
         <activity android:name=".Goals_MainActivity"
-            android:label="Goals and Targets">
+            android:label="Goals and Targets"
+            android:screenOrientation="portrait">
             <service android:name=".NotificationUtils$NotificationActionService" />
         </activity>
 
         <receiver android:name=".AlarmNotificationReceiver"/>
         <activity
             android:name=".GoalDisActivity"
-            android:label="@string/title_activity_goal_dis" >
+            android:label="@string/title_activity_goal_dis"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.fizz.financewizard.Goals_MainActivity" />
         </activity>
+
         <activity
             android:name=".GoalActivity"
-            android:label="@string/title_activity_goal" >
+            android:label="@string/title_activity_goal"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.fizz.financewizard.GoalDisActivity" />
         </activity>
+
         <activity
             android:name=".GoalInfoActivity"
             android:screenOrientation="portrait"
@@ -127,6 +133,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.fizz.financewizard.GoalDisActivity" />
         </activity>
+
         <activity android:name=".Trends_MainActivity"
             android:label="User Trends" >
         </activity>

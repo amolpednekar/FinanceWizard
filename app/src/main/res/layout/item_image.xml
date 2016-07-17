@@ -5,9 +5,9 @@
     android:layout_height="match_parent">
     <ImageView
         android:id="@+id/item_img_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/app_logo"
         android:padding="5dp"
         android:layout_marginRight="10dp" />
     <TextView

@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Simeon on 14/06/2016.
- */
 public class SmsDisAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<String> id;

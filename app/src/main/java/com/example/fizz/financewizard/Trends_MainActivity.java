@@ -45,15 +45,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-
-
-/**
- * Created by Simeon on 17/02/2016.
- */
-
-
-
-
 public class Trends_MainActivity extends AppCompatActivity {
 
     AlertDialog alert;
@@ -110,7 +101,7 @@ public class Trends_MainActivity extends AppCompatActivity {
 
         //Toast.makeText(getApplicationContext(),"size " + String.valueOf(Val.size()),Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getApplicationContext(),"getYear " + yearTrends,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),"getYear " + yearTrends,Toast.LENGTH_SHORT).show();
         for(int i=0;i<Val.size();i++){
             String[] smsInfo = Val.get(i).split(" ");
             //Toast.makeText(getApplicationContext(),"index " + String.valueOf(Val.size()),Toast.LENGTH_SHORT).show();
@@ -309,7 +300,7 @@ public class Trends_MainActivity extends AppCompatActivity {
             View promptsCategoryView = li.inflate(R.layout.dropdown, null);
             AlertDialog.Builder build = new AlertDialog.Builder(Trends_MainActivity.this);
             build.setTitle("Change Year");
-            build.setMessage("Select a year");
+            build.setMessage("");
             build.setView(promptsCategoryView);
 
             yearDrop = (Spinner) promptsCategoryView.findViewById(R.id.year_spinner);
@@ -326,7 +317,7 @@ public class Trends_MainActivity extends AppCompatActivity {
             Cursor gCursor = dataBase.rawQuery("SELECT DISTINCT " + db.YEAR +" FROM " + db.TABLE_NAME , null);
 
             yearId.add(-1);
-            yearCont.add("--Select Category--");
+            yearCont.add("< Select a year >");
 
             int catgyFlag = 0;
             if (gCursor.getCount() > 0) {
@@ -337,7 +328,7 @@ public class Trends_MainActivity extends AppCompatActivity {
                 }while(gCursor.moveToNext());
             }
 
-            Toast.makeText(getApplicationContext(), "Count of year " + String.valueOf(gCursor.getCount()), Toast.LENGTH_LONG).show();
+          //  Toast.makeText(getApplicationContext(), "Count of year " + String.valueOf(gCursor.getCount()), Toast.LENGTH_LONG).show();
             gCursor.close();
             dataBase.close();//close database
 
@@ -360,7 +351,7 @@ public class Trends_MainActivity extends AppCompatActivity {
             build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     yearTrends = yearSms;
-                    Toast.makeText(getApplicationContext(), yearTrends, Toast.LENGTH_SHORT).show();
+
                     //getDataSet();
                     //onResume();
                     BarChart chart = (BarChart) findViewById(R.id.chart);

@@ -7,10 +7,10 @@
         android:orderInCategory="100"
         android:icon="@drawable/edit_feed"
         app:showAsAction="always|withText"
-        android:title="edit" />
+        android:title="Change Feed" />
     <item
         android:id="@+id/refresh_rss"
         android:icon="@drawable/refresh_feed"
         app:showAsAction="withText|ifRoom"
-        android:title="refresh" />
+        android:title="Refresh Feed" />
 </menu>

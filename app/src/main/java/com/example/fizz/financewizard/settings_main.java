@@ -1,23 +1,18 @@
 package com.example.fizz.financewizard;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by Simeon on 30/04/2016.
- */
 public class settings_main extends AppCompatActivity {
 public Switch sms_per;
     DbHelperCategory per;
@@ -118,6 +113,7 @@ public Switch sms_per;
         TextView faq=(TextView)findViewById(R.id.faq);
         faq.setText(Html.fromHtml(getString(R.string.faq1)));
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

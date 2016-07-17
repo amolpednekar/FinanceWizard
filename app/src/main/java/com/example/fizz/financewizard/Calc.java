@@ -1,8 +1,5 @@
 package com.example.fizz.financewizard;
 
-/**
- * Created by Amol on 21 Dec 15.
- */
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -89,9 +86,9 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
         if(optr.equals("+")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
-            Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+           // Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
             op1 = op1 + op2;
-            Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "op1 , op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
             disp.setText(Float.toString(op1));
         }
         else if(optr.equals("-")){
@@ -103,9 +100,9 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
         else if(optr.equals("*")){
             op2 = Float.parseFloat(disp.getText().toString());
             disp.setText("");
-            Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
             op1 = op1 * op2;
-            Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(this, "op1 , op2 , op3 "+op1 +op2 +op3, Toast.LENGTH_SHORT).show();
             disp.setText( Float.toString(op1));
         }
         else if(optr.equals("/")){
@@ -260,11 +257,11 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
-                    Toast.makeText(this, "op1 ,op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                //    Toast.makeText(this, "op1 ,op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     op3 = op1 + op2;
-                    Toast.makeText(this, "op1, op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(this, "op1, op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     op1=op3;
-                    Toast.makeText(this, "op1, op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(this, "op1, op2 ,op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     //disp.setText("Result1:"+Float.toString(op1));
                 }
 
@@ -301,11 +298,11 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 else{
                     op2 = Float.parseFloat(disp.getText().toString());
                     disp.setText("");
-                    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                //    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     op3 = op1 * op2;
-                    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                //    Toast.makeText(this, "op1 , op2, op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     op1=op3;
-                    Toast.makeText(this, "op1 ,op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
+                //    Toast.makeText(this, "op1 ,op2 , op3 "+op1   +op2   +op3, Toast.LENGTH_LONG).show();
                     // disp.setText("Result1:"+Float.toString(op1));
                 }
                 break;
@@ -328,7 +325,7 @@ public class Calc extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.equal:
                 flag=1;
-                Toast.makeText(this, " hello ", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, " hello ", Toast.LENGTH_SHORT).show();
                 if(disp.getText().toString().trim().length() <= 0)
                     return;
                 else

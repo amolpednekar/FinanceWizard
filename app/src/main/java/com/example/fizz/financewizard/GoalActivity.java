@@ -228,7 +228,6 @@ public class GoalActivity extends AppCompatActivity {
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 dateG.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
-                Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
             }else{// Reset the value on button
                 dateG.setText("Set Goal Date");
                 Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
@@ -291,7 +290,6 @@ public class GoalActivity extends AppCompatActivity {
         }
         //close database
         dataBase.close();
-        Toast.makeText(getBaseContext(), "Data saved successfully", Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -373,7 +371,7 @@ public class GoalActivity extends AppCompatActivity {
                     View promptsCategoryView = li.inflate(R.layout.category_layout, null);
                     build = new AlertDialog.Builder(GoalActivity.this);
                     build.setTitle("New Category");
-                    build.setMessage("Please Enter new Category");
+                    build.setMessage("Enter Name");
                     build.setView(promptsCategoryView);
                     CatgyValue = (EditText) promptsCategoryView.findViewById(R.id.CategoryEnter1);
                     CatgyValue.setFocusableInTouchMode(true);
@@ -408,11 +406,10 @@ public class GoalActivity extends AppCompatActivity {
                                 String dbData = null;
                                 catgyFlag = 0;
                                 if (gCursor.getCount() > 0) {
-                                    Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
                                     catgyFlag = 1;
                                 }
                                 if (catgyFlag == 1) {
-                                    Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Category already present", Toast.LENGTH_LONG).show();
                                     gCursor.close();
                                     dataBase.close();
                                 } else {

@@ -69,7 +69,7 @@ public class PlacesService {
 			urlString.append(Double.toString(latitude));
 			urlString.append(",");
 			urlString.append(Double.toString(longitude));
-			urlString.append("&radius=2000");
+			urlString.append("&radius=1500");
 			// urlString.append("&types="+place);
 			urlString.append("&sensor=false&key=" + API_KEY);
 		} else {

@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
-/**
- * Created by Shreekumar on 22-02-2016.
- */
 public class AlarmNotificationReceiver extends BroadcastReceiver {
 
     int keyIndex = 0;

@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-/**
- * Created by Sharath on 03-09-2015.
- */
 public abstract class SwipeListViewActivity extends Activity {
 
     private ListView list;

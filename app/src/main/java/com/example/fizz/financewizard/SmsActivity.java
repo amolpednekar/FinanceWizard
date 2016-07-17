@@ -587,7 +587,7 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             a = smsMessage.indexOf("rs");
             b = smsMessage.indexOf(" ", a + 4);
             if(b<0){b=smsMessage.indexOf(".",a+4);}
-            mAmount += smsMessage.substring(a + 3, b);
+            mAmount += smsMessage.substring(a + 2, b);
         } else if (smsMessage.contains("inr")) {
             a = smsMessage.indexOf("inr");
             b = smsMessage.indexOf(" ", a + 4);
@@ -601,6 +601,15 @@ public class SmsActivity extends AppCompatActivity implements OnItemClickListene
             }
            //mAmount += "1234";//smsMessage.substring(a + 4, b);
             //mAmount += smsMessage.substring(a+4,b);
+        }
+
+        String mAmount2=mAmount;
+        mAmount2 = mAmount2.replace(" ","");
+        AA='a';
+        for(int d=0;d<26;d++){
+            mAmount2 = mAmount2.replace(String.valueOf(AA),"");
+            mAmount= mAmount2;
+            AA++;
         }
 
         //Balance

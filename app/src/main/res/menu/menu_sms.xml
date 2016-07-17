@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/listSmsMenu" android:title="Accounts"
+    <item android:id="@+id/listSmsMenu" android:title="List of Accounts"
         android:orderInCategory="100" app:showAsAction="always"
         android:icon="@drawable/accounts_icon"/>
 </menu>

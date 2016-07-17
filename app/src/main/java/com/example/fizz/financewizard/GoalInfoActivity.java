@@ -147,15 +147,15 @@ public class GoalInfoActivity extends AppCompatActivity {
                     count -= curDay;
                     count += calMonthDay(goalMonth, goalYear);
                     count += goalDay;
-                    if (count < 0) {
-                        count *= -1;
-                    }
+
                     // amount divided as per date
                     dailyAmount = (mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.AMOUNT)) - mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_PAYMENT)) + mCursor.getFloat(mCursor.getColumnIndex(DbHelperGoal.ALT_EXPENSE))) / count;
-                    if(count != 1)
+                    if(count != 1 && count >= 0)
                         DaysToGoal.setText(String.valueOf(count) + " days until "+ goalDate);
-                    else
+                    else if(count == 1)
                         DaysToGoal.setText(String.valueOf(count) + " day until "+ goalDate);
+                    else
+                        DaysToGoal.setText(String.valueOf(count*-1) + " day(s) after "+ goalDate);
                 }
                 else{// current year exceeds goal year
                     DailyAmount.setText("Time's up");

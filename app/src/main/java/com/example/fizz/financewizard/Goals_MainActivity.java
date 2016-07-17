@@ -175,7 +175,7 @@ public class Goals_MainActivity extends AppCompatActivity {
 
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
-
+        mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry entry, int i, Highlight highlight) {

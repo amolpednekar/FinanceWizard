@@ -1,13 +1,8 @@
 package com.example.fizz.financewizard;
 
-/**
- * Created by sony on 17/10/15.
- */
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-/**
- * Created by sony on 25/9/15.
- */
+
 public class ImageResizer {
     /**
      * Calculate an inSampleSize for use in a {@link android.graphics

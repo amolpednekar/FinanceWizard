@@ -36,6 +36,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -63,11 +66,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.util.Log;
-import android.view.View;
 public class CamMainActivity extends AppCompatActivity implements View.OnClickListener{
     private ArrayList<MyImage> images;
     public ArrayList<String> title;
@@ -137,6 +135,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.cam_activity_main);
         // Construct the data source
         TitleRem.clear();
@@ -344,20 +343,7 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
 
                         break;
                     case 2:
-                        if(image.getPriority()=="OFF"){
-                            database = dbHelper.getWritableDatabase();
-                            ContentValues cv = new ContentValues();
-                            cv.put(DBhelper.COLUMN_PRIORITY, "ON");
-                            Log.d("Updating Priority: ", ".....");
-                            String whereClause = DBhelper.COLUMN_DATETIME + "=?";
-                            String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
-                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
-                            Log.d("Updating Priority: ", ".....");
-                            image.setPriority("ON");
-                            Toast.makeText(getApplicationContext(), nameTitle + " " + " is marked Important.", Toast.LENGTH_SHORT).show();
-                            swipelist.invalidateViews();
-                        }
-                        else{
+                        if(image.getPriority().equals("ON")){
                             database = dbHelper.getWritableDatabase();
                             ContentValues cv = new ContentValues();
                             cv.put(DBhelper.COLUMN_PRIORITY, "OFF");
@@ -370,8 +356,19 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                             image.setPriority("OFF");
                             Toast.makeText(getApplicationContext(), nameTitle + " " + " is marked UnImportant.", Toast.LENGTH_SHORT).show();
                             swipelist.invalidateViews();
+                        }else{
+                            database = dbHelper.getWritableDatabase();
+                            ContentValues cv = new ContentValues();
+                            cv.put(DBhelper.COLUMN_PRIORITY, "ON");
+                            Log.d("Updating Priority: ", ".....");
+                            String whereClause = DBhelper.COLUMN_DATETIME + "=?";
+                            String[] whereArgs = new String[]{String.valueOf(image.getDatetimeLong())};
+                            database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
+                            Log.d("Updating Priority: ", ".....");
+                            image.setPriority("ON");
+                            Toast.makeText(getApplicationContext(), nameTitle + " " + " is marked Important.", Toast.LENGTH_SHORT).show();
+                            swipelist.invalidateViews();
                         }
-                        break;
                 }
 
                 return false;
@@ -458,6 +455,8 @@ public class CamMainActivity extends AppCompatActivity implements View.OnClickLi
                                         database.update(DBhelper.TABLE_NAME, cv, whereClause, whereArgs);
                                         Log.d("Updating Name: ", ".....");
                                         image.setName(srt);
+                                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                                         swipelist.invalidateViews();
                                         Toast.makeText(CamMainActivity.this, srt, Toast.LENGTH_LONG).show();
                                     } // End of onClick(DialogInterface dialog, int whichButton)

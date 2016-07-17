@@ -81,9 +81,15 @@ public class LoginActivity extends AppCompatActivity {
                         values.put(DbHelperCategory.PASSWORD_LOGIN, signupPass.getEditText().getText().toString());
                         cDataBase.insert(DbHelperCategory.TABLE_LOGIN, null, values);
                         cDataBase.close();
-                        Toast.makeText(getApplicationContext(),"Sign-up Successful",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Sign-up Successful", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
+                    }else if (signupEmail.getEditText().getText().toString().length() <=0 && signupPass.getEditText().getText().toString().length() <=0){
+                        signupEmail.getEditText().setText("");
+                        signupPass.getEditText().setText("");
+                        signupCPass.getEditText().setText("");
+                        signupEmail.getEditText().setFocusable(true);
+                        Toast.makeText(getApplicationContext(), "Please enter all fields", Toast.LENGTH_SHORT).show();
                     } else if(signupPass.getEditText().getText().length() < 6) {
                         signupEmail.getEditText().setText("");
                         signupPass.getEditText().setText("");

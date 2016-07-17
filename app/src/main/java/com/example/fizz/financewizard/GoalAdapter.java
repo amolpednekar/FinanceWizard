@@ -25,9 +25,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * Created by Sharath on 18-08-2015.
- */
 public class GoalAdapter  extends BaseAdapter {
 
     private Context mContext;

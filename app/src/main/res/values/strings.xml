@@ -106,39 +106,68 @@
     <string name="faq1">
         <![CDATA[
     <b><u>Why FiZZ?</u></b>
-    <br/>    Every day, we see that people often struggle to keep track of money, bills and day-to-day finances. With increasing inflation, money management has become crucial to make sure that one is able to keep track of how the money is flowing, and we don’t spend more than we earn.
-    <br>     Finance Wizard (FiZZ) aims to do exactly this and much more. FiZZ is intended to be a multi-purpose finance management android application. It serves as a one stop-shop for all economic needs. It has 6 major modules, which will take care of all your finance needs.
+    <br/>    <br>Every day, we see that people often struggle to keep track of money, bills and day-to-day finances.
+    With increasing inflation, money management has become crucial to make sure that one is able to keep track of how the money
+    is flowing, and we don’t spend more than we earn.
+    <br><br>     Finance Wizard (FiZZ) aims to do exactly this and much more. FiZZ is intended to be a multi-purpose
+    finance management android application. It serves as a one stop-shop for all economic needs.
+    It has 6 major modules, which will take care of all your finance needs.
+
+
     <br><br><b><u>What can FiZZ do?</u></b>
-    <br>     Our SMS retrieval system fetches all those cluttered up and unorganized transactions and presents it to you in a clean and organised fashion.
-    <br><br>    Being in contact with the financial world never felt more real with the latest and trending news brought to you by our Eco feed. All this will be available to you in one interface that is clean and easy to use.
+    <br><br>     Our SMS retrieval system fetches all those cluttered up and unorganized transactions and presents
+     it to you in a clean and organised fashion.
+
+     <br><br><b><u>What is \'Goals & Targets\' ?</u></b>
     <br><br>    We often have certain aims we want to achieve and this often requires saving up for to get to that goal. But it’s not as easy as simple savings, as we have many goals with different timeframes and priorities.
-     Goals & Targets allows to create and track objectives to achieve with detailed information on how much you need to save up to get to the goal, deadline and notifications.
-     <br><br>    Photo Repository will allow you to store all your finance & business related documents in one place, allowing you to set notifications as well for time related photos.
-     <br><br>    All of us have been in that situation where we are hunting for ATMs, sometimes especially for the same bank provider as your card. This is even more relevant when you are travelling.
-      Nearby banks & ATMs module is a novel feature that uses Google Maps & Places API to show the user all banks, ATM and other financial institutes near her/his location.
+    <br> Goals & Targets allows to create and track objectives to achieve with detailed information on how much you need to save up to get to the goal, deadline and notifications.
+
+     <br><br><b><u>What is \'EcoFeed\' ?</u></b>
+    <br><br>    Being in contact with the financial world never felt more real with the latest
+     and trending news brought to you by our Eco feed. All this will be available to you in one interface that is clean and easy to use.
+
+
+     <br><br><b><u>What is the \'Photo Repository\' ?</u></b>
+     <br><br>    Photo Repository will allow you to store all your finance & business related documents in one place,
+      allowing you to set notifications as well for time related photos.
+
+     <br><br><b>Tell me more about photo repository!</b>
+        <br><br>Bills, bills everywhere!!! Oh no! I just missed the deadline!
+        <br>We all have heard this before. FiZZ is here to save you!
+       <br> Now you you can click pictures of your bills and financial documents,
+       add a reminder for the due date by <i>swiping the image thumbnail from right to left
+       </i>(click on the calender icon)sit back and relax.
+        The app will notify you a few days before the due date and you will never miss a payment again.
+        <br><br><i><b>You can also rename a file by long pressing on the image thumbnail</i></b>
+
+     <br> <br>If you want the image deleted after a certain period just "star" it under priority.
+      <i>If you have switched the priority off it will be automatically deleted after the due date has passed.
+      Or you can just delete it yourself.</i>
+     <br> <br> <b> Long press on the image to delete a reminder.</b>
+      <br> <br>You can click a picture from the app itself or select one from the phone gallery by
+      clicking the floating button the bottom of the page.<br>
+
 
       <br><br><b><u>How does cash flow work?</u></b>
-      <br>    It is divided into two parts:
+      <br><br>    It is divided into two parts:
       <br>1.Cash in bank.<br>2.Cash in hand.
-      <br><br>Cash in bank retrieves all bank related SMS from your phone and displays it under an accounts section that consists of your Bank name, account number and total.
-       <br><i><b>Long press an account to add available balance as sometimes you may not receive all transactions made</b></i>
-        <br><i>So do not be frightened if your bank balance is negative, we are not responsible for your bankruptcy.</i>
+      <br><br>Cash in bank retrieves all bank related SMS from your phone and displays it under
+       an accounts section that consists of your Bank name, account number and total.
+
+       <br><br><i><b>Long press an account to add available balance as sometimes you may not receive all transactions made</b></i>
+        <i>. So do not be frightened if your bank balance is negative, we are not responsible for your bankruptcy.</i>
         <br>Click on view details to get a more detailed description.
 
-        <br><br>If you ever won a lottery or mysteriously found some cash under your pillow...Well your in luck!
+        <br><br><b><u>What is \'Cash in Hand\' ?</u></b>
+        <br><br>If you ever won a lottery or mysteriously found some cash under your pillow...Well you\'re in luck!
         Our app provides a feature called cash in hand that allows users to add cash explicitly and keep track of it. You can add cash spent too.
         <br>View details options gives you a detail description.
 
-        <br><br><b><u>What exactly is photo repository?</u></b>
-        <br>Bills, bills everywhere!!! Oh crap, I just missed my deadline!
-        <br>We all have heard this before. FiZZ is here to save you! Now you you can click pictures of your bills and financial documents, add a reminder for the due date by <i>swiping the image thumbnail from right to left</i>(click on the calender icon)sit back and relax.
-        The app will notify you a few days before the due date and you will never miss a payment again.
-        <br><i><b>You can also rename a file by long pressing on the image thumbnail</i></b>
+        <br><br><b><u>What is \'Nearby Banks/ATMs?\' ?</u></b>
+     <br><br>    All of us have been in that situation where we are hunting for ATMs, sometimes especially for the same bank provider as your card. This is even more relevant when you are travelling.
+      Nearby banks & ATMs module is a novel feature that uses Google Maps & Places API to show the user all banks, ATM and other financial institutes near her/his location.<br>
 
-      <br>If you want the image deleted after a certain period just "star" it under priority.
-      <i>If you have switched the priority off it will be automatically deleted after the due date has passed.Or you can just delete it yourself.</i>
-      <br> <b> Long press on the image to delete a reminder.</b>
-      <br> <br>You can click a picture from the app itself or select one from the phone gallery by clicking the floating button the bottom of the page.
+
   ]]>
     </string>
 </resources>

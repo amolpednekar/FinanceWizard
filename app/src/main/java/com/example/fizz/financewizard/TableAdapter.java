@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Simeon on 25/03/2016.
- */
 public class TableAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<String> account;

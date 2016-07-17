@@ -23,7 +23,8 @@ public class MyImage {
     }
     public String getTitle() { return title; }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name; }
     /**
      * Gets datetime.
      *
@@ -90,7 +91,9 @@ public class MyImage {
     @Override
     public String toString() {
         if (name == null) {
-            return "Name: IMG_" + timeStamp + ".jpg\n" + df.format(getDatetime().getTime()) +
+            String[] DummyTitle = title.split("/");
+            String nameTitle = DummyTitle[6];
+            return "Name: "+ nameTitle +"\n" +df.format(getDatetime().getTime()) +
                     "\nReminder: " + description + "\nPriority: "+priority ;
         }
         else{

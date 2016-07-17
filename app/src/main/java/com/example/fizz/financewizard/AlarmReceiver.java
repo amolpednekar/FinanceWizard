@@ -278,6 +278,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                                 setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                         gBuilder.setAutoCancel(true);
+                        myGoalNotifyMgr.cancelAll();
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                     else{
@@ -294,6 +295,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                                 setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                         gBuilder.setAutoCancel(true);
+                        myGoalNotifyMgr.cancelAll();
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                 } else if (MyImageDescription.size() > 1) {
@@ -335,6 +337,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                             setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                     gBuilder.setAutoCancel(true);
+                    myGoalNotifyMgr.cancelAll();
                     myGoalNotifyMgr.notify(10, gBuilder.build());
                 }
             }
@@ -389,6 +392,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                                 setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                         gBuilder.setAutoCancel(true);
+                        myGoalNotifyMgr.cancelAll();
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                     else{
@@ -411,6 +415,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).
                                 setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}).setLights(Color.WHITE, 0, 1);
                         gBuilder.setAutoCancel(true);
+                        myGoalNotifyMgr.cancelAll();
                         myGoalNotifyMgr.notify(MyImageID.get(0), gBuilder.build());
                     }
                 } else if (MyImageDescription.size() > 1) {

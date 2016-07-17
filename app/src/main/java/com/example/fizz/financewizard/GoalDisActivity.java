@@ -121,10 +121,10 @@ public class GoalDisActivity extends AppCompatActivity {
         //On List data long Click
         goalList2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-                final CharSequence[] listClick = {"Goal-Date", "Payment", "Expense", "Delete"};
+                final CharSequence[] listClick = {"Change Deadline", "Contribute", "Expense", "Delete"};
 
                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                build.setTitle("Make your selection");
+                build.setTitle("Options");
                 build.setItems(listClick, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
@@ -133,8 +133,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 LayoutInflater ld = LayoutInflater.from(GoalDisActivity.this);
                                 promptsDateView = ld.inflate(R.layout.date_button, null);//promptsDateView declared global for later reference to DateDialogButton
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                                build.setTitle("Goal-Date");
-                                build.setMessage("Please Enter new Goal Date");
+                                build.setTitle("Change Deadline");
+                                build.setMessage("");
                                 build.setView(promptsDateView);
                                 newDate = (Button) promptsDateView.findViewById(R.id.newGoalDate);
                                 newDate.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +174,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                 });
                                 build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplication(), "New Date Cancelled", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getApplication(), "New Date Cancelled", Toast.LENGTH_SHORT).show();
                                         dialog.cancel();
                                     }
                                 });
@@ -186,8 +186,8 @@ public class GoalDisActivity extends AppCompatActivity {
                                 LayoutInflater li = LayoutInflater.from(GoalDisActivity.this);
                                 View promptsPaymentView = li.inflate(R.layout.payment_layout, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
-                                build.setTitle("Payment");
-                                build.setMessage("Please Enter payment amount");
+                                build.setTitle("Contribute");
+                                build.setMessage("Enter Amount");
                                 build.setView(promptsPaymentView);
                                 PayValue = (EditText) promptsPaymentView.findViewById(R.id.PaymentEnter1);
                                 PayValue.setFocusableInTouchMode(true);
@@ -221,7 +221,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.AMOUNT + "=" + String.valueOf(val - check) + "," + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                                     dataBase.execSQL(strSQL);
-                                                    Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                                     displayData();
                                                     dialog.cancel();
                                                 }
@@ -232,7 +232,7 @@ public class GoalDisActivity extends AppCompatActivity {
 
                                                     String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + keyId.get(arg2);
                                                     dataBase.execSQL(strSQL);
-                                                    Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
+                                                   // Toast.makeText(getApplication(), PayValue.getText().toString(), Toast.LENGTH_SHORT).show();
                                                     displayData();
                                                     dialog.cancel();
                                                 }
@@ -273,7 +273,7 @@ public class GoalDisActivity extends AppCompatActivity {
                                 View promptsExpenseView = le.inflate(R.layout.payment_layout, null);
                                 build = new AlertDialog.Builder(GoalDisActivity.this);
                                 build.setTitle("Expense");
-                                build.setMessage("Please Enter withdrawl amount");
+                                build.setMessage("Enter Amount");
                                 build.setView(promptsExpenseView);
                                 ExpValue = (EditText) promptsExpenseView.findViewById(R.id.PaymentEnter1);
                                 build.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -376,7 +376,6 @@ public class GoalDisActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int month, int day){
             view.setMinDate(new Date().getTime());// set min date limit in calendar
             final Calendar c = Calendar.getInstance();
-            Toast.makeText(getBaseContext(), "calenderLoad",Toast.LENGTH_LONG).show();
             int curYear = c.get(Calendar.YEAR), curMonth = c.get(Calendar.MONTH)+1, curDay = c.get(Calendar.DAY_OF_MONTH);
             newDate=(Button)promptsDateView.findViewById(R.id.newGoalDate);
             //Picks the selected date, month & year & displays on button
@@ -385,7 +384,7 @@ public class GoalDisActivity extends AppCompatActivity {
                 monthG = Integer.toString(month + 1);
                 yearG = Integer.toString(year);
                 newDate.setText(Integer.toString(day) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(year));
-                Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), "Your rental time is set from " + curDay + "-" + curMonth + "-" + curYear + " to " + day + "-" + (month + 1) + "-" + year + ".", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getBaseContext(), "Please choose date after " + curDay + "-" + curMonth + "-" + curYear, Toast.LENGTH_SHORT).show();
             }
@@ -528,7 +527,7 @@ public class GoalDisActivity extends AppCompatActivity {
                     }else if(val-check > Float.valueOf(dbExpAmount) && val-check >= 0){// if client collects extra amount for that goal, the Target amount extends
                         build2 = new AlertDialog.Builder(GoalDisActivity.this);
                         build2.setTitle("Confirmation");
-                        build2.setMessage("The Payment Amount is exceeding the Target Amount. Do you want to increment the Target amount to the new value?");
+                        build2.setMessage("The contribution is exceeding the target amount. Do you want to increment the target amount to the new value?");
                         build2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 String strSQL = "UPDATE " + DbHelperGoal.TABLE_NAME + " SET " + DbHelperGoal.AMOUNT + "=" + String.valueOf(val - check) + "," + DbHelperGoal.ALT_PAYMENT + "=" + String.valueOf(val) + " WHERE " + DbHelperGoal.KEY_ID + "=" + delId;
@@ -570,7 +569,7 @@ public class GoalDisActivity extends AppCompatActivity {
             });
             build.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplication(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 }
             });
@@ -935,13 +934,12 @@ public class GoalDisActivity extends AppCompatActivity {
                             }
                             int catgyFlag = 0;
                             if (gCursor.getCount() > 0) {
-                                Toast.makeText(getApplicationContext(), "Data present", Toast.LENGTH_LONG).show();
                                 catgyFlag = 1;
                             }
                             //gCursor.close();
                             //dataBase.close();
                             if (catgyFlag == 1) {
-                                Toast.makeText(getApplicationContext(), "Sorry, this option is already present", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Category already present", Toast.LENGTH_LONG).show();
                                 gCursor.close();
                                 dataBase.close();
                             } else {
